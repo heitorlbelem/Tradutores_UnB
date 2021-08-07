@@ -482,12 +482,13 @@ char *yytext;
 #line 4 "lexical_analyzer.l"
     #include <stdio.h>
     #include <stdlib.h>
+    #include "../include/ANSI-color-codes.h"
 
     int errors_count = 0;
     int column_idx = 1;
     int line_idx = 1;
-#line 490 "lex.yy.c"
 #line 491 "lex.yy.c"
+#line 492 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -702,10 +703,10 @@ YY_DECL
 		}
 
 	{
-#line 31 "lexical_analyzer.l"
+#line 32 "lexical_analyzer.l"
 
 
-#line 709 "lex.yy.c"
+#line 710 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -764,71 +765,64 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 33 "lexical_analyzer.l"
+#line 34 "lexical_analyzer.l"
 {
-    printf("Delimiter '%s' at LINE:%d\tCOLUMN: %d\t", yytext, line_idx, column_idx);
+    write_line("Delimiter", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 40 "lexical_analyzer.l"
 {
-    printf("Operator '%s' at LINE:%d\tCOLUMN: %d\t", yytext, line_idx, column_idx);
+    write_line("Operator", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 46 "lexical_analyzer.l"
+#line 45 "lexical_analyzer.l"
 { 
-    printf("Integer '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Integer", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 52 "lexical_analyzer.l"
+#line 50 "lexical_analyzer.l"
 {
-    printf("Float '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Float", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 58 "lexical_analyzer.l"
+#line 55 "lexical_analyzer.l"
 {
-    printf("Simple Type '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Simple Type", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 64 "lexical_analyzer.l"
+#line 60 "lexical_analyzer.l"
 { 
-    printf("List Type '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("List Type", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 70 "lexical_analyzer.l"
+#line 65 "lexical_analyzer.l"
 {
-    printf("Identifier '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Identifier", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 76 "lexical_analyzer.l"
+#line 70 "lexical_analyzer.l"
 {
     column_idx = 1;
     line_idx++;
@@ -836,34 +830,34 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 81 "lexical_analyzer.l"
+#line 75 "lexical_analyzer.l"
 {
     column_idx += yyleng;
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 85 "lexical_analyzer.l"
+#line 79 "lexical_analyzer.l"
 {
     printf("ERROR: Erradoo\n");
 }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 89 "lexical_analyzer.l"
+#line 83 "lexical_analyzer.l"
 {
-    printf("ERROR: Unexpected character '%s' at LINE:%d\tCOLUMN:%d", yytext, line_idx, column_idx);
+    printf(REDHB "ERROR: Unexpected character '%s' at LINE:%d\tCOLUMN:%d", yytext);
     errors_count++;
     column_idx += yyleng;
-    printf("\n");
+    printf(reset "\n");
 }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 97 "lexical_analyzer.l"
+#line 91 "lexical_analyzer.l"
 ECHO;
 	YY_BREAK
-#line 867 "lex.yy.c"
+#line 861 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1831,8 +1825,17 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 97 "lexical_analyzer.l"
+#line 91 "lexical_analyzer.l"
 
+
+void write_line(char* type, char* token) {
+    printf(BLU "%s ", type);
+    printf(reset "");
+    printf(UCYN "%s", token);
+    printf(reset "");
+    printf("\tat line: %d column: %d\n", line_idx, column_idx);
+    printf(reset "");
+}
 
 int main(int argc, char **argv) {
     
@@ -1849,9 +1852,9 @@ int main(int argc, char **argv) {
     yylex();
 
     if(errors_count == 0){
-        printf("Finished. Lexical analysis found no errors\n");
+        printf(BGRN "Finished. Lexical analysis found no errors\n");
     } else {
-        printf("Finished. Lexical analysis found %d errors during execution\n", errors_count);
+        printf(BRED "Finished. Lexical analysis found %d errors during execution\n", errors_count);
     }
 
 

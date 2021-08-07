@@ -3,6 +3,7 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
+    #include "../include/ANSI-color-codes.h"
 
     int errors_count = 0;
     int column_idx = 1;
@@ -31,46 +32,39 @@ DELIMITERS "("|")"|"{"|"}"|";"|","
 %%
 
 {DELIMITERS} {
-    printf("Delimiter '%s' at LINE:%d\tCOLUMN: %d\t", yytext, line_idx, column_idx);
+    write_line("Delimiter", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 
 
 {OPERATORS} {
-    printf("Operator '%s' at LINE:%d\tCOLUMN: %d\t", yytext, line_idx, column_idx);
+    write_line("Operator", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 
 {INTEGER} { 
-    printf("Integer '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Integer", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 
 {FLOAT} {
-    printf("Float '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Float", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 
 {T_SIMPLE} {
-    printf("Simple Type '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Simple Type", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 
 {T_LIST} { 
-    printf("List Type '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("List Type", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 
 {IDENTIFIER} {
-    printf("Identifier '%s' at LINE: %d\tCOLUMN: %d", yytext, line_idx, column_idx);
+    write_line("Identifier", yytext);
     column_idx += yyleng;
-    printf("\n");
 }
 
 \n {
@@ -87,14 +81,23 @@ DELIMITERS "("|")"|"{"|"}"|";"|","
 }
 
 . {
-    printf("ERROR: Unexpected character '%s' at LINE:%d\tCOLUMN:%d", yytext, line_idx, column_idx);
+    printf(REDHB "ERROR: Unexpected character '%s' at LINE:%d\tCOLUMN:%d", yytext);
     errors_count++;
     column_idx += yyleng;
-    printf("\n");
+    printf(reset "\n");
 }
 
 
 %%
+
+void write_line(char* type, char* token) {
+    printf(BLU "%s ", type);
+    printf(reset "");
+    printf(UCYN "%s", token);
+    printf(reset "");
+    printf("\tat line: %d column: %d\n", line_idx, column_idx);
+    printf(reset "");
+}
 
 int main(int argc, char **argv) {
     
@@ -111,9 +114,9 @@ int main(int argc, char **argv) {
     yylex();
 
     if(errors_count == 0){
-        printf("Finished. Lexical analysis found no errors\n");
+        printf(BGRN "Finished. Lexical analysis found no errors\n");
     } else {
-        printf("Finished. Lexical analysis found %d errors during execution\n", errors_count);
+        printf(BRED "Finished. Lexical analysis found %d errors during execution\n", errors_count);
     }
 
 
