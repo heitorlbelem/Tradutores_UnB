@@ -32,7 +32,12 @@ OPERATORS "!"|"&&"|"||"|"=="|">"|"<"|">="|"<="|"!="|"="|"+"|"++"|"+="|"-"|"--"|"
 
 DELIMITERS "("|")"|"{"|"}"|";"|","
 
-STRING (\".*\")
+UNIQUE_CHAR (\'[^\']\')
+
+STRING (\"[^\"]*\")
+
+INVALID_STRING (\'[^\']*\')
+
 
 %%
 
@@ -72,8 +77,20 @@ STRING (\".*\")
     column_idx += yyleng;
 }
 
+{UNIQUE_CHAR} {
+    write_line("Char", yytext);
+    column_idx += yyleng;
+}
+
 {STRING} {
     write_line("String text", yytext);
+    column_idx += yyleng;
+}
+
+{INVALID_STRING} {
+    errors_count++;
+    printf(REDHB "ERROR: String must be enclosed in double quotes. Line: %d Column:%d", line_idx, column_idx);
+    printf(reset "\n");
     column_idx += yyleng;
 }
 
