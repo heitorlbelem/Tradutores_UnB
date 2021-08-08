@@ -35,7 +35,6 @@ int main() {
 	
 	IL  = read_list(n);
 	FL = succ >> IL;
-
 	FL10 = leq_10 <<  FL;
 	if (FL10 != NIL) {
 		float list AUXL;

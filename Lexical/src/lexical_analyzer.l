@@ -18,24 +18,28 @@ CHARACTER [a-zA-Z]
 
 INTEGER {DIGIT}+
 FLOAT (({DIGIT}*)\.({DIGIT}+))
-
 NIL NIL
 
 T_SIMPLE int|float
 T_LIST {T_SIMPLE}[ |\t]+list[ \t]+
 
+IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
 INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^\`´.$&@#_])+)
 
-IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
+LIST_OPERATORS "?"|":"|"<<"|">>"
+COMPARISON_OPERATORS ">"|"<"|">="|"<="|"=="|"!="
+ARITMETIC_OPERATORS "+"|"-"|"*"|"/"
+UNARY_OPERATORS "++"|"--"
+ASSIGN_OPERATORS "="|"+="|"-="|"*="|"/="
+LOGICAL_OPERATORS "&&"|"||"
 
-OPERATORS "!"|"&&"|"||"|"=="|">"|"<"|">="|"<="|"!="|"="|"+"|"++"|"+="|"-"|s"--"|"-="|"/"|"/="|"*"|"*="|"?"|":"|"%"|"<<"|">>"
+RESERVED_WORDS for|while|if|else|return
+IO_OPERATIONS read|write|writeln
 
 DELIMITERS "("|")"|"{"|"}"|";"|","
 
 UNIQUE_CHAR (\'[^\']\')
-
 STRING (\"[^\"]*\")
-
 INVALID_STRING (\'[^\']*\')
 
 ONE_LINE_COMMENT \/\/.*
@@ -50,10 +54,54 @@ MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
     column_idx += yyleng;
 }
 
-
-{OPERATORS} {
-    write_line("Operator", yytext);
+{LIST_OPERATORS} {
+    write_line("List Operator", yytext);
     column_idx += yyleng;
+}
+
+{COMPARISON_OPERATORS} {
+    write_line("Comparison Operator", yytext);
+    column_idx += yyleng;
+}
+
+{ARITMETIC_OPERATORS} {
+    write_line("Aritmetic Operator", yytext);
+    column_idx += yyleng;
+}
+
+{UNARY_OPERATORS} {
+    write_line("Unary Operator", yytext);
+    column_idx += yyleng;
+}
+
+{ASSIGN_OPERATORS} {
+    write_line("Assign Operator", yytext);
+    column_idx += yyleng;
+}
+
+{LOGICAL_OPERATORS} {
+    write_line("Logical Operator", yytext);
+    column_idx += yyleng;
+}
+
+"!" {
+    write_line("Exclamation Operator", yytext);
+    column_idx += yyleng;
+}
+
+"%" {
+    write_line("Percentage Operator", yytext);
+    column_idx += yyleng;
+}
+
+{RESERVED_WORDS} {
+    write_line("Reserved word", yytext);
+    column_idx += yyleng;
+}
+
+{IO_OPERATIONS} {
+    write_line("IO Operation", yytext);
+    column_idx += yyleng; 
 }
 
 {INTEGER} { 
