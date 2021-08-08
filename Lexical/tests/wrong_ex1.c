@@ -1,10 +1,15 @@
 int main() {
-    int _a123;
+    int 549a;
+    float 1$bas;
+    int i#a;
+    1/b;
+    float i_\b1;
+    i = i_\b1;
     read(a);
-    float b;
+    float ~b;
     read(b);
 
-    if(a > b) {
+    if(a > 1b) {
         write("a > b");
     } else if(a < b) {
         write("a < b");

@@ -24,11 +24,11 @@ NIL NIL
 T_SIMPLE int|float
 T_LIST {T_SIMPLE}[ |\t]+list[ \t]+
 
+INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^\`´.$&@#_])+)
+
 IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
 
-INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^\/`´.$&@#_])+)
-
-OPERATORS "!"|"&&"|"||"|"=="|">"|"<"|">="|"<="|"!="|"="|"+"|"++"|"+="|"-"|"--"|"-="|"/"|"/="|"*"|"*="|"?"|":"|"%"|"<<"|">>"
+OPERATORS "!"|"&&"|"||"|"=="|">"|"<"|">="|"<="|"!="|"="|"+"|"++"|"+="|"-"|s"--"|"-="|"/"|"/="|"*"|"*="|"?"|":"|"%"|"<<"|">>"
 
 DELIMITERS "("|")"|"{"|"}"|";"|","
 
