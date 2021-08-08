@@ -1,56 +1,33 @@
-int list IL;
-float list FL;
-// comentário linah unica
-int list read_list(int n) {
-	/*
-		comentário multi line
-	*/
-	int i;
-	i =  -435.7;
-	int list new;
-	new = NIL;
-	for (i = 0; i < n ; i = i + 1) {
-		int elem;
-		writeln("Digite o elemento da lista: ");
-		read(elem);
-		new = elem : new;
-	}
-	return new;
+int get_even_numbers(int x) {
+    return (x % 2) == 0;
 }
-
-float succ(int i) {
-	return i+1;
-}
-
-
-int leq_10(float x) {
-	return x <= 10;
-}
-
 
 int main() {
 
-	writeln("Digite o número de elementos da lista: ");
+    float j;
+    int i;
+    int list L;
+    
+    j = .5;
 
-	int n;
-	float list FL10;
-	read(n);
-	
-	IL  = read_list(n);
-	FL = succ >> IL;
+    for(i = 0; i < 10; i++) {
+        int number;
+        write("Enter a number: ");
+        read(number);
+        L = number : L;
+    }
 
-	FL10 = leq_10 <<  FL;
-	if (FL10 != NIL) {
-		float list AUXL;
-		int n; n = 0;
-		for (AUXL=FL10; AUXL != NIL; AUXL = !AUXL) {
-			n = n + 1;
-			write(?AUXL); write(" ");
-		}
-		writeln(" ");
-		write("A nova lista tem "); write(n); writeln(" elementos.");
-	}
-	else writeln("A nova lista não possui elementos.");
+    int list AUXL;
 
-	return 0;
+    AUXL = get_even_numbers << L;
+
+    int list AUXL;
+    int list IT;
+
+    for (IT=NEW_LIST; IT != NIL; IT = !IT) {
+        write(?IT); 
+        write(" ");
+    }
+
+    return 0;
 }

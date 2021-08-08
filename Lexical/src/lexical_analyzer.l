@@ -22,11 +22,11 @@ FLOAT (({DIGIT}*)\.({DIGIT}+))
 NIL NIL
 
 T_SIMPLE int|float
-T_LIST (({T_SIMPLE})[ |\t]+(list))
+T_LIST {T_SIMPLE}[ |\t]+list[ \t]+
 
 IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
 
-INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^\]`´;.$&])+
+INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^\/`´.$&@#_])+)
 
 OPERATORS "!"|"&&"|"||"|"=="|">"|"<"|">="|"<="|"!="|"="|"+"|"++"|"+="|"-"|"--"|"-="|"/"|"/="|"*"|"*="|"?"|":"|"%"|"<<"|">>"
 
@@ -38,10 +38,12 @@ STRING (\"[^\"]*\")
 
 INVALID_STRING (\'[^\']*\')
 
-ONE_LINE_COMMENT (\/\/.*)
-MULTI_LINE_COMMENT (\/\*[^\*\/]*\*\/)
+ONE_LINE_COMMENT \/\/.*
+MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
 
 %%
+
+{ONE_LINE_COMMENT}|{MULTI_LINE_COMMENT} {}
 
 {DELIMITERS} {
     write_line("Delimiter", yytext);
@@ -74,6 +76,11 @@ MULTI_LINE_COMMENT (\/\*[^\*\/]*\*\/)
     column_idx += yyleng;
 }
 
+{NIL} {
+    write_line("Constant", yytext);
+    column_idx += yyleng;
+}
+
 {IDENTIFIER} {
     write_line("Identifier", yytext);
     column_idx += yyleng;
@@ -96,7 +103,6 @@ MULTI_LINE_COMMENT (\/\*[^\*\/]*\*\/)
     column_idx += yyleng;
 }
 
-{ONE_LINE_COMMENT}|{MULTI_LINE_COMMENT} {}
 
 \n {
     column_idx = 1;
@@ -107,8 +113,11 @@ MULTI_LINE_COMMENT (\/\*[^\*\/]*\*\/)
     column_idx += yyleng;
 }
 
-[0-9][a-zA-Z] {
-    printf("ERROR: Erradoo\n");
+{INVALID_IDENTIFIER} {
+    printf(REDHB "ERROR: Invalid token '%s' at line: %d column: %d", yytext, line_idx, column_idx);
+    errors_count++;
+    column_idx += yyleng;
+    printf(reset "\n");
 }
 
 . {
@@ -126,7 +135,7 @@ void write_line(char* type, char* token) {
     printf(reset "");
     printf(UCYN "%s", token);
     printf(reset "");
-    printf("\t\tat line: %d column: %d\n", line_idx, column_idx);
+    printf(" at line: %d column: %d\n", line_idx, column_idx);
     printf(reset "");
 }
 
