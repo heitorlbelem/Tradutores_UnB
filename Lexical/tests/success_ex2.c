@@ -1,7 +1,10 @@
 int list IL;
 float list FL;
-
+// comentário linah unica
 int list read_list(int n) {
+	/*
+		comentário multi line
+	*/
 	int i;
 	i =  -435.7;
 	int list new;

@@ -38,6 +38,8 @@ STRING (\"[^\"]*\")
 
 INVALID_STRING (\'[^\']*\')
 
+ONE_LINE_COMMENT (\/\/.*)
+MULTI_LINE_COMMENT (\/\*[^\*\/]*\*\/)
 
 %%
 
@@ -93,6 +95,8 @@ INVALID_STRING (\'[^\']*\')
     printf(reset "\n");
     column_idx += yyleng;
 }
+
+{ONE_LINE_COMMENT}|{MULTI_LINE_COMMENT} {}
 
 \n {
     column_idx = 1;
