@@ -5,9 +5,12 @@
     #include <stdlib.h>
     #include "../include/ANSI-color-codes.h"
 
+
     int errors_count = 0;
     int column_idx = 1;
     int line_idx = 1;
+
+    void write_line(char*, char*);
 %}
 
 DIGIT [0-9]
@@ -23,11 +26,13 @@ T_LIST (({T_SIMPLE})[ |\t]+(list))
 
 IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
 
-INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^])+
+INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^\]`´;.$&])+
 
-OPERATORS "!"|"&&"|"||"|"=="|">"|"<"|">="|"<="|"!="|"="|"+"|"++"|"+="|"-"|"--"|"-="|"/"|"/="|"*"|"*="|"?"|"%"|"<<"|">>"
+OPERATORS "!"|"&&"|"||"|"=="|">"|"<"|">="|"<="|"!="|"="|"+"|"++"|"+="|"-"|"--"|"-="|"/"|"/="|"*"|"*="|"?"|":"|"%"|"<<"|">>"
 
 DELIMITERS "("|")"|"{"|"}"|";"|","
+
+STRING (\".*\")
 
 %%
 
@@ -67,6 +72,11 @@ DELIMITERS "("|")"|"{"|"}"|";"|","
     column_idx += yyleng;
 }
 
+{STRING} {
+    write_line("String text", yytext);
+    column_idx += yyleng;
+}
+
 \n {
     column_idx = 1;
     line_idx++;
@@ -81,7 +91,7 @@ DELIMITERS "("|")"|"{"|"}"|";"|","
 }
 
 . {
-    printf(REDHB "ERROR: Unexpected character '%s' at LINE:%d\tCOLUMN:%d", yytext);
+    printf(REDHB "ERROR: Unexpected character '%s' at line: %d column: %d", yytext, line_idx, column_idx);
     errors_count++;
     column_idx += yyleng;
     printf(reset "\n");
@@ -95,7 +105,7 @@ void write_line(char* type, char* token) {
     printf(reset "");
     printf(UCYN "%s", token);
     printf(reset "");
-    printf("\tat line: %d column: %d\n", line_idx, column_idx);
+    printf("\t\tat line: %d column: %d\n", line_idx, column_idx);
     printf(reset "");
 }
 
