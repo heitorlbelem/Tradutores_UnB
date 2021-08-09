@@ -3,7 +3,7 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-    #include "../include/ANSI-color-codes.h"
+    #include "../lib/ANSI-color-codes.h"
 
 
     int errors_count = 0;
