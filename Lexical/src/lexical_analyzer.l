@@ -26,19 +26,18 @@ T_LIST {T_SIMPLE}[ |\t]+list[ \t]+
 IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
 INVALID_IDENTIFIER ({DIGIT}+({CHARACTER}|[~^\`´.$&@#_])+)
 
-LIST_OPERATORS "?"|":"|"<<"|">>"
+LIST_OPERATORS "?"|":"|"<<"|">>"|"%"
 COMPARISON_OPERATORS ">"|"<"|">="|"<="|"=="|"!="
 ARITMETIC_OPERATORS "+"|"-"|"*"|"/"
 UNARY_OPERATORS "++"|"--"
 ASSIGN_OPERATORS "="|"+="|"-="|"*="|"/="
 LOGICAL_OPERATORS "&&"|"||"
 
-RESERVED_WORDS for|while|if|else|return
+RESERVED_WORDS for|if|else|return
 IO_OPERATIONS read|write|writeln
 
 DELIMITERS "("|")"|"{"|"}"|";"|","
 
-UNIQUE_CHAR (\'[^\']\')
 STRING (\"[^\"]*\")
 INVALID_STRING (\'[^\']*\')
 
@@ -89,11 +88,6 @@ MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
     column_idx += yyleng;
 }
 
-"%" {
-    write_line("Percentage Operator", yytext);
-    column_idx += yyleng;
-}
-
 {RESERVED_WORDS} {
     write_line("Reserved word", yytext);
     column_idx += yyleng;
@@ -134,11 +128,6 @@ MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
     column_idx += yyleng;
 }
 
-{UNIQUE_CHAR} {
-    write_line("Char", yytext);
-    column_idx += yyleng;
-}
-
 {STRING} {
     write_line("String text", yytext);
     column_idx += yyleng;
@@ -150,7 +139,6 @@ MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
     printf(reset "\n");
     column_idx += yyleng;
 }
-
 
 \n {
     column_idx = 1;
@@ -190,12 +178,14 @@ void write_line(char* type, char* token) {
 int main(int argc, char **argv) {
     
     if(argc != 2) {
-        printf("Eh necessario passar exatamente um arquivo como parametro\n");
+        printf(BRED "You must pass exactly one file as an argument.");
+        printf(reset "\n");
         return (-1);
     }
 
     if (!(yyin = fopen(argv[1], "r"))) {
-        printf("Erro ao abrir arquivo\n");
+        printf(BRED "Error opening file");
+        printf(reset "\n");
         return (-1);
     }
 
