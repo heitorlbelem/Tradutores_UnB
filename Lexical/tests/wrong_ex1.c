@@ -4,12 +4,12 @@ int main() {
     int i#a;
     1/b;
     float i_\b1;
-    i = i_\b1;
+    i = i_b1;
     read(a);
     float ~b;
     read(b);
 
-    if(a > 1b) {
+    if(a > b) {
         write("a > b");
     } else if(a < b) {
         write("a < b");

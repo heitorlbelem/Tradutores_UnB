@@ -4,7 +4,7 @@ int get_even_numbers(int x) {
 
 int main() {
 
-    float 1_j;
+    float j;
     int i^;
     int list L;
     
