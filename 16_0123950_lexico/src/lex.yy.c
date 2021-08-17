@@ -1,6 +1,5 @@
-#line 2 "src/lex.yy.c"
 
-#line 4 "src/lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -505,9 +504,9 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "src/lexical_analyzer.l"
+#line 1 "lexical_analyzer.l"
 #define YY_NO_INPUT 1
-#line 4 "src/lexical_analyzer.l"
+#line 4 "lexical_analyzer.l"
     #include <stdio.h>
     #include <stdlib.h>
     #include "../lib/ANSI-color-codes.h"
@@ -518,8 +517,8 @@ char *yytext;
     int line_idx = 1;
 
     void write_line(char*, char*);
-#line 522 "src/lex.yy.c"
-#line 523 "src/lex.yy.c"
+#line 521 "lex.yy.c"
+#line 522 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -734,10 +733,10 @@ YY_DECL
 		}
 
 	{
-#line 47 "src/lexical_analyzer.l"
+#line 47 "lexical_analyzer.l"
 
 
-#line 741 "src/lex.yy.c"
+#line 740 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -797,12 +796,12 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 49 "src/lexical_analyzer.l"
+#line 49 "lexical_analyzer.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 51 "src/lexical_analyzer.l"
+#line 51 "lexical_analyzer.l"
 {
     write_line("Delimiter", yytext);
     column_idx += yyleng;
@@ -810,7 +809,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 56 "src/lexical_analyzer.l"
+#line 56 "lexical_analyzer.l"
 {
     write_line("List Operator", yytext);
     column_idx += yyleng;
@@ -818,7 +817,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 61 "src/lexical_analyzer.l"
+#line 61 "lexical_analyzer.l"
 {
     write_line("Comparison Operator", yytext);
     column_idx += yyleng;
@@ -826,7 +825,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 66 "src/lexical_analyzer.l"
+#line 66 "lexical_analyzer.l"
 {
     write_line("Aritmetic Operator", yytext);
     column_idx += yyleng;
@@ -834,7 +833,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 71 "src/lexical_analyzer.l"
+#line 71 "lexical_analyzer.l"
 {
     write_line("Unary Operator", yytext);
     column_idx += yyleng;
@@ -842,7 +841,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 76 "src/lexical_analyzer.l"
+#line 76 "lexical_analyzer.l"
 {
     write_line("Assign Operator", yytext);
     column_idx += yyleng;
@@ -850,7 +849,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 81 "src/lexical_analyzer.l"
+#line 81 "lexical_analyzer.l"
 {
     write_line("Logical Operator", yytext);
     column_idx += yyleng;
@@ -858,7 +857,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 86 "src/lexical_analyzer.l"
+#line 86 "lexical_analyzer.l"
 {
     write_line("Exclamation Operator", yytext);
     column_idx += yyleng;
@@ -866,7 +865,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 91 "src/lexical_analyzer.l"
+#line 91 "lexical_analyzer.l"
 {
     write_line("Reserved word", yytext);
     column_idx += yyleng;
@@ -874,7 +873,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 96 "src/lexical_analyzer.l"
+#line 96 "lexical_analyzer.l"
 {
     write_line("IO Operation", yytext);
     column_idx += yyleng; 
@@ -882,7 +881,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 101 "src/lexical_analyzer.l"
+#line 101 "lexical_analyzer.l"
 { 
     write_line("Integer", yytext);
     column_idx += yyleng;
@@ -890,7 +889,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 106 "src/lexical_analyzer.l"
+#line 106 "lexical_analyzer.l"
 {
     write_line("Float", yytext);
     column_idx += yyleng;
@@ -898,7 +897,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 111 "src/lexical_analyzer.l"
+#line 111 "lexical_analyzer.l"
 {
     write_line("Simple Type", yytext);
     column_idx += yyleng;
@@ -906,7 +905,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 116 "src/lexical_analyzer.l"
+#line 116 "lexical_analyzer.l"
 { 
     write_line("List Type", yytext);
     column_idx += yyleng;
@@ -914,7 +913,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 121 "src/lexical_analyzer.l"
+#line 121 "lexical_analyzer.l"
 {
     write_line("Constant", yytext);
     column_idx += yyleng;
@@ -922,7 +921,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 126 "src/lexical_analyzer.l"
+#line 126 "lexical_analyzer.l"
 {
     write_line("Identifier", yytext);
     column_idx += yyleng;
@@ -931,7 +930,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 131 "src/lexical_analyzer.l"
+#line 131 "lexical_analyzer.l"
 {
     write_line("String text", yytext);
     column_idx += yyleng;
@@ -940,7 +939,7 @@ YY_RULE_SETUP
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 136 "src/lexical_analyzer.l"
+#line 136 "lexical_analyzer.l"
 {
     errors_count++;
     printf(REDHB "ERROR: String must be enclosed in double quotes. Line: %d Column:%d", line_idx, column_idx);
@@ -951,7 +950,7 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 143 "src/lexical_analyzer.l"
+#line 143 "lexical_analyzer.l"
 {
     column_idx = 1;
     line_idx++;
@@ -959,14 +958,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 148 "src/lexical_analyzer.l"
+#line 148 "lexical_analyzer.l"
 {
     column_idx += yyleng;
 }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 152 "src/lexical_analyzer.l"
+#line 152 "lexical_analyzer.l"
 {
     printf(REDHB "ERROR: Invalid token '%s' at line: %d column: %d", yytext, line_idx, column_idx);
     errors_count++;
@@ -976,7 +975,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 159 "src/lexical_analyzer.l"
+#line 159 "lexical_analyzer.l"
 {
     printf(REDHB "ERROR: Unexpected character '%s' at line: %d column: %d", yytext, line_idx, column_idx);
     errors_count++;
@@ -986,10 +985,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 167 "src/lexical_analyzer.l"
+#line 167 "lexical_analyzer.l"
 ECHO;
 	YY_BREAK
-#line 993 "src/lex.yy.c"
+#line 992 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1957,7 +1956,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 167 "src/lexical_analyzer.l"
+#line 167 "lexical_analyzer.l"
 
 
 void write_line(char* type, char* token) {
