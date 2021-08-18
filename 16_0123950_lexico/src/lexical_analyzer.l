@@ -3,7 +3,13 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
-    #include "../lib/ANSI-color-codes.h"
+    
+    #define BRED "\e[1;31m"
+    #define BGRN "\e[1;32m"
+    #define REDHB "\e[0;101m"
+    #define BLU "\e[0;34m"
+    #define UCYN "\e[4;36m"
+    #define reset "\e[0m"
 
 
     int errors_count = 0;
