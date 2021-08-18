@@ -140,7 +140,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {INVALID_STRING} {
     errors_count++;
-    printf(REDHB "ERROR: String must be enclosed in double quotes. Line: %d Column:%d", line_idx, column_idx);
+    printf(REDHB "Line: %d | Column: %d\t=> ERROR: String must be enclosed in double quotes", line_idx, column_idx);
     printf(reset "\n");
     column_idx += yyleng;
 }
@@ -196,9 +196,11 @@ int main(int argc, char **argv) {
     yylex();
 
     if(errors_count == 0){
-        printf(BGRN "Finished. Lexical analysis found no errors\n");
+        printf(BGRN "Finished. Lexical analysis found no errors");
+        printf(reset "\n");
     } else {
-        printf(BRED "Finished. Lexical analysis found %d errors during execution\n", errors_count);
+        printf(BRED "Finished. Lexical analysis found %d errors during execution", errors_count);
+        printf(reset "\n");
     }
 
 
