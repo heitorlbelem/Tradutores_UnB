@@ -44,12 +44,11 @@ IO_OPERATIONS read|write|writeln
 
 DELIMITERS "("|")"|"{"|"}"|";"|","
 
-STRING (\"[^\"]*\")
-INVALID_STRING (\'[^\']*\')
+STRING (\"[^\"\n]*\")
+INVALID_STRING (\"({CHARACTER}*{DIGIT}*)*)
 
 ONE_LINE_COMMENT \/\/.*
-MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
-
+MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 %%
 
 {ONE_LINE_COMMENT}|{MULTI_LINE_COMMENT} {}
