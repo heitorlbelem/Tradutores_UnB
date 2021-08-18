@@ -150,14 +150,14 @@ MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
 }
 
 {INVALID_IDENTIFIER} {
-    printf(REDHB "ERROR: Invalid token '%s' at line: %d column: %d", yytext, line_idx, column_idx);
+    printf(REDHB "Line: %d | Column: %d\t=> ERROR: Invalid token '%s'", line_idx, column_idx, yytext);
     errors_count++;
     column_idx += yyleng;
     printf(reset "\n");
 }
 
 . {
-    printf(REDHB "ERROR: Unexpected character '%s' at line: %d column: %d", yytext, line_idx, column_idx);
+    printf(REDHB "Line: %d | Column: %d\t=> ERROR: Unexpected character '%s'", line_idx, column_idx, yytext);
     errors_count++;
     column_idx += yyleng;
     printf(reset "\n");
@@ -167,12 +167,11 @@ MULTI_LINE_COMMENT \/\*[^\*\/]*\*\/
 %%
 
 void write_line(char* type, char* token) {
+    printf("Line: %d | Column: %d\t=> ", line_idx, column_idx);
     printf(BLU "%s ", type);
     printf(reset "");
     printf(UCYN "%s", token);
-    printf(reset "");
-    printf(" at line: %d column: %d\n", line_idx, column_idx);
-    printf(reset "");
+    printf(reset "\n");
 }
 
 int main(int argc, char **argv) {
