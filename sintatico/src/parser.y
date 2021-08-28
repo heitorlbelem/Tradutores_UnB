@@ -66,31 +66,77 @@
 %token <token> LOGICAL_OP_OR
 %token <token> LOGICAL_OP_AND
 
+%token <token> UNARY_LIST_OP
+%token <token> BINARY_LIST_OP
+
+
 %start program
 
 %%
 
 program
-    : function_declaration
+    : program function_declaration
+    | function_declaration
 
 function_declaration
     : type IDENTIFIER '(' ')' block
+    | type IDENTIFIER '(' params ')' block
+
+function_call
+    : IDENTIFIER '(' ')'
+    | IDENTIFIER '(' expression ')' 
+
+params
+    : type IDENTIFIER ',' params
+    | type IDENTIFIER
+
+
 
 block
     : '{' statment '}'
 
 conditional_statment
     : RW_IF '(' expression COMPARISON_OP expression ')' block
+    | RW_IF '(' expression COMPARISON_OP expression ')' block RW_ELSE block
+
+input_statment
+    : IO_READ '(' IDENTIFIER ')' ';'
+
+output_statment
+    : IO_WRITE '(' C_STRING ')' ';'
+    | IO_WRITE '(' expression ')' ';'
+
+for_statment
+    : RW_FOR '(' variable_assignment ';' comparison_expression ';' variable_assignment ')' block
+
+list_binary_operation_statment
+    : IDENTIFIER '=' IDENTIFIER BINARY_LIST_OP IDENTIFIER ';'
+
+list_unary_operation_expression
+    : UNARY_LIST_OP IDENTIFIER
+
+comparison_expression
+    : expression COMPARISON_OP expression
 
 statment
-    : statment variable_assignment
+    : statment variable_assignment ';'
     | statment variable_declaration
     | statment return_statment
     | statment conditional_statment
+    | statment input_statment
+    | statment output_statment
+    | statment for_statment
+    | statment list_binary_operation_statment
+    | statment function_call ';'
     | variable_declaration
-    | variable_assignment
+    | variable_assignment ';'
     | return_statment
     | conditional_statment
+    | input_statment
+    | output_statment
+    | for_statment
+    | list_binary_operation_statment
+    | function_call ';'
 
 expression
     : logical_expression_or
@@ -117,9 +163,11 @@ return_statment
 value
     : IDENTIFIER
     | constant
+    | list_unary_operation_expression
 
 variable_assignment
-    : IDENTIFIER '=' expression ';'
+    : IDENTIFIER '=' expression
+    | IDENTIFIER '=' function_call
 
 variable_declaration
     : type IDENTIFIER ';'

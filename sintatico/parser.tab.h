@@ -72,7 +72,9 @@ extern int yydebug;
     ARITMETIC_OP_MULTIPLICATIVE = 273, /* ARITMETIC_OP_MULTIPLICATIVE  */
     COMPARISON_OP = 274,           /* COMPARISON_OP  */
     LOGICAL_OP_OR = 275,           /* LOGICAL_OP_OR  */
-    LOGICAL_OP_AND = 276           /* LOGICAL_OP_AND  */
+    LOGICAL_OP_AND = 276,          /* LOGICAL_OP_AND  */
+    UNARY_LIST_OP = 277,           /* UNARY_LIST_OP  */
+    BINARY_LIST_OP = 278           /* BINARY_LIST_OP  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -90,7 +92,7 @@ union YYSTYPE
         int scope;
     } token;
 
-#line 94 "parser.tab.h"
+#line 96 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

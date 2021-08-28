@@ -77,8 +77,19 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 }
 
 {LIST_OPERATORS} {
+
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
+
     write_line("List Operator", yytext);
     column_idx += yyleng;
+
+    if(strcmp(yytext, "?") == 0 || strcmp(yytext, "%") == 0) {
+        return UNARY_LIST_OP;
+    } else {
+        return BINARY_LIST_OP;
+    }
 }
 
 {COMPARISON_OPERATORS} {

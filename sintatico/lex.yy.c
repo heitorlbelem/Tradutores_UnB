@@ -841,13 +841,24 @@ case 3:
 YY_RULE_SETUP
 #line 79 "src/scanner.l"
 {
+
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
+
     write_line("List Operator", yytext);
     column_idx += yyleng;
+
+    if(strcmp(yytext, "?") == 0 || strcmp(yytext, "%") == 0) {
+        return UNARY_LIST_OP;
+    } else {
+        return BINARY_LIST_OP;
+    }
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 84 "src/scanner.l"
+#line 95 "src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -862,7 +873,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 96 "src/scanner.l"
+#line 107 "src/scanner.l"
 {
     
     yylval.token.line_idx = line_idx;
@@ -882,7 +893,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 113 "src/scanner.l"
+#line 124 "src/scanner.l"
 {
     write_line("Unary Operator", yytext);
     column_idx += yyleng;
@@ -890,7 +901,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 118 "src/scanner.l"
+#line 129 "src/scanner.l"
 {
     write_line("Assign Operator", yytext);
     column_idx += yyleng;
@@ -900,7 +911,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 125 "src/scanner.l"
+#line 136 "src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -919,7 +930,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 141 "src/scanner.l"
+#line 152 "src/scanner.l"
 {
     write_line("Exclamation Operator", yytext);
     column_idx += yyleng;
@@ -929,7 +940,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 148 "src/scanner.l"
+#line 159 "src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -952,7 +963,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 168 "src/scanner.l"
+#line 179 "src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -971,7 +982,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 184 "src/scanner.l"
+#line 195 "src/scanner.l"
 { 
 
     yylval.token.line_idx = line_idx;
@@ -986,7 +997,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 196 "src/scanner.l"
+#line 207 "src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -1001,7 +1012,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 208 "src/scanner.l"
+#line 219 "src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -1021,7 +1032,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 225 "src/scanner.l"
+#line 236 "src/scanner.l"
 { 
 
     yylval.token.line_idx = line_idx;
@@ -1036,7 +1047,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 237 "src/scanner.l"
+#line 248 "src/scanner.l"
 {
     yylval.token.line_idx = line_idx;
     yylval.token.column_idx = column_idx;
@@ -1050,7 +1061,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 248 "src/scanner.l"
+#line 259 "src/scanner.l"
 {
     
     yylval.token.line_idx = line_idx;
@@ -1065,7 +1076,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 260 "src/scanner.l"
+#line 271 "src/scanner.l"
 {
     yylval.token.line_idx = line_idx;
     yylval.token.column_idx = column_idx;
@@ -1079,7 +1090,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 271 "src/scanner.l"
+#line 282 "src/scanner.l"
 {
     errors_count++;
     printf(REDHB "[SCANNER] Line: %d | Column: %d\t=> ERROR: String must be enclosed in double quotes", line_idx, column_idx);
@@ -1090,7 +1101,7 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 278 "src/scanner.l"
+#line 289 "src/scanner.l"
 {
     column_idx = 1;
     line_idx++;
@@ -1098,14 +1109,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 283 "src/scanner.l"
+#line 294 "src/scanner.l"
 {
     column_idx += yyleng;
 }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 287 "src/scanner.l"
+#line 298 "src/scanner.l"
 {
     printf(REDHB "[SCANNER] Line: %d | Column: %d\t=> ERROR: Unexpected character '%s'", line_idx, column_idx, yytext);
     errors_count++;
@@ -1115,10 +1126,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 295 "src/scanner.l"
+#line 306 "src/scanner.l"
 ECHO;
 	YY_BREAK
-#line 1122 "lex.yy.c"
+#line 1133 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2086,7 +2097,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 295 "src/scanner.l"
+#line 306 "src/scanner.l"
 
 
 void write_line(char* type, char* token) {
