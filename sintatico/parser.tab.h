@@ -57,16 +57,17 @@ extern int yydebug;
     C_INTEGER = 258,               /* C_INTEGER  */
     C_FLOAT = 259,                 /* C_FLOAT  */
     C_NIL = 260,                   /* C_NIL  */
-    T_INTEGER = 261,               /* T_INTEGER  */
-    T_FLOAT = 262,                 /* T_FLOAT  */
-    T_LIST = 263,                  /* T_LIST  */
-    IDENTIFIER = 264,              /* IDENTIFIER  */
-    RETURN = 265,                  /* RETURN  */
-    IF = 266,                      /* IF  */
-    ELSE = 267,                    /* ELSE  */
-    FOR = 268,                     /* FOR  */
-    READ = 269,                    /* READ  */
-    WRITE = 270                    /* WRITE  */
+    C_STRING = 261,                /* C_STRING  */
+    T_INTEGER = 262,               /* T_INTEGER  */
+    T_FLOAT = 263,                 /* T_FLOAT  */
+    T_LIST = 264,                  /* T_LIST  */
+    IDENTIFIER = 265,              /* IDENTIFIER  */
+    RETURN = 266,                  /* RETURN  */
+    IF = 267,                      /* IF  */
+    ELSE = 268,                    /* ELSE  */
+    FOR = 269,                     /* FOR  */
+    READ = 270,                    /* READ  */
+    WRITE = 271                    /* WRITE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -79,12 +80,12 @@ union YYSTYPE
 
   struct Lexeme {
     char content[100];
-    int line;
-    int column;
+    int line_idx;
+    int column_idx;
     int scope;
   } lexeme;
 
-#line 88 "parser.tab.h"
+#line 89 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

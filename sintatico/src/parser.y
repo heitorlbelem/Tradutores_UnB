@@ -25,8 +25,8 @@
 %union {
   struct Lexeme {
     char content[100];
-    int line;
-    int column;
+    int line_idx;
+    int column_idx;
     int scope;
   } lexeme;
 }
@@ -34,6 +34,7 @@
 %token <lexeme> C_INTEGER
 %token <lexeme> C_FLOAT
 %token <lexeme> C_NIL
+%token <lexeme> C_STRING
 
 %token <lexeme> T_INTEGER
 %token <lexeme> T_FLOAT
@@ -48,16 +49,47 @@
 %token <lexeme> READ
 %token <lexeme> WRITE
 
+%token '{' 
+%token '}'
+%token '('
+%token ')'
+%token ','
+%token ';'
+
+%token <lexeme> OP_EQUAL_ASSIGNMENT
+%token <lexeme> OP_SUM_MINUS_ASSIGNMENT
+%token <lexeme> OP_MUL_DIV_ASSIGNMENT
+
+
 %%
+
+program:
+     variable_declaration
+    | variable_assignment
+    | program variable_declaration
+    | program variable_assignment
+
+variable_assignment:
+    IDENTIFIER '=' const ';' { printf("\nassignment\n"); }
+
+variable_declaration:
+    type IDENTIFIER ';' {
+        printf("linha: %s", $2.content);
+    }
+
+type:
+    T_INTEGER 
+    | T_FLOAT
+    | T_LIST
 
 const:
     C_INTEGER { printf("%s\n", $1.content); }
-
+    | C_FLOAT { printf("%s\n", $1.content); }
 
 %%
 
 int yyerror(const char* err_msg){
-    printf("\n[PARSER] Line: %d | Column: %d\t=> ERROR %s\n\n", yylval.lexeme.line, yylval.lexeme.column, err_msg);
+    printf("\n[PARSER] Line: %d | Column: %d\t=> ERROR %s\n\n", yylval.lexeme.line_idx, yylval.lexeme.column_idx, err_msg);
     errors_count++;
     return 0;
 }

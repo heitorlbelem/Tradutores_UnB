@@ -3,6 +3,7 @@
 %{
     #include <stdio.h>
     #include <stdlib.h>
+    #include <string.h>
     #include "parser.tab.h"
     
     #define BRED "\e[1;31m"
@@ -15,6 +16,8 @@
     int errors_count = 0;
     int column_idx = 1;
     int line_idx = 1;
+    int scope_id = 0;
+    int scopes[100000];
 
     void write_line(char*, char*);
 %}
@@ -56,6 +59,21 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 {DELIMITERS} {
     write_line("Delimiter", yytext);
     column_idx += yyleng;
+
+    if(strcmp(yytext, "(") == 0) {
+        return '(';
+    } else if(strcmp(yytext, ")") == 0) {
+        return ')';
+    } else if(strcmp(yytext, "{") == 0) {
+        return '{';
+    } else if(strcmp(yytext, "}") == 0) {
+        return '}';
+    } else if(strcmp(yytext, ",") == 0) {
+        return ',';
+    } else {
+        return ';';
+    }
+
 }
 
 {LIST_OPERATORS} {
@@ -81,11 +99,25 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 {ASSIGN_OPERATORS} {
     write_line("Assign Operator", yytext);
     column_idx += yyleng;
+
+    if(strcmp(yytext, "=") == 0) {
+        return '=';
+    } else if(strcmp(yytext, "+=") == 0) {
+        return '=';
+    } else if(strcmp(yytext, "-=") == 0) {
+        return '=';
+    } else if(strcmp(yytext, "*=") == 0) {
+        return '=';
+    } else {
+        return '=';
+    }
 }
 
 {LOGICAL_OPERATORS} {
     write_line("Logical Operator", yytext);
     column_idx += yyleng;
+
+
 }
 
 "!" {
@@ -105,10 +137,10 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {INTEGER} { 
     write_line("Integer", yytext);
-    
     column_idx += yyleng;
-    yylval.lexeme.line = line_idx;
-    yylval.lexeme.column = column_idx;
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
 
     return C_INTEGER;
@@ -117,31 +149,74 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 {FLOAT} {
     write_line("Float", yytext);
     column_idx += yyleng;
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
+    return C_FLOAT;
 }
 
 {T_SIMPLE} {
     write_line("Simple Type", yytext);
     column_idx += yyleng;
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
+    if(strcmp(yytext, "int")) {
+        return T_INTEGER;
+    } else {
+        return T_FLOAT;
+    }
+
+    
+
 }
 
 {T_LIST} { 
     write_line("List Type", yytext);
     column_idx += yyleng;
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
+    return T_LIST;
 }
 
 {NIL} {
     write_line("Constant", yytext);
     column_idx += yyleng;
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
+    return C_NIL;
 }
 
 {IDENTIFIER} {
     write_line("Identifier", yytext);
     column_idx += yyleng;
+    
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
+    return IDENTIFIER;
 }
 
 {STRING} {
     write_line("String text", yytext);
     column_idx += yyleng;
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
+    return C_STRING;
 }
 
 {INVALID_STRING} {
