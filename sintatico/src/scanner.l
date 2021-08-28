@@ -83,9 +83,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {COMPARISON_OPERATORS} {
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("Comparison Operator", yytext);
     column_idx += yyleng;
@@ -95,17 +95,17 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {ARITMETIC_OPERATORS} {
     
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("Aritmetic Operator", yytext);
     column_idx += yyleng;
 
     if((strcmp(yytext, "+") == 0) || (strcmp(yytext, "-") == 0)) {
-        return ARITMETIC_OP_SUM_MINUS;
+        return ARITMETIC_OP_ADDITIVE;
     } else {
-        return ARITMETIC_OP_MUL_DIV;
+        return ARITMETIC_OP_MULTIPLICATIVE;
     }
 
 }
@@ -124,9 +124,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {LOGICAL_OPERATORS} {
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("Logical Operator", yytext);
     column_idx += yyleng;
@@ -147,9 +147,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {RESERVED_WORDS} {
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("Reserved word", yytext);
     column_idx += yyleng;
@@ -167,14 +167,14 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {IO_OPERATIONS} {
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("IO Operation", yytext);
     column_idx += yyleng;
 
-    if(strcmp(yytex, "read") == 0) {
+    if(strcmp(yytext, "read") == 0) {
         return IO_READ;
     } else {
         return IO_WRITE;
@@ -183,9 +183,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {INTEGER} { 
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
   
     write_line("Integer", yytext);
     column_idx += yyleng;
@@ -195,9 +195,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {FLOAT} {
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("Float", yytext);
     column_idx += yyleng;
@@ -207,9 +207,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {T_SIMPLE} {
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("Simple Type", yytext);
     column_idx += yyleng;
@@ -224,9 +224,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {T_LIST} { 
 
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
     
     write_line("List Type", yytext);
     column_idx += yyleng;
@@ -235,9 +235,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 }
 
 {NIL} {
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
 
     write_line("Constant", yytext);
     column_idx += yyleng;
@@ -247,9 +247,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 {IDENTIFIER} {
     
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
    
     write_line("Identifier", yytext);
     column_idx += yyleng;
@@ -258,9 +258,9 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 }
 
 {STRING} {
-    yylval.lexeme.line_idx = line_idx;
-    yylval.lexeme.column_idx = column_idx;
-    strcpy(yylval.lexeme.content, yytext);
+    yylval.token.line_idx = line_idx;
+    yylval.token.column_idx = column_idx;
+    strcpy(yylval.token.content, yytext);
     
     write_line("String text", yytext);
     column_idx += yyleng;

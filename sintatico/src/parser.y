@@ -23,32 +23,32 @@
 %}
 
 %union {
-  struct Lexeme {
-    char content[100];
-    int line_idx;
-    int column_idx;
-    int scope;
-  } lexeme;
+    struct Token {
+        char content[100];
+        int line_idx;
+        int column_idx;
+        int scope;
+    } token;
 }
 
-%token <lexeme> C_INTEGER
-%token <lexeme> C_FLOAT
-%token <lexeme> C_NIL
-%token <lexeme> C_STRING
+%token <token> C_INTEGER
+%token <token> C_FLOAT
+%token <token> C_NIL
+%token <token> C_STRING
 
-%token <lexeme> T_INTEGER
-%token <lexeme> T_FLOAT
-%token <lexeme> T_LIST
+%token <token> T_INTEGER
+%token <token> T_FLOAT
+%token <token> T_LIST
 
-%token <lexeme> IDENTIFIER
+%token <token> IDENTIFIER
 
-%token <lexeme> RW_FOR
-%token <lexeme> RW_RETURN
-%token <lexeme> RW_IF
-%token <lexeme> RW_ELSE
+%token <token> RW_FOR
+%token <token> RW_RETURN
+%token <token> RW_IF
+%token <token> RW_ELSE
 
-%token <lexeme> IO_READ
-%token <lexeme> IO_WRITE
+%token <token> IO_READ
+%token <token> IO_WRITE
 
 %token '{' 
 %token '}'
@@ -60,42 +60,84 @@
 %token '='
 %token '!'
 
-%token <lexeme> ARITMETIC_OP_SUM_MINUS
-%token <lexeme> ARITMETIC_OP_MUL_DIV
-%token <lexeme> COMPARISON_OP
-%token <lexeme> LOGICAL_OP_OR
-%token <lexeme> LOGICAL_OP_AND
+%token <token> ARITMETIC_OP_ADDITIVE
+%token <token> ARITMETIC_OP_MULTIPLICATIVE
+%token <token> COMPARISON_OP
+%token <token> LOGICAL_OP_OR
+%token <token> LOGICAL_OP_AND
 
+%start program
 
 %%
 
-program:
-     variable_declaration
+program
+    : function_declaration
+
+function_declaration
+    : type IDENTIFIER '(' ')' block
+
+block
+    : '{' statment '}'
+
+conditional_statment
+    : RW_IF '(' expression COMPARISON_OP expression ')' block
+
+statment
+    : statment variable_assignment
+    | statment variable_declaration
+    | statment return_statment
+    | statment conditional_statment
+    | variable_declaration
     | variable_assignment
-    | program variable_declaration
-    | program variable_assignment
+    | return_statment
+    | conditional_statment
 
-variable_assignment:
-    IDENTIFIER '=' const ';' { printf("\nassignment\n"); }
+expression
+    : logical_expression_or
 
-variable_declaration:
-    type IDENTIFIER ';' {
-        printf("linha: %s", $2.content);
-    }
+logical_expression_or
+    : logical_expression_or LOGICAL_OP_OR logical_expression_and
+    | logical_expression_and
 
-type:
-    T_INTEGER 
+logical_expression_and
+    : logical_expression_and LOGICAL_OP_AND aritmetic_expression_additive
+    | aritmetic_expression_additive
+    
+aritmetic_expression_additive
+    : aritmetic_expression_additive ARITMETIC_OP_ADDITIVE aritmetic_expression_multiplicative
+    | aritmetic_expression_multiplicative 
+
+aritmetic_expression_multiplicative
+    : aritmetic_expression_multiplicative ARITMETIC_OP_MULTIPLICATIVE value
+    | value
+
+return_statment
+    : RW_RETURN expression ';'
+
+value
+    : IDENTIFIER
+    | constant
+
+variable_assignment
+    : IDENTIFIER '=' expression ';'
+
+variable_declaration
+    : type IDENTIFIER ';'
+
+type
+    : T_INTEGER 
     | T_FLOAT
     | T_LIST
 
-const:
-    C_INTEGER { printf("%s\n", $1.content); }
-    | C_FLOAT { printf("%s\n", $1.content); }
+constant
+    : C_INTEGER 
+    | C_FLOAT
+    | C_NIL
 
 %%
 
 int yyerror(const char* err_msg){
-    printf("\n[PARSER] Line: %d | Column: %d\t=> ERROR %s\n\n", yylval.lexeme.line_idx, yylval.lexeme.column_idx, err_msg);
+    printf("\n[PARSER] Line: %d | Column: %d\t=> ERROR %s\n\n", yylval.token.line_idx, yylval.token.column_idx, err_msg);
     errors_count++;
     return 0;
 }

@@ -1,33 +1,39 @@
-int get_even_numbers(int x) {
-    return (x % 2) == 0;
+int funcA() {
+    return 0;
+}
+
+int funcB() {
+    return 1;
+}
+
+int funcC(int a) {
+    return a + 1;
+}
+
+int funcD(int a, int b) {
+    int c;
+    int d;
+    d = a + b;
+    c = d*10;
+    return c;
 }
 
 int main() {
-
-    float j;
-    int i;
-    int list L;
+    int a;
+    int b;
+    int c;
     
-    j = .5;
+    write("Digite o valor de a: ");
+    read(a);
+    write("Digite o valor de b: ");
+    read(b);
 
-    for(i = 0; i < 10; i++) {
-        int number;
-        write("Enter a number: ");
-        read(number);
-        L = number : L;
+    if( (a >= b) || (a+1*b < 10) && a || a+1 > c*100 ) {
+        return a;
+    } else {
+        return b;
     }
 
-    int list AUXL;
-
-    AUXL = get_even_numbers << L;
-
-    int list AUXL;
-    int list IT;
-
-    for (IT=NEW_LIST; IT != NIL; IT = !IT) {
-        write(?IT); 
-        write(" ");
-    }
-
+    a - 1 * b + 3;
     return 0;
 }

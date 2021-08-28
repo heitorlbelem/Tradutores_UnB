@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.7.5.  */
+/* A Bison parser, made by GNU Bison 3.7.6.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -62,12 +62,17 @@ extern int yydebug;
     T_FLOAT = 263,                 /* T_FLOAT  */
     T_LIST = 264,                  /* T_LIST  */
     IDENTIFIER = 265,              /* IDENTIFIER  */
-    RETURN = 266,                  /* RETURN  */
-    IF = 267,                      /* IF  */
-    ELSE = 268,                    /* ELSE  */
-    FOR = 269,                     /* FOR  */
-    READ = 270,                    /* READ  */
-    WRITE = 271                    /* WRITE  */
+    RW_FOR = 266,                  /* RW_FOR  */
+    RW_RETURN = 267,               /* RW_RETURN  */
+    RW_IF = 268,                   /* RW_IF  */
+    RW_ELSE = 269,                 /* RW_ELSE  */
+    IO_READ = 270,                 /* IO_READ  */
+    IO_WRITE = 271,                /* IO_WRITE  */
+    ARITMETIC_OP_ADDITIVE = 272,   /* ARITMETIC_OP_ADDITIVE  */
+    ARITMETIC_OP_MULTIPLICATIVE = 273, /* ARITMETIC_OP_MULTIPLICATIVE  */
+    COMPARISON_OP = 274,           /* COMPARISON_OP  */
+    LOGICAL_OP_OR = 275,           /* LOGICAL_OP_OR  */
+    LOGICAL_OP_AND = 276           /* LOGICAL_OP_AND  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -78,14 +83,14 @@ union YYSTYPE
 {
 #line 25 "src/parser.y"
 
-  struct Lexeme {
-    char content[100];
-    int line_idx;
-    int column_idx;
-    int scope;
-  } lexeme;
+    struct Token {
+        char content[100];
+        int line_idx;
+        int column_idx;
+        int scope;
+    } token;
 
-#line 89 "parser.tab.h"
+#line 94 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
