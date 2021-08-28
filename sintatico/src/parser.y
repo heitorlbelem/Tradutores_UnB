@@ -42,12 +42,13 @@
 
 %token <lexeme> IDENTIFIER
 
-%token <lexeme> RETURN
-%token <lexeme> IF
-%token <lexeme> ELSE
-%token <lexeme> FOR
-%token <lexeme> READ
-%token <lexeme> WRITE
+%token <lexeme> RW_FOR
+%token <lexeme> RW_RETURN
+%token <lexeme> RW_IF
+%token <lexeme> RW_ELSE
+
+%token <lexeme> IO_READ
+%token <lexeme> IO_WRITE
 
 %token '{' 
 %token '}'
@@ -56,9 +57,14 @@
 %token ','
 %token ';'
 
-%token <lexeme> OP_EQUAL_ASSIGNMENT
-%token <lexeme> OP_SUM_MINUS_ASSIGNMENT
-%token <lexeme> OP_MUL_DIV_ASSIGNMENT
+%token '='
+%token '!'
+
+%token <lexeme> ARITMETIC_OP_SUM_MINUS
+%token <lexeme> ARITMETIC_OP_MUL_DIV
+%token <lexeme> COMPARISON_OP
+%token <lexeme> LOGICAL_OP_OR
+%token <lexeme> LOGICAL_OP_AND
 
 
 %%

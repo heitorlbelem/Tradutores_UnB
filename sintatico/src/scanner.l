@@ -82,13 +82,32 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 }
 
 {COMPARISON_OPERATORS} {
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
     write_line("Comparison Operator", yytext);
     column_idx += yyleng;
+
+    return COMPARISON_OP;
 }
 
 {ARITMETIC_OPERATORS} {
+    
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
     write_line("Aritmetic Operator", yytext);
     column_idx += yyleng;
+
+    if((strcmp(yytext, "+") == 0) || (strcmp(yytext, "-") == 0)) {
+        return ARITMETIC_OP_SUM_MINUS;
+    } else {
+        return ARITMETIC_OP_MUL_DIV;
+    }
+
 }
 
 {UNARY_OPERATORS} {
@@ -96,74 +115,104 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     column_idx += yyleng;
 }
 
-{ASSIGN_OPERATORS} {
+"=" {
     write_line("Assign Operator", yytext);
     column_idx += yyleng;
 
-    if(strcmp(yytext, "=") == 0) {
-        return '=';
-    } else if(strcmp(yytext, "+=") == 0) {
-        return '=';
-    } else if(strcmp(yytext, "-=") == 0) {
-        return '=';
-    } else if(strcmp(yytext, "*=") == 0) {
-        return '=';
-    } else {
-        return '=';
-    }
+    return '=';
 }
 
 {LOGICAL_OPERATORS} {
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
     write_line("Logical Operator", yytext);
     column_idx += yyleng;
 
-
+    if(strcmp(yytext, "&&") == 0) {
+        return LOGICAL_OP_AND;
+    } else {
+        return LOGICAL_OP_OR;
+    }
 }
 
 "!" {
     write_line("Exclamation Operator", yytext);
     column_idx += yyleng;
+
+    return '!';
 }
 
 {RESERVED_WORDS} {
-    write_line("Reserved word", yytext);
-    column_idx += yyleng;
-}
-
-{IO_OPERATIONS} {
-    write_line("IO Operation", yytext);
-    column_idx += yyleng; 
-}
-
-{INTEGER} { 
-    write_line("Integer", yytext);
-    column_idx += yyleng;
 
     yylval.lexeme.line_idx = line_idx;
     yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
+
+    write_line("Reserved word", yytext);
+    column_idx += yyleng;
+
+    if(strcmp(yytext, "for") == 0) {
+        return RW_FOR;
+    } else if(strcmp(yytext, "if") == 0) {
+        return RW_IF;
+    } else if(strcmp(yytext, "else") == 0) {
+        return RW_ELSE;
+    } else {
+        return RW_RETURN;
+    } 
+}
+
+{IO_OPERATIONS} {
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+
+    write_line("IO Operation", yytext);
+    column_idx += yyleng;
+
+    if(strcmp(yytex, "read") == 0) {
+        return IO_READ;
+    } else {
+        return IO_WRITE;
+    }
+}
+
+{INTEGER} { 
+
+    yylval.lexeme.line_idx = line_idx;
+    yylval.lexeme.column_idx = column_idx;
+    strcpy(yylval.lexeme.content, yytext);
+  
+    write_line("Integer", yytext);
+    column_idx += yyleng;
 
     return C_INTEGER;
 }
 
 {FLOAT} {
-    write_line("Float", yytext);
-    column_idx += yyleng;
 
     yylval.lexeme.line_idx = line_idx;
     yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
+
+    write_line("Float", yytext);
+    column_idx += yyleng;
 
     return C_FLOAT;
 }
 
 {T_SIMPLE} {
-    write_line("Simple Type", yytext);
-    column_idx += yyleng;
 
     yylval.lexeme.line_idx = line_idx;
     yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
+
+    write_line("Simple Type", yytext);
+    column_idx += yyleng;
 
     if(strcmp(yytext, "int")) {
         return T_INTEGER;
@@ -171,50 +220,50 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
         return T_FLOAT;
     }
 
-    
-
 }
 
 {T_LIST} { 
-    write_line("List Type", yytext);
-    column_idx += yyleng;
 
     yylval.lexeme.line_idx = line_idx;
     yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
+    
+    write_line("List Type", yytext);
+    column_idx += yyleng;
 
     return T_LIST;
 }
 
 {NIL} {
-    write_line("Constant", yytext);
-    column_idx += yyleng;
-
     yylval.lexeme.line_idx = line_idx;
     yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
+
+    write_line("Constant", yytext);
+    column_idx += yyleng;
 
     return C_NIL;
 }
 
 {IDENTIFIER} {
-    write_line("Identifier", yytext);
-    column_idx += yyleng;
     
     yylval.lexeme.line_idx = line_idx;
     yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
+   
+    write_line("Identifier", yytext);
+    column_idx += yyleng;
 
     return IDENTIFIER;
 }
 
 {STRING} {
-    write_line("String text", yytext);
-    column_idx += yyleng;
-
     yylval.lexeme.line_idx = line_idx;
     yylval.lexeme.column_idx = column_idx;
     strcpy(yylval.lexeme.content, yytext);
+    
+    write_line("String text", yytext);
+    column_idx += yyleng;
 
     return C_STRING;
 }
