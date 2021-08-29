@@ -75,8 +75,10 @@
 %%
 
 program
-    : program function_declaration
-    | function_declaration
+    : program variable_declaration 
+    | program function_declaration 
+    | variable_declaration
+    | function_declaration 
 
 function_declaration
     : type IDENTIFIER '(' ')' block
@@ -89,8 +91,6 @@ function_call
 params
     : type IDENTIFIER ',' params
     | type IDENTIFIER
-
-
 
 block
     : '{' statment '}'
@@ -170,7 +170,7 @@ variable_assignment
     | IDENTIFIER '=' function_call
 
 variable_declaration
-    : type IDENTIFIER ';'
+    : type IDENTIFIER ';' 
 
 type
     : T_INTEGER 
