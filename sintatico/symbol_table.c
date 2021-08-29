@@ -29,12 +29,12 @@ void insert_symbol(int idx, T_Symbol symbol) {
 
 void print_symbol_table(int table_size) {
     if (table_size == -1) return;
-    printf("\n|==============================TABELA DE SIMBOLOS================================|\n");
-    printf("|= %-29s | %s:%s | %5s | %7s =|\n", "IDENTIFICADOR", "LINHA", "COLUNA", "EH VARIAVEL", "ESCOPO");
-    printf("|================================|==============|=======|=============|==========|\n");
+    printf("\n|==============================TABELA DE SIMBOLOS=======================|\n");
+    printf("| %-29s | %5s | %5s | %5s | %5s |\n", "IDENTIFICADOR", "LINHA", "COLUNA", "EH VARIAVEL", "ESCOPO");
+    printf("|===============================|=======|========|=============|========|\n");
     
     for(int i=0; i<=table_size; i++) {
-        printf("| %-30s | %3d:%-8d | %-11d | %-8d |\n", 
+        printf("| %-29s | %-5d | %-5d  | %-11d | %-6d |\n", 
             symbol_table[i].content, 
             symbol_table[i].line_idx,
             symbol_table[i].column_idx,
@@ -42,5 +42,5 @@ void print_symbol_table(int table_size) {
             symbol_table[i].scope);
     }
 
-    printf("|================================================================================|\n");
+    printf("|=======================================================================|\n");
 }

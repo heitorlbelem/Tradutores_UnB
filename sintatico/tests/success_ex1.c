@@ -1,4 +1,6 @@
 int func1(int a, int b) {
+    int c;
+    c = 0;
     return a + b;
 }
 
