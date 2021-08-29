@@ -17,7 +17,6 @@
     int column_idx = 1;
     int line_idx = 1;
     int scope_id = 0;
-    int scopes[100000];
 
     void write_line(char*, char*);
 %}
@@ -65,6 +64,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     } else if(strcmp(yytext, ")") == 0) {
         return ')';
     } else if(strcmp(yytext, "{") == 0) {
+        scope_id++;
         return '{';
     } else if(strcmp(yytext, "}") == 0) {
         return '}';

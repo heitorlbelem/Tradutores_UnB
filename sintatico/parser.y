@@ -4,6 +4,7 @@
 %{
     #include<stdio.h>
     #include<stdlib.h>
+    #include "symbol_table.h"
 
     #define BRED "\e[1;31m"
     #define BGRN "\e[1;32m"
@@ -18,8 +19,9 @@
     extern int yylex_destroy();
 
     extern int errors_count;
-    extern int line_idx;
-    extern int column_idx;
+    extern int scope_id;
+    int symbol_table_idx = -1;
+
 %}
 
 %union {
@@ -79,41 +81,98 @@ program
     | program function_declaration 
     | variable_declaration
     | function_declaration 
+;
 
 function_declaration
-    : type IDENTIFIER '(' ')' block
-    | type IDENTIFIER '(' params ')' block
+    : type IDENTIFIER '(' {
+        scope_id++;
+        T_Symbol sym = create_new_symbol(
+            $2.line_idx, 
+            $2.column_idx, 
+            scope_id, 
+            0, 
+            $2.content
+        );
+        symbol_table_idx++;
+        insert_symbol(symbol_table_idx, sym);
+    }
+    ')' block
+    | type IDENTIFIER '(' {
+        scope_id++;
+        T_Symbol sym = create_new_symbol(
+            $2.line_idx, 
+            $2.column_idx, 
+            scope_id, 
+            0, 
+            $2.content
+        );
+        symbol_table_idx++;
+        insert_symbol(symbol_table_idx, sym);
+    }
+    params ')' block
+;
 
 function_call
     : IDENTIFIER '(' ')'
     | IDENTIFIER '(' expression ')' 
+;
 
 params
-    : type IDENTIFIER ',' params
-    | type IDENTIFIER
+    : type IDENTIFIER ',' params {
+        scope_id++;
+        T_Symbol sym = create_new_symbol(
+            $2.line_idx, 
+            $2.column_idx, 
+            scope_id, 
+            0, 
+            $2.content
+        );
+        symbol_table_idx++;
+        insert_symbol(symbol_table_idx, sym);
+    }
+    | type IDENTIFIER {
+        scope_id++;
+        T_Symbol sym = create_new_symbol(
+            $2.line_idx, 
+            $2.column_idx, 
+            scope_id, 
+            0, 
+            $2.content
+        );
+        symbol_table_idx++;
+        insert_symbol(symbol_table_idx, sym);
+    }
+;
 
 block
     : '{' statment '}'
+;
 
 conditional_statment
     : RW_IF '(' expression ')' block
     | RW_IF '(' expression ')' block RW_ELSE block
+;
 
 input_statment
     : IO_READ '(' IDENTIFIER ')' ';'
+;
 
 output_statment
     : IO_WRITE '(' C_STRING ')' ';'
     | IO_WRITE '(' expression ')' ';'
+;
 
 for_statment
     : RW_FOR '(' variable_assignment ';' comparison_expression ';' variable_assignment ')' block
+;
 
 list_binary_operation_statment
     : IDENTIFIER '=' IDENTIFIER BINARY_LIST_OP IDENTIFIER ';'
+;
 
 list_unary_operation_expression
     : UNARY_LIST_OP IDENTIFIER
+;
 
 statment
     : statment variable_assignment ';'
@@ -134,33 +193,40 @@ statment
     | for_statment
     | list_binary_operation_statment
     | function_call ';'
-
+;
 
 expression
     : comparison_expression
+;
 
 comparison_expression
     : comparison_expression COMPARISON_OP logical_expression_or
     | logical_expression_or
+;
 
 logical_expression_or
     : logical_expression_or LOGICAL_OP_OR logical_expression_and
     | logical_expression_and
+;
 
 logical_expression_and
     : logical_expression_and LOGICAL_OP_AND aritmetic_expression_additive
     | aritmetic_expression_additive
-    
+;
+
 aritmetic_expression_additive
     : aritmetic_expression_additive ARITMETIC_OP_ADDITIVE aritmetic_expression_multiplicative
     | aritmetic_expression_multiplicative 
+;
 
 aritmetic_expression_multiplicative
     : aritmetic_expression_multiplicative ARITMETIC_OP_MULTIPLICATIVE value
     | value
+;
 
 return_statment
     : RW_RETURN expression ';'
+;
 
 value
     : IDENTIFIER
@@ -170,23 +236,37 @@ value
     | ARITMETIC_OP_ADDITIVE constant
     | '!' IDENTIFIER
     | '!' constant
+;
 
 variable_assignment
     : IDENTIFIER '=' expression
     | IDENTIFIER '=' function_call
 
 variable_declaration
-    : type IDENTIFIER ';' 
+    : type IDENTIFIER ';' {
+        T_Symbol sym = create_new_symbol(
+            $2.line_idx, 
+            $2.column_idx,
+            scope_id,
+            1,
+            $2.content
+        );
+        symbol_table_idx++;
+        insert_symbol(symbol_table_idx, sym);
+    }
+;
 
 type
     : T_INTEGER 
     | T_FLOAT
     | T_LIST
+;
 
 constant
     : C_INTEGER 
     | C_FLOAT
     | C_NIL
+;
 
 %%
 
@@ -219,6 +299,8 @@ int main(int argc, char ** argv) {
         printf(BRED "Finished. Lexical analysis found %d errors during execution", errors_count);
         printf(reset "\n");
     }
+
+    print_symbol_table(symbol_table_idx);
 
 
     fclose(yyin);
