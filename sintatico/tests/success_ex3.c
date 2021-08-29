@@ -14,12 +14,12 @@ int main() {
     read(list_size);
 
     int i;
-    for(i = 0; i < list_size; i++) {
+    for(i = 0; i < list_size; i = i+1) {
         int number;
         write("Enter a number: ");
         read(number);
         if(user_input == 0) {
-            NEW_LIST = number *= 2 : NEW_LIST;  
+            NEW_LIST = number : NEW_LIST;  
         } 
         else {
             NEW_LIST = number : NEW_LIST;

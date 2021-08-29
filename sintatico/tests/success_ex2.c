@@ -28,12 +28,12 @@ int main() {
     write("Digite o valor de b: ");
     read(b);
 
-    if( (a >= b) || (a+1*b < 10) && a || a+1 > c*100 ) {
+    if( a >= b ) {
         return a;
     } else {
         return b;
     }
 
-    a - 1 * b + 3;
+    a = a - 1 * b + 3;
     return 0;
 }

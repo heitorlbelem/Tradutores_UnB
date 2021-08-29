@@ -46,7 +46,9 @@ int main() {
 		writeln(" ");
 		write("A nova lista tem "); write(n); writeln(" elementos.");
 	}
-	else writeln("A nova lista não possui elementos.");
+	else {
+		writeln("A nova lista não possui elementos.");
+	}
 
 	return 0;
 }

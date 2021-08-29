@@ -96,8 +96,8 @@ block
     : '{' statment '}'
 
 conditional_statment
-    : RW_IF '(' expression COMPARISON_OP expression ')' block
-    | RW_IF '(' expression COMPARISON_OP expression ')' block RW_ELSE block
+    : RW_IF '(' expression ')' block
+    | RW_IF '(' expression ')' block RW_ELSE block
 
 input_statment
     : IO_READ '(' IDENTIFIER ')' ';'
@@ -114,9 +114,6 @@ list_binary_operation_statment
 
 list_unary_operation_expression
     : UNARY_LIST_OP IDENTIFIER
-
-comparison_expression
-    : expression COMPARISON_OP expression
 
 statment
     : statment variable_assignment ';'
@@ -138,8 +135,13 @@ statment
     | list_binary_operation_statment
     | function_call ';'
 
+
 expression
-    : logical_expression_or
+    : comparison_expression
+
+comparison_expression
+    : comparison_expression COMPARISON_OP logical_expression_or
+    | logical_expression_or
 
 logical_expression_or
     : logical_expression_or LOGICAL_OP_OR logical_expression_and
@@ -164,6 +166,10 @@ value
     : IDENTIFIER
     | constant
     | list_unary_operation_expression
+    | ARITMETIC_OP_ADDITIVE IDENTIFIER
+    | ARITMETIC_OP_ADDITIVE constant
+    | '!' IDENTIFIER
+    | '!' constant
 
 variable_assignment
     : IDENTIFIER '=' expression
