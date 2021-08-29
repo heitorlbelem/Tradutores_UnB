@@ -119,24 +119,22 @@ function_call
 
 params
     : type IDENTIFIER ',' params {
-        scope_id++;
         T_Symbol sym = create_new_symbol(
             $2.line_idx, 
             $2.column_idx, 
             scope_id, 
-            0, 
+            1, 
             $2.content
         );
         symbol_table_idx++;
         insert_symbol(symbol_table_idx, sym);
     }
     | type IDENTIFIER {
-        scope_id++;
         T_Symbol sym = create_new_symbol(
             $2.line_idx, 
             $2.column_idx, 
             scope_id, 
-            0, 
+            1, 
             $2.content
         );
         symbol_table_idx++;
