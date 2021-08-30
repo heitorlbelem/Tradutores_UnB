@@ -5,7 +5,7 @@
 
 T_Symbol symbol_table[100000];
 
-T_Symbol create_new_symbol(
+T_Symbol symbol(
     int line, 
     int column, 
     int scope, 
@@ -22,18 +22,18 @@ T_Symbol create_new_symbol(
     return new_symbol;
 }
 
-void insert_symbol(int idx, T_Symbol symbol) {
+void set_symbol(int idx, T_Symbol symbol) {
     symbol_table[idx] = symbol;
     return;
 }
 
 void print_symbol_table(int table_size) {
-    if (table_size == -1) return;
+    if (table_size == 0) return;
     printf("\n|==============================TABELA DE SIMBOLOS=======================|\n");
     printf("| %-29s | %5s | %5s | %5s | %5s |\n", "IDENTIFICADOR", "LINHA", "COLUNA", "EH VARIAVEL", "ESCOPO");
     printf("|===============================|=======|========|=============|========|\n");
     
-    for(int i=0; i<=table_size; i++) {
+    for(int i=0; i < table_size; i++) {
         printf("| %-29s | %-5d | %-5d  | %-11d | %-6d |\n", 
             symbol_table[i].content, 
             symbol_table[i].line_idx,

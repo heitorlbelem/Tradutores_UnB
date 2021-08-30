@@ -20,7 +20,8 @@
 
     extern int errors_count;
     extern int scope_id;
-    int symbol_table_idx = -1;
+    int symbol_table_idx = 0;
+    int symbol_table_size = 0;
 
 %}
 
@@ -86,28 +87,30 @@ program
 function_declaration
     : type IDENTIFIER '(' {
         scope_id++;
-        T_Symbol sym = create_new_symbol(
+        T_Symbol sym = symbol(
             $2.line_idx, 
             $2.column_idx, 
             scope_id, 
             0, 
             $2.content
         );
+        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
-        insert_symbol(symbol_table_idx, sym);
+        symbol_table_size++;
     }
     ')' block
     | type IDENTIFIER '(' {
         scope_id++;
-        T_Symbol sym = create_new_symbol(
+        T_Symbol sym = symbol(
             $2.line_idx, 
             $2.column_idx, 
             scope_id, 
             0, 
             $2.content
         );
+        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
-        insert_symbol(symbol_table_idx, sym);
+        symbol_table_size++;
     }
     params ')' block
 ;
@@ -119,26 +122,28 @@ function_call
 
 params
     : type IDENTIFIER ',' params {
-        T_Symbol sym = create_new_symbol(
+        T_Symbol sym = symbol(
             $2.line_idx, 
             $2.column_idx, 
             scope_id, 
             1, 
             $2.content
         );
+        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
-        insert_symbol(symbol_table_idx, sym);
+        symbol_table_size++;
     }
     | type IDENTIFIER {
-        T_Symbol sym = create_new_symbol(
+        T_Symbol sym = symbol(
             $2.line_idx, 
             $2.column_idx, 
             scope_id, 
             1, 
             $2.content
         );
+        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
-        insert_symbol(symbol_table_idx, sym);
+        symbol_table_size++;
     }
 ;
 
@@ -234,6 +239,8 @@ value
     | ARITMETIC_OP_ADDITIVE constant
     | '!' IDENTIFIER
     | '!' constant
+    | '(' expression ')'
+    | '!''(' expression ')'
 ;
 
 variable_assignment
@@ -242,15 +249,16 @@ variable_assignment
 
 variable_declaration
     : type IDENTIFIER ';' {
-        T_Symbol sym = create_new_symbol(
+        T_Symbol sym = symbol(
             $2.line_idx, 
             $2.column_idx,
             scope_id,
             1,
             $2.content
         );
+        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
-        insert_symbol(symbol_table_idx, sym);
+        symbol_table_size++;
     }
 ;
 
@@ -298,7 +306,7 @@ int main(int argc, char ** argv) {
         printf(reset "\n");
     }
 
-    print_symbol_table(symbol_table_idx);
+    print_symbol_table(symbol_table_size);
 
 
     fclose(yyin);
