@@ -36,8 +36,6 @@ IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
 LIST_OPERATORS "?"|":"|"<<"|">>"|"%"
 COMPARISON_OPERATORS ">"|"<"|">="|"<="|"=="|"!="
 ARITMETIC_OPERATORS "+"|"-"|"*"|"/"
-UNARY_OPERATORS "++"|"--"
-ASSIGN_OPERATORS "="|"+="|"-="|"*="|"/="
 LOGICAL_OPERATORS "&&"|"||"
 
 RESERVED_WORDS for|if|else|return
@@ -119,11 +117,6 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
         return ARITMETIC_OP_MULTIPLICATIVE;
     }
 
-}
-
-{UNARY_OPERATORS} {
-    write_line("Unary Operator", yytext);
-    column_idx += yyleng;
 }
 
 "=" {
