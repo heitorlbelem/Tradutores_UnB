@@ -565,8 +565,8 @@ static const yytype_int16 yyrline[] =
      188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
      198,   202,   206,   207,   211,   212,   216,   217,   221,   222,
      226,   227,   231,   235,   236,   237,   238,   239,   240,   241,
-     242,   243,   247,   248,   251,   266,   267,   268,   272,   273,
-     274
+     242,   243,   247,   248,   251,   266,   270,   274,   281,   282,
+     283
 };
 #endif
 
@@ -1704,14 +1704,14 @@ yyreduce:
 #line 88 "parser.y"
                           {
         scope_id++;
-        T_Symbol sym = symbol(
+        update_symbol(
+            symbol_table_idx,
             (yyvsp[-1].token).line_idx, 
             (yyvsp[-1].token).column_idx, 
             scope_id, 
             0, 
             (yyvsp[-1].token).content
         );
-        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
     }
@@ -1722,14 +1722,14 @@ yyreduce:
 #line 102 "parser.y"
                           {
         scope_id++;
-        T_Symbol sym = symbol(
+        update_symbol(
+            symbol_table_idx,
             (yyvsp[-1].token).line_idx, 
             (yyvsp[-1].token).column_idx, 
             scope_id, 
             0, 
             (yyvsp[-1].token).content
         );
-        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
     }
@@ -1739,14 +1739,14 @@ yyreduce:
   case 12: /* params: type IDENTIFIER ',' params  */
 #line 124 "parser.y"
                                  {
-        T_Symbol sym = symbol(
+        update_symbol(
+            symbol_table_idx,
             (yyvsp[-2].token).line_idx, 
             (yyvsp[-2].token).column_idx, 
             scope_id, 
             1, 
             (yyvsp[-2].token).content
         );
-        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
     }
@@ -1756,14 +1756,14 @@ yyreduce:
   case 13: /* params: type IDENTIFIER  */
 #line 136 "parser.y"
                       {
-        T_Symbol sym = symbol(
+        update_symbol(
+            symbol_table_idx,
             (yyvsp[0].token).line_idx, 
             (yyvsp[0].token).column_idx, 
             scope_id, 
             1, 
             (yyvsp[0].token).content
         );
-        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
     }
@@ -1773,22 +1773,49 @@ yyreduce:
   case 64: /* variable_declaration: type IDENTIFIER ';'  */
 #line 251 "parser.y"
                           {
-        T_Symbol sym = symbol(
+        update_symbol(
+            symbol_table_idx,
             (yyvsp[-1].token).line_idx, 
             (yyvsp[-1].token).column_idx,
             scope_id,
             1,
             (yyvsp[-1].token).content
         );
-        set_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
     }
 #line 1788 "parser.tab.c"
     break;
 
+  case 65: /* type: T_INTEGER  */
+#line 266 "parser.y"
+                {
+        T_Symbol new_symbol = symbol((yyvsp[0].token).content);
+        insert_symbol(symbol_table_idx, new_symbol);
+    }
+#line 1797 "parser.tab.c"
+    break;
 
-#line 1792 "parser.tab.c"
+  case 66: /* type: T_FLOAT  */
+#line 270 "parser.y"
+              {
+        T_Symbol new_symbol = symbol((yyvsp[0].token).content);
+        insert_symbol(symbol_table_idx, new_symbol);
+    }
+#line 1806 "parser.tab.c"
+    break;
+
+  case 67: /* type: T_LIST  */
+#line 274 "parser.y"
+             {
+        T_Symbol new_symbol = symbol((yyvsp[0].token).content);
+        insert_symbol(symbol_table_idx, new_symbol);
+    }
+#line 1815 "parser.tab.c"
+    break;
+
+
+#line 1819 "parser.tab.c"
 
       default: break;
     }
@@ -2013,7 +2040,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 277 "parser.y"
+#line 286 "parser.y"
 
 
 int yyerror(const char* err_msg){
