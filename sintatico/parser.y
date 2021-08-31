@@ -78,10 +78,10 @@
 %%
 
 program
-    : program variable_declaration 
+    : program variable_declaration ';'
     | program function_declaration 
-    | variable_declaration
-    | function_declaration 
+    | variable_declaration ';'
+    | function_declaration
 ;
 
 function_declaration
@@ -121,30 +121,8 @@ function_call
 ;
 
 params
-    : type IDENTIFIER ',' params {
-        update_symbol(
-            symbol_table_idx,
-            $2.line_idx, 
-            $2.column_idx, 
-            scope_id, 
-            1, 
-            $2.content
-        );
-        symbol_table_idx++;
-        symbol_table_size++;
-    }
-    | type IDENTIFIER {
-        update_symbol(
-            symbol_table_idx,
-            $2.line_idx, 
-            $2.column_idx, 
-            scope_id, 
-            1, 
-            $2.content
-        );
-        symbol_table_idx++;
-        symbol_table_size++;
-    }
+    : variable_declaration ',' params 
+    | variable_declaration
 ;
 
 block
@@ -179,7 +157,7 @@ list_unary_operation_expression
 
 statment
     : statment variable_assignment ';'
-    | statment variable_declaration
+    | statment variable_declaration ';'
     | statment return_statment
     | statment conditional_statment
     | statment input_statment
@@ -187,7 +165,7 @@ statment
     | statment for_statment
     | statment list_binary_operation_statment
     | statment function_call ';'
-    | variable_declaration
+    | variable_declaration ';'
     | variable_assignment ';'
     | return_statment
     | conditional_statment
@@ -248,7 +226,7 @@ variable_assignment
     | IDENTIFIER '=' function_call
 
 variable_declaration
-    : type IDENTIFIER ';' {
+    : type IDENTIFIER {
         update_symbol(
             symbol_table_idx,
             $2.line_idx, 
