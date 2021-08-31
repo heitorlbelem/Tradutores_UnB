@@ -1,4 +1,4 @@
 all:
-	bison -d parser.y
+	bison -d parser.y -Wcounterexamples
 	flex scanner.l
-	gcc -g -o tradutor parser.tab.c lex.yy.c symbol_table.c -Wall -ll
+	gcc -g -o tradutor parser.tab.c lex.yy.c symbol_table.c syntatic_tree.c -Wall -ll

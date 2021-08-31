@@ -4,7 +4,8 @@
 %{
     #include<stdio.h>
     #include<stdlib.h>
-    #include "symbol_table.h"
+    #include<string.h>
+    #include "syntatic_tree.h"
 
     #define BRED "\e[1;31m"
     #define BGRN "\e[1;32m"
@@ -23,6 +24,7 @@
     int symbol_table_idx = 0;
     int symbol_table_size = 0;
 
+    T_Node* root_node;
 %}
 
 %union {
@@ -32,6 +34,8 @@
         int column_idx;
         int scope;
     } token;
+
+    struct T_Node* node;
 }
 
 %token <token> C_INTEGER
@@ -72,6 +76,31 @@
 %token <token> UNARY_LIST_OP
 %token <token> BINARY_LIST_OP
 
+
+%type <node> program
+%type <node> function_declaration
+%type <node> function_call
+%type <node> params
+%type <node> block
+%type <node> conditional_statment
+%type <node> input_statment
+%type <node> output_statment
+%type <node> for_statment
+%type <node> list_binary_operation_statment
+%type <node> list_unary_operation_expression
+%type <node> statment
+%type <node> expression
+%type <node> comparison_expression
+%type <node> logical_expression_or
+%type <node> logical_expression_and
+%type <node> aritmetic_expression_additive
+%type <node> aritmetic_expression_multiplicative
+%type <node> return_statment
+%type <node> value
+%type <node> variable_assignment
+%type <node> variable_declaration
+%type <node> type
+%type <node> constant
 
 %start program
 
@@ -224,6 +253,7 @@ value
 variable_assignment
     : IDENTIFIER '=' expression
     | IDENTIFIER '=' function_call
+;
 
 variable_declaration
     : type IDENTIFIER {
@@ -256,9 +286,18 @@ type
 ;
 
 constant
-    : C_INTEGER 
-    | C_FLOAT
-    | C_NIL
+    : C_INTEGER {
+        $$ = create_node("constant");
+        strcpy($$->value, $1.content);
+    }
+    | C_FLOAT {
+        $$ = create_node("constant");
+        strcpy($$->value, $1.content);
+    }
+    | C_NIL {
+        $$ = create_node("constant");
+        strcpy($$->value, $1.content);
+    }
 ;
 
 %%

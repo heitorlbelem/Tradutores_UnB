@@ -83,7 +83,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 28 "parser.y"
+#line 30 "parser.y"
 
     struct Token {
         char content[100];
@@ -92,7 +92,9 @@ union YYSTYPE
         int scope;
     } token;
 
-#line 96 "parser.tab.h"
+    struct T_Node* node;
+
+#line 98 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
