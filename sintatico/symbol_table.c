@@ -36,20 +36,23 @@ void insert_symbol(int idx, T_Symbol symbol) {
 
 void print_symbol_table(int table_size) {
     if (table_size == 0) return;
-    printf("\n|==============================TABELA DE SIMBOLOS=======================|\n");
-    printf("| %-29s | %5s | %5s | %5s | %5s | %-29s |\n", "IDENTIFICADOR", "LINHA", "COLUNA", "EH VARIAVEL", "ESCOPO", "TIPO");
-    printf("|===============================|=======|========|=============|========|\n");
+    printf(BHRED"-------------------------------------------------------------------------------------"reset"\n");
+    printf(BHRED"|                                  SYMBOL TABLE                                     |"reset"\n");
+    printf(BHRED"-------------------------------------------------------------------------------------"reset"\n");
+    
+    printf(BHRED"|" BHBLU" %-12s " BHRED"|" BHBLU" %-20s " BHRED"|" BHBLU" %5s " BHRED"|" BHBLU" %5s " BHRED"|" BHBLU" %5s " BHRED"|" BHBLU" %5s " BHRED"|"reset"\n", "TYPE", "IDENTIFIER", "IS_VARIABLE", "SCOPE", "LINE_IDX", "COLUMN_IDX");
+    printf(BHRED"-------------------------------------------------------------------------------------" reset "\n");
     
     for(int i=0; i < table_size; i++) {
-        printf("| %-29s | %-5d | %-5d  | %-11d | %-6d |%-29s|\n", 
+        printf(BHRED"|" BHCYN" %-12s " BHRED"|" BHCYN" %-20s " BHRED"|" BHCYN" %-12d" BHRED"|" BHCYN" %-5d " BHRED"|" BHCYN" %-8d " BHRED"|" BHCYN" %-10d " BHRED"|"reset,
+            symbol_table[i].type,
             symbol_table[i].content, 
-            symbol_table[i].line_idx,
-            symbol_table[i].column_idx,
             symbol_table[i].is_variable,
             symbol_table[i].scope,
-            symbol_table[i].type
-            );
+            symbol_table[i].line_idx,
+            symbol_table[i].column_idx
+        );
+        printf(BHRED"\n-------------------------------------------------------------------------------------" reset "\n");
+        
     }
-
-    printf("|=======================================================================|\n");
 }
