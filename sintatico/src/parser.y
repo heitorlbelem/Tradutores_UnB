@@ -5,8 +5,9 @@
     #include<stdio.h>
     #include<stdlib.h>
     #include<string.h>
+    #include "symbol_table.h"
     #include "syntatic_tree.h"
-
+    
     #define BRED "\e[1;31m"
     #define BGRN "\e[1;32m"
     #define REDHB "\e[0;101m"
@@ -274,14 +275,18 @@ type
     : T_INTEGER {
         T_Symbol new_symbol = symbol($1.content);
         insert_symbol(symbol_table_idx, new_symbol);
+
+        $$ = create_node("int");
     }
     | T_FLOAT {
         T_Symbol new_symbol = symbol($1.content);
         insert_symbol(symbol_table_idx, new_symbol);
+        $$ = create_node("float");
     }
     | T_LIST {
         T_Symbol new_symbol = symbol($1.content);
         insert_symbol(symbol_table_idx, new_symbol);
+        $$ = create_node("list");
     }
 ;
 

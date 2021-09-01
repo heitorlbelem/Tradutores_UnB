@@ -67,13 +67,14 @@
 
 
 /* First part of user prologue.  */
-#line 4 "parser.y"
+#line 4 "./src/parser.y"
 
     #include<stdio.h>
     #include<stdlib.h>
     #include<string.h>
+    #include "symbol_table.h"
     #include "syntatic_tree.h"
-
+    
     #define BRED "\e[1;31m"
     #define BGRN "\e[1;32m"
     #define REDHB "\e[0;101m"
@@ -93,7 +94,7 @@
 
     T_Node* root_node;
 
-#line 97 "parser.tab.c"
+#line 98 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -561,14 +562,14 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   110,   110,   111,   112,   113,   117,   117,   131,   131,
-     148,   149,   153,   154,   158,   162,   163,   167,   171,   172,
-     176,   180,   184,   188,   189,   190,   191,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   209,   213,   214,   218,   219,   223,   224,   228,   229,
-     233,   234,   238,   242,   243,   244,   245,   246,   247,   248,
-     249,   250,   254,   255,   259,   274,   278,   282,   289,   293,
-     297
+       0,   111,   111,   112,   113,   114,   118,   118,   132,   132,
+     149,   150,   154,   155,   159,   163,   164,   168,   172,   173,
+     177,   181,   185,   189,   190,   191,   192,   193,   194,   195,
+     196,   197,   198,   199,   200,   201,   202,   203,   204,   205,
+     206,   210,   214,   215,   219,   220,   224,   225,   229,   230,
+     234,   235,   239,   243,   244,   245,   246,   247,   248,   249,
+     250,   251,   255,   256,   260,   275,   281,   286,   294,   298,
+     302
 };
 #endif
 
@@ -1699,7 +1700,7 @@ yyreduce:
   switch (yyn)
     {
   case 6: /* $@1: %empty  */
-#line 117 "parser.y"
+#line 118 "./src/parser.y"
                           {
         scope_id++;
         update_symbol(
@@ -1713,11 +1714,11 @@ yyreduce:
         symbol_table_idx++;
         symbol_table_size++;
     }
-#line 1717 "parser.tab.c"
+#line 1718 "parser.tab.c"
     break;
 
   case 8: /* $@2: %empty  */
-#line 131 "parser.y"
+#line 132 "./src/parser.y"
                           {
         scope_id++;
         update_symbol(
@@ -1731,11 +1732,11 @@ yyreduce:
         symbol_table_idx++;
         symbol_table_size++;
     }
-#line 1735 "parser.tab.c"
+#line 1736 "parser.tab.c"
     break;
 
   case 64: /* variable_declaration: type IDENTIFIER  */
-#line 259 "parser.y"
+#line 260 "./src/parser.y"
                       {
         update_symbol(
             symbol_table_idx,
@@ -1748,65 +1749,69 @@ yyreduce:
         symbol_table_idx++;
         symbol_table_size++;
     }
-#line 1752 "parser.tab.c"
+#line 1753 "parser.tab.c"
     break;
 
   case 65: /* type: T_INTEGER  */
-#line 274 "parser.y"
+#line 275 "./src/parser.y"
                 {
         T_Symbol new_symbol = symbol((yyvsp[0].token).content);
         insert_symbol(symbol_table_idx, new_symbol);
+
+        (yyval.node) = create_node("int");
     }
-#line 1761 "parser.tab.c"
+#line 1764 "parser.tab.c"
     break;
 
   case 66: /* type: T_FLOAT  */
-#line 278 "parser.y"
+#line 281 "./src/parser.y"
               {
         T_Symbol new_symbol = symbol((yyvsp[0].token).content);
         insert_symbol(symbol_table_idx, new_symbol);
+        (yyval.node) = create_node("float");
     }
-#line 1770 "parser.tab.c"
+#line 1774 "parser.tab.c"
     break;
 
   case 67: /* type: T_LIST  */
-#line 282 "parser.y"
+#line 286 "./src/parser.y"
              {
         T_Symbol new_symbol = symbol((yyvsp[0].token).content);
         insert_symbol(symbol_table_idx, new_symbol);
+        (yyval.node) = create_node("list");
     }
-#line 1779 "parser.tab.c"
+#line 1784 "parser.tab.c"
     break;
 
   case 68: /* constant: C_INTEGER  */
-#line 289 "parser.y"
+#line 294 "./src/parser.y"
                 {
         (yyval.node) = create_node("constant");
         strcpy((yyval.node)->value, (yyvsp[0].token).content);
     }
-#line 1788 "parser.tab.c"
+#line 1793 "parser.tab.c"
     break;
 
   case 69: /* constant: C_FLOAT  */
-#line 293 "parser.y"
+#line 298 "./src/parser.y"
               {
         (yyval.node) = create_node("constant");
         strcpy((yyval.node)->value, (yyvsp[0].token).content);
     }
-#line 1797 "parser.tab.c"
+#line 1802 "parser.tab.c"
     break;
 
   case 70: /* constant: C_NIL  */
-#line 297 "parser.y"
+#line 302 "./src/parser.y"
             {
         (yyval.node) = create_node("constant");
         strcpy((yyval.node)->value, (yyvsp[0].token).content);
     }
-#line 1806 "parser.tab.c"
+#line 1811 "parser.tab.c"
     break;
 
 
-#line 1810 "parser.tab.c"
+#line 1815 "parser.tab.c"
 
       default: break;
     }
@@ -2031,7 +2036,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 303 "parser.y"
+#line 308 "./src/parser.y"
 
 
 int yyerror(const char* err_msg){
