@@ -218,11 +218,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     // write_line("Simple Type", yytext);
     column_idx += yyleng;
 
-    if(strcmp(yytext, "int") == 0) {
-        return T_INTEGER;
-    } else {
-        return T_FLOAT;
-    }
+    return TYPE;
 
 }
 
@@ -235,7 +231,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     // write_line("List Type", yytext);
     column_idx += yyleng;
 
-    return T_LIST;
+    return TYPE;
 }
 
 {NIL} {

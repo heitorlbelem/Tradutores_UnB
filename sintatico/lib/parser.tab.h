@@ -58,23 +58,21 @@ extern int yydebug;
     C_FLOAT = 259,                 /* C_FLOAT  */
     C_NIL = 260,                   /* C_NIL  */
     C_STRING = 261,                /* C_STRING  */
-    T_INTEGER = 262,               /* T_INTEGER  */
-    T_FLOAT = 263,                 /* T_FLOAT  */
-    T_LIST = 264,                  /* T_LIST  */
-    IDENTIFIER = 265,              /* IDENTIFIER  */
-    RW_FOR = 266,                  /* RW_FOR  */
-    RW_RETURN = 267,               /* RW_RETURN  */
-    RW_IF = 268,                   /* RW_IF  */
-    RW_ELSE = 269,                 /* RW_ELSE  */
-    IO_READ = 270,                 /* IO_READ  */
-    IO_WRITE = 271,                /* IO_WRITE  */
-    ARITMETIC_OP_ADDITIVE = 272,   /* ARITMETIC_OP_ADDITIVE  */
-    ARITMETIC_OP_MULTIPLICATIVE = 273, /* ARITMETIC_OP_MULTIPLICATIVE  */
-    COMPARISON_OP = 274,           /* COMPARISON_OP  */
-    LOGICAL_OP_OR = 275,           /* LOGICAL_OP_OR  */
-    LOGICAL_OP_AND = 276,          /* LOGICAL_OP_AND  */
-    UNARY_LIST_OP = 277,           /* UNARY_LIST_OP  */
-    BINARY_LIST_OP = 278           /* BINARY_LIST_OP  */
+    TYPE = 262,                    /* TYPE  */
+    IDENTIFIER = 263,              /* IDENTIFIER  */
+    RW_FOR = 264,                  /* RW_FOR  */
+    RW_RETURN = 265,               /* RW_RETURN  */
+    RW_IF = 266,                   /* RW_IF  */
+    RW_ELSE = 267,                 /* RW_ELSE  */
+    IO_READ = 268,                 /* IO_READ  */
+    IO_WRITE = 269,                /* IO_WRITE  */
+    ARITMETIC_OP_ADDITIVE = 270,   /* ARITMETIC_OP_ADDITIVE  */
+    ARITMETIC_OP_MULTIPLICATIVE = 271, /* ARITMETIC_OP_MULTIPLICATIVE  */
+    COMPARISON_OP = 272,           /* COMPARISON_OP  */
+    LOGICAL_OP_OR = 273,           /* LOGICAL_OP_OR  */
+    LOGICAL_OP_AND = 274,          /* LOGICAL_OP_AND  */
+    UNARY_LIST_OP = 275,           /* UNARY_LIST_OP  */
+    BINARY_LIST_OP = 276           /* BINARY_LIST_OP  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -94,7 +92,7 @@ union YYSTYPE
 
     struct T_Node* node;
 
-#line 98 "parser.tab.h"
+#line 96 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -44,9 +44,7 @@
 %token <token> C_NIL
 %token <token> C_STRING
 
-%token <token> T_INTEGER
-%token <token> T_FLOAT
-%token <token> T_LIST
+%token <token> TYPE
 
 %token <token> IDENTIFIER
 
@@ -102,7 +100,6 @@
 %type <node> value
 %type <node> variable_assignment
 %type <node> variable_declaration
-%type <node> type
 %type <node> constant
 
 %start program
@@ -117,12 +114,12 @@ program:
 
 declaration
     : program variable_declaration ';' {
-        $$ = $1;
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = $1;
     }
     | program function_declaration {
-        $$ = $1;
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = $1;
     }
     | variable_declaration ';' {
         $$ = $1;
@@ -130,12 +127,14 @@ declaration
     | function_declaration {
         $$ = $1;
     }
-    |error {}
+    | error {}
 ;
 
 function_declaration
-    : type IDENTIFIER '(' ')' block {
+    : TYPE IDENTIFIER '(' ')' block {
         scope_id++;
+        T_Symbol sym = symbol($1.content);
+        insert_symbol(symbol_table_idx, sym);
         update_symbol(
             symbol_table_idx,
             $2.line_idx, 
@@ -148,13 +147,15 @@ function_declaration
         symbol_table_size++;
 
         $$ = create_node("function_declaration", "", 0);
-        $$->children[0] = $1;
+        $$->children[0] = create_node("TYPE", $1.content, 1);
         $$->children[1] = create_node("identifier", $2.content, 1);
         $$->children[2] = NULL;
         $$->children[3] = $5;
     }
-    | type IDENTIFIER '(' params ')' block {
+    | TYPE IDENTIFIER '(' params ')' block {
         scope_id++;
+        T_Symbol sym = symbol($1.content);
+        insert_symbol(symbol_table_idx, sym);
         update_symbol(
             symbol_table_idx,
             $2.line_idx, 
@@ -166,7 +167,7 @@ function_declaration
         symbol_table_idx++;
         symbol_table_size++;
         $$ = create_node("function_declaration", "", 0);
-        $$->children[0] = $1;
+        $$->children[0] = create_node("identifier", $1.content, 1);
         $$->children[1] = create_node("identifier", $2.content, 1);
         $$->children[2] = $4;
         $$->children[3] = $6;
@@ -180,7 +181,6 @@ function_call
     | IDENTIFIER '(' expression ')' {
         $$ = create_node("identifier", $1.content, 1);
     }
-    | error { }
 ;
 
 params
@@ -197,6 +197,7 @@ block
     : '{' statment '}' {
         $$ = $2;
     }
+    | error {}
 ;
 
 conditional_statment
@@ -266,40 +267,40 @@ list_unary_operation_expression
 
 statment
     : statment variable_assignment ';' {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment variable_declaration ';' {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment return_statment {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment conditional_statment {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment input_statment {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment output_statment {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment for_statment {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment list_binary_operation_statment {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | statment function_call ';' {
-        $$ = create_node("statment", "", 0);
-        $$->children[0] = $2;
+        $$ = $2;
+        $$->children[0] = create_node("statment", "", 0);
     }
     | variable_declaration ';' { $$ = $1; }
     | variable_assignment ';' { $$ = $1; }
@@ -310,12 +311,14 @@ statment
     | for_statment { $$ = $1; }
     | list_binary_operation_statment { $$ = $1; }
     | function_call ';' { $$ = $1; }
+    | error {}
 ;
 
 expression
     : comparison_expression {
         $$ = $1;
     }
+    | error {}
 ;
 
 comparison_expression
@@ -430,11 +433,13 @@ variable_assignment
 ;
 
 variable_declaration
-    : type IDENTIFIER {
+    : TYPE IDENTIFIER {
         $$ = create_node("variable_declaration", "var_declaration", 0);
-        $$->children[0] = $1;
+        $$->children[0] = create_node("TYPE", $1.content, 1);
         $$->children[1] = create_node("identifier", $2.content, 1);
         
+        T_Symbol sym = symbol($1.content);
+        insert_symbol(symbol_table_idx, sym);
         update_symbol(
             symbol_table_idx,
             $2.line_idx, 
@@ -448,26 +453,6 @@ variable_declaration
     }
 ;
 
-type
-    : T_INTEGER {
-        $$ = create_node("int_type", "int", 1);
-
-        T_Symbol new_symbol = symbol($1.content);
-        insert_symbol(symbol_table_idx, new_symbol);
-    }
-    | T_FLOAT {
-        $$ = create_node("float_type", "float", 1);
-
-        T_Symbol new_symbol = symbol($1.content);
-        insert_symbol(symbol_table_idx, new_symbol);
-    }
-    | T_LIST {
-        $$ = create_node("list_type", "list", 1);
-
-        T_Symbol new_symbol = symbol($1.content);
-        insert_symbol(symbol_table_idx, new_symbol);
-    }
-;
 
 constant
     : C_INTEGER {
@@ -514,7 +499,7 @@ int main(int argc, char ** argv) {
     }
 
     print_symbol_table(symbol_table_size);
-
+    freeTree(root_node);
 
     fclose(yyin);
     yylex_destroy();

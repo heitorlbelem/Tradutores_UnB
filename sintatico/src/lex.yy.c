@@ -1014,17 +1014,13 @@ YY_RULE_SETUP
     // write_line("Simple Type", yytext);
     column_idx += yyleng;
 
-    if(strcmp(yytext, "int") == 0) {
-        return T_INTEGER;
-    } else {
-        return T_FLOAT;
-    }
+    return TYPE;
 
 }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 229 "./src/scanner.l"
+#line 225 "./src/scanner.l"
 { 
 
     yylval.token.line_idx = line_idx;
@@ -1034,12 +1030,12 @@ YY_RULE_SETUP
     // write_line("List Type", yytext);
     column_idx += yyleng;
 
-    return T_LIST;
+    return TYPE;
 }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 241 "./src/scanner.l"
+#line 237 "./src/scanner.l"
 {
     yylval.token.line_idx = line_idx;
     yylval.token.column_idx = column_idx;
@@ -1053,7 +1049,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 252 "./src/scanner.l"
+#line 248 "./src/scanner.l"
 {
     
     yylval.token.line_idx = line_idx;
@@ -1068,7 +1064,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 264 "./src/scanner.l"
+#line 260 "./src/scanner.l"
 {
     yylval.token.line_idx = line_idx;
     yylval.token.column_idx = column_idx;
@@ -1082,7 +1078,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 275 "./src/scanner.l"
+#line 271 "./src/scanner.l"
 {
     errors_count++;
     printf(REDHB "[SCANNER] Line: %d | Column: %d\t=> ERROR: String must be enclosed in double quotes", line_idx, column_idx);
@@ -1093,7 +1089,7 @@ YY_RULE_SETUP
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 282 "./src/scanner.l"
+#line 278 "./src/scanner.l"
 {
     column_idx = 1;
     line_idx++;
@@ -1101,14 +1097,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 287 "./src/scanner.l"
+#line 283 "./src/scanner.l"
 {
     column_idx += yyleng;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 291 "./src/scanner.l"
+#line 287 "./src/scanner.l"
 {
     printf(REDHB "[SCANNER] Line: %d | Column: %d\t=> ERROR: Unexpected character '%s'", line_idx, column_idx, yytext);
     errors_count++;
@@ -1118,10 +1114,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 299 "./src/scanner.l"
+#line 295 "./src/scanner.l"
 ECHO;
 	YY_BREAK
-#line 1125 "lex.yy.c"
+#line 1121 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2089,7 +2085,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 299 "./src/scanner.l"
+#line 295 "./src/scanner.l"
 
 
 void write_line(char* type, char* token) { 
