@@ -530,7 +530,7 @@ char *yytext;
     int line_idx = 1;
     int scope_id = 0;
 
-    void write_line(char*, char*);
+    // void write_line(char*, char*);
 #line 535 "lex.yy.c"
 #line 536 "lex.yy.c"
 
@@ -817,7 +817,7 @@ case 2:
 YY_RULE_SETUP
 #line 56 "./src/scanner.l"
 {
-    write_line("Delimiter", yytext);
+    // write_line("Delimiter", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "(") == 0) {
@@ -846,7 +846,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("List Operator", yytext);
+    // write_line("List Operator", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "?") == 0 || strcmp(yytext, "%") == 0) {
@@ -865,7 +865,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Comparison Operator", yytext);
+    // write_line("Comparison Operator", yytext);
     column_idx += yyleng;
 
     return COMPARISON_OP;
@@ -880,7 +880,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Aritmetic Operator", yytext);
+    // write_line("Aritmetic Operator", yytext);
     column_idx += yyleng;
 
     if((strcmp(yytext, "+") == 0) || (strcmp(yytext, "-") == 0)) {
@@ -895,7 +895,7 @@ case 6:
 YY_RULE_SETUP
 #line 122 "./src/scanner.l"
 {
-    write_line("Assign Operator", yytext);
+    // write_line("Assign Operator", yytext);
     column_idx += yyleng;
 
     return '=';
@@ -910,7 +910,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Logical Operator", yytext);
+    // write_line("Logical Operator", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "&&") == 0) {
@@ -924,7 +924,7 @@ case 8:
 YY_RULE_SETUP
 #line 145 "./src/scanner.l"
 {
-    write_line("Exclamation Operator", yytext);
+    // write_line("Exclamation Operator", yytext);
     column_idx += yyleng;
 
     return '!';
@@ -939,7 +939,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Reserved word", yytext);
+    // write_line("Reserved word", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "for") == 0) {
@@ -962,7 +962,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("IO Operation", yytext);
+    // write_line("IO Operation", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "read") == 0) {
@@ -981,7 +981,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
   
-    write_line("Integer", yytext);
+    // write_line("Integer", yytext);
     column_idx += yyleng;
 
     return C_INTEGER;
@@ -996,7 +996,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Float", yytext);
+    // write_line("Float", yytext);
     column_idx += yyleng;
 
     return C_FLOAT;
@@ -1011,7 +1011,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Simple Type", yytext);
+    // write_line("Simple Type", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "int") == 0) {
@@ -1031,7 +1031,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
     
-    write_line("List Type", yytext);
+    // write_line("List Type", yytext);
     column_idx += yyleng;
 
     return T_LIST;
@@ -1045,7 +1045,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Constant", yytext);
+    // write_line("Constant", yytext);
     column_idx += yyleng;
 
     return C_NIL;
@@ -1060,7 +1060,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
    
-    write_line("Identifier", yytext);
+    // write_line("Identifier", yytext);
     column_idx += yyleng;
 
     return IDENTIFIER;
@@ -1074,7 +1074,7 @@ YY_RULE_SETUP
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
     
-    write_line("String text", yytext);
+    // write_line("String text", yytext);
     column_idx += yyleng;
 
     return C_STRING;
@@ -2092,7 +2092,7 @@ void yyfree (void * ptr )
 #line 299 "./src/scanner.l"
 
 
-void write_line(char* type, char* token) {
+void write_line(char* type, char* token) { 
     printf("Line: %d | Column: %d\t=> ", line_idx, column_idx);
     printf(BLU "%s ", type);
     printf(reset "");

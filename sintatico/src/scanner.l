@@ -18,7 +18,7 @@
     int line_idx = 1;
     int scope_id = 0;
 
-    void write_line(char*, char*);
+    // void write_line(char*, char*);
 %}
 
 DIGIT [0-9]
@@ -54,7 +54,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 {ONE_LINE_COMMENT}|{MULTI_LINE_COMMENT} {}
 
 {DELIMITERS} {
-    write_line("Delimiter", yytext);
+    // write_line("Delimiter", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "(") == 0) {
@@ -80,7 +80,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("List Operator", yytext);
+    // write_line("List Operator", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "?") == 0 || strcmp(yytext, "%") == 0) {
@@ -96,7 +96,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Comparison Operator", yytext);
+    // write_line("Comparison Operator", yytext);
     column_idx += yyleng;
 
     return COMPARISON_OP;
@@ -108,7 +108,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Aritmetic Operator", yytext);
+    // write_line("Aritmetic Operator", yytext);
     column_idx += yyleng;
 
     if((strcmp(yytext, "+") == 0) || (strcmp(yytext, "-") == 0)) {
@@ -120,7 +120,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 }
 
 "=" {
-    write_line("Assign Operator", yytext);
+    // write_line("Assign Operator", yytext);
     column_idx += yyleng;
 
     return '=';
@@ -132,7 +132,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Logical Operator", yytext);
+    // write_line("Logical Operator", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "&&") == 0) {
@@ -143,7 +143,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 }
 
 "!" {
-    write_line("Exclamation Operator", yytext);
+    // write_line("Exclamation Operator", yytext);
     column_idx += yyleng;
 
     return '!';
@@ -155,7 +155,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Reserved word", yytext);
+    // write_line("Reserved word", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "for") == 0) {
@@ -175,7 +175,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("IO Operation", yytext);
+    // write_line("IO Operation", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "read") == 0) {
@@ -191,7 +191,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
   
-    write_line("Integer", yytext);
+    // write_line("Integer", yytext);
     column_idx += yyleng;
 
     return C_INTEGER;
@@ -203,7 +203,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Float", yytext);
+    // write_line("Float", yytext);
     column_idx += yyleng;
 
     return C_FLOAT;
@@ -215,7 +215,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Simple Type", yytext);
+    // write_line("Simple Type", yytext);
     column_idx += yyleng;
 
     if(strcmp(yytext, "int") == 0) {
@@ -232,7 +232,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
     
-    write_line("List Type", yytext);
+    // write_line("List Type", yytext);
     column_idx += yyleng;
 
     return T_LIST;
@@ -243,7 +243,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
 
-    write_line("Constant", yytext);
+    // write_line("Constant", yytext);
     column_idx += yyleng;
 
     return C_NIL;
@@ -255,7 +255,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
    
-    write_line("Identifier", yytext);
+    // write_line("Identifier", yytext);
     column_idx += yyleng;
 
     return IDENTIFIER;
@@ -266,7 +266,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     yylval.token.column_idx = column_idx;
     strcpy(yylval.token.content, yytext);
     
-    write_line("String text", yytext);
+    // write_line("String text", yytext);
     column_idx += yyleng;
 
     return C_STRING;
@@ -298,7 +298,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
 
 %%
 
-void write_line(char* type, char* token) {
+void write_line(char* type, char* token) { 
     printf("Line: %d | Column: %d\t=> ", line_idx, column_idx);
     printf(BLU "%s ", type);
     printf(reset "");

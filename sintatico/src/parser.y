@@ -16,7 +16,7 @@
     #define reset "\e[0m"
     
     extern FILE *yyin;
-    int yyerror (char const *);    
+    void yyerror (char const *);    
     extern int yylex();
     extern int yylex_destroy();
 
@@ -79,6 +79,7 @@
 
 
 %type <node> program
+%type <node> declaration
 %type <node> function_declaration
 %type <node> function_call
 %type <node> params
@@ -88,6 +89,7 @@
 %type <node> output_statment
 %type <node> for_statment
 %type <node> list_binary_operation_statment
+%type <node> binary_operation
 %type <node> list_unary_operation_expression
 %type <node> statment
 %type <node> expression
@@ -107,15 +109,32 @@
 
 %%
 
-program
-    : program variable_declaration ';'
-    | program function_declaration 
-    | variable_declaration ';'
-    | function_declaration
+program:
+    declaration {
+        root_node = $1;
+    }
+;
+
+declaration
+    : program variable_declaration ';' {
+        $$ = $1;
+        $$->children[0] = $2;
+    }
+    | program function_declaration {
+        $$ = $1;
+        $$->children[0] = $2;
+    }
+    | variable_declaration ';' {
+        $$ = $1;
+    }
+    | function_declaration {
+        $$ = $1;
+    }
+    |error {}
 ;
 
 function_declaration
-    : type IDENTIFIER '(' {
+    : type IDENTIFIER '(' ')' block {
         scope_id++;
         update_symbol(
             symbol_table_idx,
@@ -127,9 +146,14 @@ function_declaration
         );
         symbol_table_idx++;
         symbol_table_size++;
+
+        $$ = create_node("function_declaration", "", 0);
+        $$->children[0] = $1;
+        $$->children[1] = create_node("identifier", $2.content, 1);
+        $$->children[2] = NULL;
+        $$->children[3] = $5;
     }
-    ')' block
-    | type IDENTIFIER '(' {
+    | type IDENTIFIER '(' params ')' block {
         scope_id++;
         update_symbol(
             symbol_table_idx,
@@ -141,123 +165,276 @@ function_declaration
         );
         symbol_table_idx++;
         symbol_table_size++;
+        $$ = create_node("function_declaration", "", 0);
+        $$->children[0] = $1;
+        $$->children[1] = create_node("identifier", $2.content, 1);
+        $$->children[2] = $4;
+        $$->children[3] = $6;
     }
-    params ')' block
 ;
 
 function_call
-    : IDENTIFIER '(' ')'
-    | IDENTIFIER '(' expression ')' 
+    : IDENTIFIER '(' ')' {
+        $$ = create_node("identifier", $1.content, 1);
+    }
+    | IDENTIFIER '(' expression ')' {
+        $$ = create_node("identifier", $1.content, 1);
+    }
+    | error { }
 ;
 
 params
-    : variable_declaration ',' params 
-    | variable_declaration
+    : variable_declaration ',' params {
+        $$ = create_node("params", "", 0);
+        $$->children[0] = $1;
+    }
+    | variable_declaration {
+        $$ = $1;
+    }
 ;
 
 block
-    : '{' statment '}'
+    : '{' statment '}' {
+        $$ = $2;
+    }
 ;
 
 conditional_statment
-    : RW_IF '(' expression ')' block
-    | RW_IF '(' expression ')' block RW_ELSE block
+    : RW_IF '(' expression ')' block {
+        $$ = create_node("conditional_statment", "if", 0);
+        $$->children[0] = $3;
+        $$->children[1] = $5;
+    }
+    | RW_IF '(' expression ')' block RW_ELSE block {
+        $$ = create_node("conditional_statment", "if_else", 0);
+        $$->children[0] = $3;
+        $$->children[1] = $5;
+        $$->children[2] = create_node("else", $6.content, 0);
+        $$->children[2]->children[0] = $7;
+    }
 ;
 
 input_statment
-    : IO_READ '(' IDENTIFIER ')' ';'
+    : IO_READ '(' IDENTIFIER ')' ';' {
+        $$ = create_node("input_statment", $1.content, 0);
+        $$->children[0] = create_node("identifier", $3.content, 1);
+    }
 ;
 
 output_statment
-    : IO_WRITE '(' C_STRING ')' ';'
-    | IO_WRITE '(' expression ')' ';'
+    : IO_WRITE '(' C_STRING ')' ';' {
+        $$ = create_node("output_statment", $1.content, 0);
+        $$->children[0] = create_node("string_constant", $3.content, 1);
+    }
+    | IO_WRITE '(' expression ')' ';' {
+        $$ = create_node("output_statment", $1.content, 0);
+        $$->children[0] = $3;
+    }
 ;
 
 for_statment
-    : RW_FOR '(' variable_assignment ';' comparison_expression ';' variable_assignment ')' block
+    : RW_FOR '(' variable_assignment ';' comparison_expression ';' variable_assignment ')' block {
+        $$ = create_node("for_statment", $1.content, 0);
+        $$->children[0] = $3;
+        $$->children[1] = $5;
+        $$->children[2] = $7;
+        $$->children[3] = $9;
+    }
 ;
 
 list_binary_operation_statment
-    : IDENTIFIER '=' IDENTIFIER BINARY_LIST_OP IDENTIFIER ';'
+    : IDENTIFIER '=' binary_operation {
+        $$ = create_node("list_assign_operator","=", 0);
+        $$->children[0] = $3;
+    }
+;
+
+binary_operation:
+    IDENTIFIER BINARY_LIST_OP IDENTIFIER ';' {
+        $$ = create_node("binary_operation", $2.content, 0);
+        $$->children[0] = create_node("identifier", $1.content, 1);
+        $$->children[1] = create_node("identifier", $3.content, 1);
+    }
 ;
 
 list_unary_operation_expression
-    : UNARY_LIST_OP IDENTIFIER
+    : UNARY_LIST_OP IDENTIFIER {
+        $$ = create_node("unary_list_operator", $1.content, 0);
+        $$->children[0] = create_node("identifier", $2.content, 1);
+    }
 ;
 
 statment
-    : statment variable_assignment ';'
-    | statment variable_declaration ';'
-    | statment return_statment
-    | statment conditional_statment
-    | statment input_statment
-    | statment output_statment
-    | statment for_statment
-    | statment list_binary_operation_statment
-    | statment function_call ';'
-    | variable_declaration ';'
-    | variable_assignment ';'
-    | return_statment
-    | conditional_statment
-    | input_statment
-    | output_statment
-    | for_statment
-    | list_binary_operation_statment
-    | function_call ';'
+    : statment variable_assignment ';' {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment variable_declaration ';' {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment return_statment {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment conditional_statment {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment input_statment {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment output_statment {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment for_statment {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment list_binary_operation_statment {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | statment function_call ';' {
+        $$ = create_node("statment", "", 0);
+        $$->children[0] = $2;
+    }
+    | variable_declaration ';' { $$ = $1; }
+    | variable_assignment ';' { $$ = $1; }
+    | return_statment { $$ = $1; }
+    | conditional_statment { $$ = $1; }
+    | input_statment { $$ = $1; }
+    | output_statment { $$ = $1; }
+    | for_statment { $$ = $1; }
+    | list_binary_operation_statment { $$ = $1; }
+    | function_call ';' { $$ = $1; }
 ;
 
 expression
-    : comparison_expression
+    : comparison_expression {
+        $$ = $1;
+    }
 ;
 
 comparison_expression
-    : comparison_expression COMPARISON_OP logical_expression_or
-    | logical_expression_or
+    : comparison_expression COMPARISON_OP logical_expression_or {
+        $$ = create_node("comparison_expression", $2.content, 0);
+        $$->children[0] = $1;
+        $$->children[1] = $3;
+    }
+    | logical_expression_or {
+        $$ = $1;
+    }
 ;
 
 logical_expression_or
-    : logical_expression_or LOGICAL_OP_OR logical_expression_and
-    | logical_expression_and
+    : logical_expression_or LOGICAL_OP_OR logical_expression_and {
+        $$ = create_node("logical_expression_or", $2.content, 0);
+        $$->children[0] = $1;
+        $$->children[1] = $3;
+    }
+    | logical_expression_and {
+        $$ = $1;
+    }
 ;
 
 logical_expression_and
-    : logical_expression_and LOGICAL_OP_AND aritmetic_expression_additive
-    | aritmetic_expression_additive
+    : logical_expression_and LOGICAL_OP_AND aritmetic_expression_additive {
+        $$ = create_node("logical_expression_and", $2.content, 0);
+        $$->children[0] = $1;
+        $$->children[1] = $3;
+    }
+    | aritmetic_expression_additive {
+        $$ = $1;
+    }
 ;
 
 aritmetic_expression_additive
-    : aritmetic_expression_additive ARITMETIC_OP_ADDITIVE aritmetic_expression_multiplicative
-    | aritmetic_expression_multiplicative 
+    : aritmetic_expression_additive ARITMETIC_OP_ADDITIVE aritmetic_expression_multiplicative{
+        $$ = create_node("aritmetic_expression_additive", $2.content, 0);
+        $$->children[0] = $1;
+        $$->children[1] = $3;
+    }
+    | aritmetic_expression_multiplicative {
+        $$ = $1;
+    }
 ;
 
 aritmetic_expression_multiplicative
-    : aritmetic_expression_multiplicative ARITMETIC_OP_MULTIPLICATIVE value
-    | value
+    : aritmetic_expression_multiplicative ARITMETIC_OP_MULTIPLICATIVE value {
+        $$ = create_node("aritmetic_expression_multiplicative", $2.content, 0);
+        $$->children[0] = $1;
+        $$->children[1] = $3;
+    }
+    | value { $$ = $1; }
 ;
 
 return_statment
-    : RW_RETURN expression ';'
+    : RW_RETURN expression ';' {
+        $$ = create_node("return_statment", $1.content, 0);
+        $$->children[0] = $2;
+    }
 ;
 
 value
-    : IDENTIFIER
-    | constant
-    | list_unary_operation_expression
-    | ARITMETIC_OP_ADDITIVE IDENTIFIER
-    | ARITMETIC_OP_ADDITIVE constant
-    | '!' IDENTIFIER
-    | '!' constant
-    | '(' expression ')'
-    | '!''(' expression ')'
+    : IDENTIFIER { 
+        $$ = create_node("identifier", $1.content, 1); 
+    }
+    | constant { 
+        $$ = $1; 
+    }
+    | list_unary_operation_expression { 
+        $$ = $1; 
+    }
+    | ARITMETIC_OP_ADDITIVE IDENTIFIER {
+        // O QUE FAZER AQUI?
+        $$ = create_node("signal_operator", $1.content, 0);
+        $$->children[0] = create_node("identifier", $2.content, 1);
+    }
+    | ARITMETIC_OP_ADDITIVE constant {
+        // O QUE FAZER AQUI?
+        $$ = create_node("signal_operator", $1.content, 0);
+        $$->children[0] = $2;
+    }
+    | '!' IDENTIFIER {
+        // O QUE FAZER AQUI?
+        $$ = create_node("exclamation_operator", "!", 0);
+        $$->children[0] = create_node("identifier", $2.content, 1);
+    }
+    | '!' constant {
+        $$ = create_node("exclamation_operator", "!", 0);
+        $$->children[0] = $2;
+    }
+    | '(' expression ')' {
+        $$ = $2;
+    }
+    | '!''(' expression ')' {
+        $$ = create_node("exclamation_operator", "!", 0);
+        $$->children[0] = $3;
+    }
 ;
 
 variable_assignment
-    : IDENTIFIER '=' expression
-    | IDENTIFIER '=' function_call
+    : IDENTIFIER '=' expression {
+        $$ = create_node("variable_assignment", "=", 0);
+        $$->children[0] = create_node("identifier", $1.content, 1);
+        $$->children[1] = $3;
+    }
+    | IDENTIFIER '=' function_call {
+        $$ = create_node("variable_assignment", "=", 0);
+        $$->children[0] = create_node("identifier", $1.content, 1);
+        $$->children[1] = $3;
+    }
 ;
 
 variable_declaration
     : type IDENTIFIER {
+        $$ = create_node("variable_declaration", "var_declaration", 0);
+        $$->children[0] = $1;
+        $$->children[1] = create_node("identifier", $2.content, 1);
+        
         update_symbol(
             symbol_table_idx,
             $2.line_idx, 
@@ -273,44 +450,43 @@ variable_declaration
 
 type
     : T_INTEGER {
+        $$ = create_node("int_type", "int", 1);
+
         T_Symbol new_symbol = symbol($1.content);
         insert_symbol(symbol_table_idx, new_symbol);
-
-        $$ = create_node("int");
     }
     | T_FLOAT {
+        $$ = create_node("float_type", "float", 1);
+
         T_Symbol new_symbol = symbol($1.content);
         insert_symbol(symbol_table_idx, new_symbol);
-        $$ = create_node("float");
     }
     | T_LIST {
+        $$ = create_node("list_type", "list", 1);
+
         T_Symbol new_symbol = symbol($1.content);
         insert_symbol(symbol_table_idx, new_symbol);
-        $$ = create_node("list");
     }
 ;
 
 constant
     : C_INTEGER {
-        $$ = create_node("constant");
-        strcpy($$->value, $1.content);
+        $$ = create_node("int_const", $1.content, 1);
     }
     | C_FLOAT {
-        $$ = create_node("constant");
-        strcpy($$->value, $1.content);
+        $$ = create_node("float_const", $1.content, 1);
     }
     | C_NIL {
-        $$ = create_node("constant");
-        strcpy($$->value, $1.content);
+        $$ = create_node("list_const", $1.content, 1);
     }
 ;
 
 %%
 
-int yyerror(const char* err_msg){
+void yyerror(const char* err_msg){
     printf("\n[PARSER] Line: %d | Column: %d\t=> ERROR %s\n\n", yylval.token.line_idx, yylval.token.column_idx, err_msg);
     errors_count++;
-    return 0;
+    return;
 }
 
 int main(int argc, char ** argv) {
