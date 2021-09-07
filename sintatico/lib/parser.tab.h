@@ -73,7 +73,8 @@ extern int yydebug;
     RELATIONAL_OP = 274,           /* RELATIONAL_OP  */
     EQUALITY_OP = 275,             /* EQUALITY_OP  */
     LOGICAL_OP_OR = 276,           /* LOGICAL_OP_OR  */
-    LOGICAL_OP_AND = 277           /* LOGICAL_OP_AND  */
+    LOGICAL_OP_AND = 277,          /* LOGICAL_OP_AND  */
+    THEN = 278                     /* THEN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -93,7 +94,7 @@ union YYSTYPE
 
     struct T_Node* node;
 
-#line 97 "parser.tab.h"
+#line 98 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

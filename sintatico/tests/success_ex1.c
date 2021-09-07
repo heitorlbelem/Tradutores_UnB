@@ -1,22 +1,25 @@
-for (i = 2; ; ) {
+    if (argc < 2 + !argv) {
+        return 1;
+    }
+
+    global_var = 0;
+    int i;
+
+    for (i = 2; ; ) {
         int scope_3;
     }
-for (; i < 10 ;) {
-    int scope_4;
-}
-    int scope_1;
-for (;;i = i + 1) {
-    int scope_5;
-}
-for (;;) {
-    int loop_6;
-    float scope_one;
-    {
-        float list scope_two;
-        {
-            int list scope_three;
-        }
-        int after_three;
+    for (; i < 10 ;) {
+        int scope_4;
     }
-    float after_two;
-}
+    int scope_1;
+    for (;;i = i + 1) {
+        int scope_5;
+    }
+    for (;;) {
+        int loop_6;
+    }
+
+    int ret;
+    
+
+    return ret;

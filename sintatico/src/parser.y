@@ -76,6 +76,9 @@
 %token <token> LOGICAL_OP_OR
 %token <token> LOGICAL_OP_AND
 
+
+%right THEN RW_ELSE
+
 %start program
 
 %%
@@ -100,6 +103,7 @@ statement
     | return_statement
     | variable_declaration_statement
     | for_statement
+    | if_else_statement
     | block
 ;
 
@@ -107,9 +111,12 @@ for_statement
     : RW_FOR '(' expression_optative ';' or_expression_optative ';' expression_optative ')' statement
 ;
 
+if_else_statement
+    : RW_IF '(' expression ')' statement %prec THEN
+    | RW_IF '(' expression ')' statement RW_ELSE statement
+
 expression_statement
     : expression ';'
-    | ';'
 ;
 
 io_statement
