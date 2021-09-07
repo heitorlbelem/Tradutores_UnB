@@ -84,7 +84,17 @@
 %%
 
 program
-    : statements
+    : declarations
+;
+
+declarations
+    : declarations declaration 
+    | declaration
+;
+
+declaration
+    : function_declaration_statement
+    | variable_declaration_statement
 ;
 
 block
@@ -96,7 +106,6 @@ statements
     | statement
 ;
 
-
 statement
     : expression_statement
     | io_statement
@@ -105,6 +114,24 @@ statement
     | for_statement
     | if_else_statement
     | block
+;
+
+function_declaration_statement
+    : TYPE IDENTIFIER '(' parameters_optative ')' statement
+;
+
+parameters_optative
+    : %empty
+    | parameters
+;
+
+parameters
+    : parameters ',' parameter
+    | parameter
+;
+
+parameter
+    : TYPE IDENTIFIER
 ;
 
 for_statement
