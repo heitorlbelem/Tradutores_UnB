@@ -68,7 +68,8 @@
 
 %token <token> ARITMETIC_OP_ADDITIVE
 %token <token> ARITMETIC_OP_MULTIPLICATIVE
-%token <token> COMPARISON_OP
+%token <token> RELATIONAL_OP
+%token <token> EQUALITY_OP
 %token <token> LOGICAL_OP_OR
 %token <token> LOGICAL_OP_AND
 
@@ -80,243 +81,60 @@
 
 %%
 
-program:
-    declaration {
-    }
-;
-
-declaration
-    : program variable_declaration ';' {
-    }
-    | program function_declaration {
-    }
-    | variable_declaration ';' {
-    }
-    | function_declaration {
-    }
-    | error {}
-;
-
-function_declaration
-    : TYPE IDENTIFIER '(' ')' block {
-        T_Symbol sym = symbol($1.content);
-        insert_symbol(symbol_table_idx, sym);
-        update_symbol(
-            symbol_table_idx,
-            $2.line_idx, 
-            $2.column_idx, 
-            scope_id, 
-            0, 
-            $2.content
-        );
-        symbol_table_idx++;
-        symbol_table_size++;
-    }
-    | TYPE IDENTIFIER '(' params ')' block {
-        scope_id++;
-        T_Symbol sym = symbol($1.content);
-        insert_symbol(symbol_table_idx, sym);
-        update_symbol(
-            symbol_table_idx,
-            $2.line_idx, 
-            $2.column_idx, 
-            scope_id, 
-            0, 
-            $2.content
-        );
-        symbol_table_idx++;
-        symbol_table_size++;
-    }
-;
-
-function_call
-    : IDENTIFIER '(' ')' {
-    }
-    | IDENTIFIER '(' expression ')' {
-    }
-;
-
-params
-    : variable_declaration ',' params {
-    }
-    | variable_declaration {
-    }
-;
-
-block
-    : '{' statment '}' {
-    }
-    | error {}
-;
-
-conditional_statment
-    : RW_IF '(' expression ')' block {
-    }
-    | RW_IF '(' expression ')' block RW_ELSE block {
-    }
-;
-
-input_statment
-    : IO_READ '(' IDENTIFIER ')' ';' {
-    }
-;
-
-output_statment
-    : IO_WRITE '(' C_STRING ')' ';' {
-    }
-    | IO_WRITE '(' expression ')' ';' {
-    }
-;
-
-for_statment
-    : RW_FOR '(' variable_assignment ';' comparison_expression ';' variable_assignment ')' block {
-    }
-;
-
-list_binary_operation_statment
-    : IDENTIFIER '=' binary_operation {
-    }
-;
-
-binary_operation:
-    IDENTIFIER BINARY_LIST_OP IDENTIFIER ';' {
-    }
-;
-
-list_unary_operation_expression
-    : UNARY_LIST_OP IDENTIFIER {
-    }
-;
-
-statment
-    : statment variable_assignment ';' {
-    }
-    | statment variable_declaration ';' {
-    }
-    | statment return_statment {
-    }
-    | statment conditional_statment {
-    }
-    | statment input_statment {
-    }
-    | statment output_statment {
-    }
-    | statment for_statment {
-    }
-    | statment list_binary_operation_statment {
-    }
-    | statment function_call ';' {
-    }
-    | variable_declaration ';' {  }
-    | variable_assignment ';' {  }
-    | return_statment {  }
-    | conditional_statment {  }
-    | input_statment {  }
-    | output_statment {  }
-    | for_statment {  }
-    | list_binary_operation_statment {  }
-    | function_call ';' {  }
-    | error {}
+program
+    : expression
 ;
 
 expression
-    : comparison_expression {
-    }
-    | error {}
+    : or_expression
 ;
 
-comparison_expression
-    : comparison_expression COMPARISON_OP logical_expression_or {
-    }
-    | logical_expression_or {
-    }
+or_expression
+    : or_expression LOGICAL_OP_OR and_expression
+    | and_expression
 ;
 
-logical_expression_or
-    : logical_expression_or LOGICAL_OP_OR logical_expression_and {
-    }
-    | logical_expression_and {
-    }
+and_expression
+    : and_expression LOGICAL_OP_AND equality_expression
+    | equality_expression
 ;
 
-logical_expression_and
-    : logical_expression_and LOGICAL_OP_AND aritmetic_expression_additive {
-    }
-    | aritmetic_expression_additive {
-    }
+equality_expression
+    : equality_expression EQUALITY_OP relational_expression
+    | relational_expression 
 ;
 
-aritmetic_expression_additive
-    : aritmetic_expression_additive ARITMETIC_OP_ADDITIVE aritmetic_expression_multiplicative{
-    }
-    | aritmetic_expression_multiplicative {
-    }
+relational_expression
+    : relational_expression RELATIONAL_OP addition_expression
+    | addition_expression
 ;
 
-aritmetic_expression_multiplicative
-    : aritmetic_expression_multiplicative ARITMETIC_OP_MULTIPLICATIVE value {
-    }
-    | value {  }
+addition_expression
+    : addition_expression ARITMETIC_OP_ADDITIVE multiplication_expression
+    | multiplication_expression
 ;
 
-return_statment
-    : RW_RETURN expression ';' {
-    }
+multiplication_expression
+    : multiplication_expression ARITMETIC_OP_MULTIPLICATIVE simple_value
+    | simple_value
 ;
 
-value
-    : IDENTIFIER { 
-    }
-    | constant { 
-    }
-    | list_unary_operation_expression { 
-    }
-    | ARITMETIC_OP_ADDITIVE IDENTIFIER {
-    }
-    | ARITMETIC_OP_ADDITIVE constant {
-    }
-    | '!' IDENTIFIER {
-    }
-    | '!' constant {
-    }
-    | '(' expression ')' {
-    }
-    | '!''(' expression ')' {
-    }
+simple_value
+    : constant
+    | IDENTIFIER
+    | ARITMETIC_OP_ADDITIVE simple_value
+    | '!' simple_value
+    | '(' expression ')'
 ;
 
-variable_assignment
-    : IDENTIFIER '=' expression {
-    }
-    | IDENTIFIER '=' function_call {
-    }
+variable_declaration_stmt
+    : TYPE IDENTIFIER ';'
 ;
-
-variable_declaration
-    : TYPE IDENTIFIER {
-        T_Symbol sym = symbol($1.content);
-        insert_symbol(symbol_table_idx, sym);
-        update_symbol(
-            symbol_table_idx,
-            $2.line_idx, 
-            $2.column_idx,
-            scope_id,
-            1,
-            $2.content
-        );
-        symbol_table_idx++;
-        symbol_table_size++;
-    }
-;
-
 
 constant
-    : C_INTEGER {
-    }
-    | C_FLOAT {
-    }
-    | C_NIL {
-    }
+    : C_INTEGER 
+    | C_FLOAT 
+    | C_NIL
 ;
 
 %%

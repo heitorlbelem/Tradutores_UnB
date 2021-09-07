@@ -68,11 +68,12 @@ extern int yydebug;
     IO_WRITE = 269,                /* IO_WRITE  */
     ARITMETIC_OP_ADDITIVE = 270,   /* ARITMETIC_OP_ADDITIVE  */
     ARITMETIC_OP_MULTIPLICATIVE = 271, /* ARITMETIC_OP_MULTIPLICATIVE  */
-    COMPARISON_OP = 272,           /* COMPARISON_OP  */
-    LOGICAL_OP_OR = 273,           /* LOGICAL_OP_OR  */
-    LOGICAL_OP_AND = 274,          /* LOGICAL_OP_AND  */
-    UNARY_LIST_OP = 275,           /* UNARY_LIST_OP  */
-    BINARY_LIST_OP = 276           /* BINARY_LIST_OP  */
+    RELATIONAL_OP = 272,           /* RELATIONAL_OP  */
+    EQUALITY_OP = 273,             /* EQUALITY_OP  */
+    LOGICAL_OP_OR = 274,           /* LOGICAL_OP_OR  */
+    LOGICAL_OP_AND = 275,          /* LOGICAL_OP_AND  */
+    UNARY_LIST_OP = 276,           /* UNARY_LIST_OP  */
+    BINARY_LIST_OP = 277           /* BINARY_LIST_OP  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -92,7 +93,7 @@ union YYSTYPE
 
     struct T_Node* node;
 
-#line 96 "parser.tab.h"
+#line 97 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -97,9 +97,15 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     strcpy(yylval.token.content, yytext);
 
     // write_line("Comparison Operator", yytext);
+
+    if((strcmp(yytext, "==") == 0) || (strcmp(yytext, "!=") == 0)) {
+        return EQUALITY_OP;
+    }
+    return RELATIONAL_OP;
+    
+
     column_idx += yyleng;
 
-    return COMPARISON_OP;
 }
 
 {ARITMETIC_OPERATORS} {

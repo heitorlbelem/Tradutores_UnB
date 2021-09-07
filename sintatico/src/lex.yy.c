@@ -866,14 +866,20 @@ YY_RULE_SETUP
     strcpy(yylval.token.content, yytext);
 
     // write_line("Comparison Operator", yytext);
+
+    if((strcmp(yytext, "==") == 0) || (strcmp(yytext, "!=") == 0)) {
+        return EQUALITY_OP;
+    }
+    return RELATIONAL_OP;
+    
+
     column_idx += yyleng;
 
-    return COMPARISON_OP;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 105 "./src/scanner.l"
+#line 111 "./src/scanner.l"
 {
     
     yylval.token.line_idx = line_idx;
@@ -893,7 +899,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 122 "./src/scanner.l"
+#line 128 "./src/scanner.l"
 {
     // write_line("Assign Operator", yytext);
     column_idx += yyleng;
@@ -903,7 +909,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 129 "./src/scanner.l"
+#line 135 "./src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -922,7 +928,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 145 "./src/scanner.l"
+#line 151 "./src/scanner.l"
 {
     // write_line("Exclamation Operator", yytext);
     column_idx += yyleng;
@@ -932,7 +938,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 152 "./src/scanner.l"
+#line 158 "./src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -955,7 +961,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 172 "./src/scanner.l"
+#line 178 "./src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -974,7 +980,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 188 "./src/scanner.l"
+#line 194 "./src/scanner.l"
 { 
 
     yylval.token.line_idx = line_idx;
@@ -989,7 +995,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 200 "./src/scanner.l"
+#line 206 "./src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -1004,7 +1010,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 212 "./src/scanner.l"
+#line 218 "./src/scanner.l"
 {
 
     yylval.token.line_idx = line_idx;
@@ -1020,7 +1026,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 225 "./src/scanner.l"
+#line 231 "./src/scanner.l"
 { 
 
     yylval.token.line_idx = line_idx;
@@ -1035,7 +1041,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 237 "./src/scanner.l"
+#line 243 "./src/scanner.l"
 {
     yylval.token.line_idx = line_idx;
     yylval.token.column_idx = column_idx;
@@ -1049,7 +1055,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 248 "./src/scanner.l"
+#line 254 "./src/scanner.l"
 {
     
     yylval.token.line_idx = line_idx;
@@ -1064,7 +1070,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 260 "./src/scanner.l"
+#line 266 "./src/scanner.l"
 {
     yylval.token.line_idx = line_idx;
     yylval.token.column_idx = column_idx;
@@ -1078,7 +1084,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 271 "./src/scanner.l"
+#line 277 "./src/scanner.l"
 {
     errors_count++;
     printf(REDHB "[SCANNER] Line: %d | Column: %d\t=> ERROR: String must be enclosed in double quotes", line_idx, column_idx);
@@ -1089,7 +1095,7 @@ YY_RULE_SETUP
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 278 "./src/scanner.l"
+#line 284 "./src/scanner.l"
 {
     column_idx = 1;
     line_idx++;
@@ -1097,14 +1103,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 283 "./src/scanner.l"
+#line 289 "./src/scanner.l"
 {
     column_idx += yyleng;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 287 "./src/scanner.l"
+#line 293 "./src/scanner.l"
 {
     printf(REDHB "[SCANNER] Line: %d | Column: %d\t=> ERROR: Unexpected character '%s'", line_idx, column_idx, yytext);
     errors_count++;
@@ -1114,10 +1120,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 295 "./src/scanner.l"
+#line 301 "./src/scanner.l"
 ECHO;
 	YY_BREAK
-#line 1121 "lex.yy.c"
+#line 1127 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2085,7 +2091,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 295 "./src/scanner.l"
+#line 301 "./src/scanner.l"
 
 
 void write_line(char* type, char* token) { 
