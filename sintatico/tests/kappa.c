@@ -10,7 +10,9 @@ float map(int integer) {
 
 int operators(int list l) {
     int x;
+    a > 1;
     x = (x || 15) && (x != 4);
+    a = 1;
     if (x == 10) {
         int x;
         x = 1 > 2 <= 3 >= 0 < -5;

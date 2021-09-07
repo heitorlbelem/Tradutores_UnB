@@ -45,7 +45,6 @@
 %token <token> LIT_STRING
 
 %token <token> TYPE
-
 %token <token> IDENTIFIER
 
 %token <token> RW_FOR
@@ -75,7 +74,6 @@
 %token <token> EQUALITY_OP
 %token <token> LOGICAL_OP_OR
 %token <token> LOGICAL_OP_AND
-
 
 %right THEN RW_ELSE
 
@@ -167,6 +165,25 @@ return_statement
 expression
     : IDENTIFIER '=' expression
     | or_expression
+    | function_call_expression
+;
+
+function_call_expression
+    : IDENTIFIER '(' function_arguments_optional ')'
+;
+
+function_arguments_optional
+    : %empty 
+    | function_arguments
+;
+
+function_arguments
+    : function_arguments ',' function_argument
+    | function_argument
+;
+
+function_argument
+    : expression
 ;
 
 expression_optative

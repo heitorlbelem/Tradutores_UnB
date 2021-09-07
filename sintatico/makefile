@@ -54,7 +54,7 @@ $(EXE): $(OBJ)
 .PHONY: all
 
 before:
-	bison -d $(SDIR)/parser.y -Wcounterexamples 
+	bison -d $(SDIR)/parser.y -Wcounterexamples -v
 	@mv parser.tab.c $(SDIR)/parser.tab.c
 	@mv parser.tab.h $(IDIR)/parser.tab.h
 	flex $(SDIR)/scanner.l
