@@ -57,7 +57,7 @@ extern int yydebug;
     C_INTEGER = 258,               /* C_INTEGER  */
     C_FLOAT = 259,                 /* C_FLOAT  */
     C_NIL = 260,                   /* C_NIL  */
-    C_STRING = 261,                /* C_STRING  */
+    LIT_STRING = 261,              /* LIT_STRING  */
     TYPE = 262,                    /* TYPE  */
     IDENTIFIER = 263,              /* IDENTIFIER  */
     RW_FOR = 264,                  /* RW_FOR  */
@@ -66,14 +66,14 @@ extern int yydebug;
     RW_ELSE = 267,                 /* RW_ELSE  */
     IO_READ = 268,                 /* IO_READ  */
     IO_WRITE = 269,                /* IO_WRITE  */
-    ARITMETIC_OP_ADDITIVE = 270,   /* ARITMETIC_OP_ADDITIVE  */
-    ARITMETIC_OP_MULTIPLICATIVE = 271, /* ARITMETIC_OP_MULTIPLICATIVE  */
-    RELATIONAL_OP = 272,           /* RELATIONAL_OP  */
-    EQUALITY_OP = 273,             /* EQUALITY_OP  */
-    LOGICAL_OP_OR = 274,           /* LOGICAL_OP_OR  */
-    LOGICAL_OP_AND = 275,          /* LOGICAL_OP_AND  */
-    UNARY_LIST_OP = 276,           /* UNARY_LIST_OP  */
-    BINARY_LIST_OP = 277           /* BINARY_LIST_OP  */
+    BINARY_LIST_OP = 270,          /* BINARY_LIST_OP  */
+    UNARY_LIST_OP = 271,           /* UNARY_LIST_OP  */
+    ARITMETIC_OP_ADDITIVE = 272,   /* ARITMETIC_OP_ADDITIVE  */
+    ARITMETIC_OP_MULTIPLICATIVE = 273, /* ARITMETIC_OP_MULTIPLICATIVE  */
+    RELATIONAL_OP = 274,           /* RELATIONAL_OP  */
+    EQUALITY_OP = 275,             /* EQUALITY_OP  */
+    LOGICAL_OP_OR = 276,           /* LOGICAL_OP_OR  */
+    LOGICAL_OP_AND = 277           /* LOGICAL_OP_AND  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif

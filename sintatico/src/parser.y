@@ -42,7 +42,7 @@
 %token <token> C_INTEGER
 %token <token> C_FLOAT
 %token <token> C_NIL
-%token <token> C_STRING
+%token <token> LIT_STRING
 
 %token <token> TYPE
 
@@ -55,6 +55,9 @@
 
 %token <token> IO_READ
 %token <token> IO_WRITE
+
+%token <token> BINARY_LIST_OP
+%token <token> UNARY_LIST_OP
 
 %token '{' 
 %token '}'
@@ -73,20 +76,73 @@
 %token <token> LOGICAL_OP_OR
 %token <token> LOGICAL_OP_AND
 
-%token <token> UNARY_LIST_OP
-%token <token> BINARY_LIST_OP
-
-
 %start program
 
 %%
 
 program
-    : expression
+    : statements
+;
+
+block
+    : '{' statements '}'
+;
+
+statements
+    : statements statement
+    | statement
+;
+
+
+statement
+    : expression_statement
+    | io_statement
+    | return_statement
+    | variable_declaration_statement
+    | for_statement
+    | block
+;
+
+for_statement
+    : RW_FOR '(' expression_optative ';' or_expression_optative ';' expression_optative ')' statement
+;
+
+expression_statement
+    : expression ';'
+    | ';'
+;
+
+io_statement
+    : input_statement
+    | output_statement
+;
+
+input_statement
+    : IO_READ '(' IDENTIFIER ')' ';'
+;
+
+output_statement
+    : IO_WRITE '(' expression ')' ';'
+    | IO_WRITE '(' LIT_STRING ')' ';'
+;
+
+return_statement
+    : RW_RETURN expression ';'
 ;
 
 expression
-    : or_expression
+    : IDENTIFIER '=' expression
+    | or_expression
+;
+
+expression_optative
+    : %empty 
+    | expression
+;
+
+or_expression_optative
+    : %empty
+    | or_expression
 ;
 
 or_expression
@@ -105,7 +161,12 @@ equality_expression
 ;
 
 relational_expression
-    : relational_expression RELATIONAL_OP addition_expression
+    : relational_expression RELATIONAL_OP list_expression
+    | list_expression
+;
+
+list_expression
+    : list_expression BINARY_LIST_OP addition_expression
     | addition_expression
 ;
 
@@ -124,10 +185,11 @@ simple_value
     | IDENTIFIER
     | ARITMETIC_OP_ADDITIVE simple_value
     | '!' simple_value
+    | UNARY_LIST_OP simple_value
     | '(' expression ')'
 ;
 
-variable_declaration_stmt
+variable_declaration_statement
     : TYPE IDENTIFIER ';'
 ;
 

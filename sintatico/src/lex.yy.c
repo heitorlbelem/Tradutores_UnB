@@ -1079,7 +1079,7 @@ YY_RULE_SETUP
     // write_line("String text", yytext);
     column_idx += yyleng;
 
-    return C_STRING;
+    return LIT_STRING;
 }
 	YY_BREAK
 case 18:

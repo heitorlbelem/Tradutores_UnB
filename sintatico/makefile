@@ -61,7 +61,6 @@ before:
 	@mv lex.yy.c $(SDIR)/lex.yy.c
 
 all:
-	@mkdir $(SDIR)/obj
 	@make before
 	@make $(EXE)
 

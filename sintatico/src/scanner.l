@@ -271,7 +271,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     // write_line("String text", yytext);
     column_idx += yyleng;
 
-    return C_STRING;
+    return LIT_STRING;
 }
 
 {INVALID_STRING} {

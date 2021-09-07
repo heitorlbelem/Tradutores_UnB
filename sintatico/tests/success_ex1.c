@@ -1,40 +1,22 @@
-int func1(int a, int b) {
-    int c;
-    c = 0;
-    return a + b;
+for (i = 2; ; ) {
+        int scope_3;
+    }
+for (; i < 10 ;) {
+    int scope_4;
 }
-
-int main() {
-    int a; 
-    a = 1 + 2*3;
-    int b;
-    b = 0;
-    a = 1 + 13;
-
-    int list lista;
-
-    if(a+b-100*10 > lista*20) {
-        a = 1;
+    int scope_1;
+for (;;i = i + 1) {
+    int scope_5;
+}
+for (;;) {
+    int loop_6;
+    float scope_one;
+    {
+        float list scope_two;
+        {
+            int list scope_three;
+        }
+        int after_three;
     }
-    else {
-        a = 2;
-    }
-
-    if(((1+2) >= 0)-(3*(4+4)/d) && !(a)||!(!(b)) || (a<1)) {
-        return 1;
-    } else {
-        return 3;
-    }
-
-    int c;
-    c = (1+2)-(3*(4+4)/d) && !(a)||!(!(b));
-
-    for(i = 0; i < 10; i = i + 1) {
-        write("ola");
-    }
-
-    read(integer);
-    write("ola mundo");
-
-    return a+1;
+    float after_two;
 }
