@@ -112,6 +112,7 @@ statement
     | for_statement
     | if_else_statement
     | block
+    | error {}
 ;
 
 function_declaration_statement
