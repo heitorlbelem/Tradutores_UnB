@@ -44,7 +44,8 @@
 %token <token> C_NIL
 %token <token> LIT_STRING
 
-%token <token> TYPE
+%token <token> SIMPLE_TYPE
+%token <token> LIST_TYPE
 %token <token> IDENTIFIER
 
 %token <token> RW_FOR
@@ -116,7 +117,36 @@ statement
 ;
 
 function_declaration_statement
-    : TYPE IDENTIFIER '(' parameters_optative ')' statement
+    : SIMPLE_TYPE IDENTIFIER '(' parameters_optative ')' statement {
+        T_Symbol sym = symbol(
+            $1.content, 
+            $2.content, 
+            "function", 
+            scope_id, 
+            $2.line_idx, 
+            $2.column_idx
+        );
+        insert_symbol(symbol_table_idx, sym);
+        symbol_table_idx++;
+        symbol_table_size++;
+    }
+    | SIMPLE_TYPE LIST_TYPE IDENTIFIER '(' parameters_optative ')' statement {
+        char type[100];
+        strcpy(type, $1.content);
+        strcpy(type, " ");
+        strcpy(type, $2.content);
+        T_Symbol sym = symbol(
+            type, 
+            $3.content, 
+            "function", 
+            scope_id, 
+            $3.line_idx, 
+            $3.column_idx
+        );
+        insert_symbol(symbol_table_idx, sym);
+        symbol_table_idx++;
+        symbol_table_size++;
+    }
 ;
 
 parameters_optative
@@ -130,7 +160,36 @@ parameters
 ;
 
 parameter
-    : TYPE IDENTIFIER
+    : SIMPLE_TYPE IDENTIFIER {
+        T_Symbol sym = symbol(
+            $1.content, 
+            $2.content, 
+            "parameter", 
+            scope_id, 
+            $2.line_idx, 
+            $2.column_idx
+        );
+        insert_symbol(symbol_table_idx, sym);
+        symbol_table_idx++;
+        symbol_table_size++;
+    }
+    | SIMPLE_TYPE LIST_TYPE IDENTIFIER {
+        char type[100];
+        strcpy(type, $1.content);
+        strcpy(type, " ");
+        strcpy(type, $2.content);
+        T_Symbol sym = symbol(
+            type, 
+            $3.content, 
+            "parameter", 
+            scope_id, 
+            $3.line_idx, 
+            $3.column_idx
+        );
+        insert_symbol(symbol_table_idx, sym);
+        symbol_table_idx++;
+        symbol_table_size++;
+    }
 ;
 
 for_statement
@@ -242,7 +301,37 @@ simple_value
 ;
 
 variable_declaration_statement
-    : TYPE IDENTIFIER ';'
+    : SIMPLE_TYPE IDENTIFIER ';' {
+        T_Symbol sym = symbol(
+            $1.content, 
+            $2.content, 
+            "variable", 
+            scope_id, 
+            $2.line_idx, 
+            $2.column_idx
+        );
+        insert_symbol(symbol_table_idx, sym);
+        symbol_table_idx++;
+        symbol_table_size++;
+    }
+    | SIMPLE_TYPE LIST_TYPE IDENTIFIER ';' {
+
+        char type[100];
+        strcpy(type, $1.content);
+        strcpy(type, " ");
+        strcpy(type, $2.content);
+        T_Symbol sym = symbol(
+            type, 
+            $3.content, 
+            "variable", 
+            scope_id, 
+            $3.line_idx, 
+            $3.column_idx
+        );
+        insert_symbol(symbol_table_idx, sym);
+        symbol_table_idx++;
+        symbol_table_size++;
+    }
 ;
 
 constant

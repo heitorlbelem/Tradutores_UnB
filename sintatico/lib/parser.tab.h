@@ -58,23 +58,24 @@ extern int yydebug;
     C_FLOAT = 259,                 /* C_FLOAT  */
     C_NIL = 260,                   /* C_NIL  */
     LIT_STRING = 261,              /* LIT_STRING  */
-    TYPE = 262,                    /* TYPE  */
-    IDENTIFIER = 263,              /* IDENTIFIER  */
-    RW_FOR = 264,                  /* RW_FOR  */
-    RW_RETURN = 265,               /* RW_RETURN  */
-    RW_IF = 266,                   /* RW_IF  */
-    RW_ELSE = 267,                 /* RW_ELSE  */
-    IO_READ = 268,                 /* IO_READ  */
-    IO_WRITE = 269,                /* IO_WRITE  */
-    BINARY_LIST_OP = 270,          /* BINARY_LIST_OP  */
-    UNARY_LIST_OP = 271,           /* UNARY_LIST_OP  */
-    ARITMETIC_OP_ADDITIVE = 272,   /* ARITMETIC_OP_ADDITIVE  */
-    ARITMETIC_OP_MULTIPLICATIVE = 273, /* ARITMETIC_OP_MULTIPLICATIVE  */
-    RELATIONAL_OP = 274,           /* RELATIONAL_OP  */
-    EQUALITY_OP = 275,             /* EQUALITY_OP  */
-    LOGICAL_OP_OR = 276,           /* LOGICAL_OP_OR  */
-    LOGICAL_OP_AND = 277,          /* LOGICAL_OP_AND  */
-    THEN = 278                     /* THEN  */
+    SIMPLE_TYPE = 262,             /* SIMPLE_TYPE  */
+    LIST_TYPE = 263,               /* LIST_TYPE  */
+    IDENTIFIER = 264,              /* IDENTIFIER  */
+    RW_FOR = 265,                  /* RW_FOR  */
+    RW_RETURN = 266,               /* RW_RETURN  */
+    RW_IF = 267,                   /* RW_IF  */
+    RW_ELSE = 268,                 /* RW_ELSE  */
+    IO_READ = 269,                 /* IO_READ  */
+    IO_WRITE = 270,                /* IO_WRITE  */
+    BINARY_LIST_OP = 271,          /* BINARY_LIST_OP  */
+    UNARY_LIST_OP = 272,           /* UNARY_LIST_OP  */
+    ARITMETIC_OP_ADDITIVE = 273,   /* ARITMETIC_OP_ADDITIVE  */
+    ARITMETIC_OP_MULTIPLICATIVE = 274, /* ARITMETIC_OP_MULTIPLICATIVE  */
+    RELATIONAL_OP = 275,           /* RELATIONAL_OP  */
+    EQUALITY_OP = 276,             /* EQUALITY_OP  */
+    LOGICAL_OP_OR = 277,           /* LOGICAL_OP_OR  */
+    LOGICAL_OP_AND = 278,          /* LOGICAL_OP_AND  */
+    THEN = 279                     /* THEN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -94,7 +95,7 @@ union YYSTYPE
 
     struct T_Node* node;
 
-#line 98 "parser.tab.h"
+#line 99 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

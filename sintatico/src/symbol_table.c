@@ -5,28 +5,22 @@
 
 T_Symbol symbol_table[100000];
 
-void update_symbol(
-    int symbol_table_idx,
-    int line, 
-    int column, 
+T_Symbol symbol(
+    char* type, 
+    char* content, 
+    char* var_func_param, 
     int scope, 
-    int is_variable, 
-    char* content
+    int line, 
+    int column
 ) {
-    
-    symbol_table[symbol_table_idx].line_idx = line;
-    symbol_table[symbol_table_idx].column_idx = column;
-    symbol_table[symbol_table_idx].scope = scope;
-    symbol_table[symbol_table_idx].is_variable = is_variable;
-    strcpy(symbol_table[symbol_table_idx].content, content);
-
-    return;
-}
-
-T_Symbol symbol(char* type) {
-    T_Symbol new_symbol;
-    strcpy(new_symbol.type, type);
-    return new_symbol;
+    T_Symbol sym;
+    strcpy(sym.type, type);
+    strcpy(sym.content, content);
+    strcpy(sym.var_func_param, var_func_param);
+    sym.scope = scope;
+    sym.line_idx = line;
+    sym.column_idx = column;
+    return sym;
 }
 
 void insert_symbol(int idx, T_Symbol symbol) {
@@ -44,10 +38,10 @@ void print_symbol_table(int table_size) {
     printf(BHRED"-------------------------------------------------------------------------------------" reset "\n");
     
     for(int i=0; i < table_size; i++) {
-        printf(BHRED"|" BHCYN" %-12s " BHRED"|" BHCYN" %-20s " BHRED"|" BHCYN" %-12d" BHRED"|" BHCYN" %-5d " BHRED"|" BHCYN" %-8d " BHRED"|" BHCYN" %-10d " BHRED"|"reset,
+        printf(BHRED"|" BHCYN" %-12s " BHRED"|" BHCYN" %-20s " BHRED"|" BHCYN" %-12s" BHRED"|" BHCYN" %-5d " BHRED"|" BHCYN" %-8d " BHRED"|" BHCYN" %-10d " BHRED"|"reset,
             symbol_table[i].type,
             symbol_table[i].content, 
-            symbol_table[i].is_variable,
+            symbol_table[i].var_func_param,
             symbol_table[i].scope,
             symbol_table[i].line_idx,
             symbol_table[i].column_idx

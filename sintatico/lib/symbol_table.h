@@ -78,13 +78,13 @@ typedef struct {
     int line_idx;
     int column_idx;
     int scope;
-    int is_variable;
+    char var_func_param[100];
     char type[100];
     char content[100];
 } T_Symbol;
 
 // Constructor
-T_Symbol symbol(char* type);
+T_Symbol symbol(char* type, char* content, char* var_func_param, int scope, int line, int column);
 
 // Update symbol props
 void update_symbol(

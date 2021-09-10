@@ -29,7 +29,7 @@ FLOAT (({DIGIT}*)\.({DIGIT}+))
 NIL NIL
 
 T_SIMPLE int|float
-T_LIST {T_SIMPLE}[ |\t]+list[ \t]+
+T_LIST list
 
 IDENTIFIER ({CHARACTER}|[_])({CHARACTER}|{DIGIT}|[_])*
 
@@ -65,6 +65,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
         scope_id++;
         return '{';
     } else if(strcmp(yytext, "}") == 0) {
+        scope_id--;
         return '}';
     } else if(strcmp(yytext, ",") == 0) {
         return ',';
@@ -224,7 +225,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     // write_line("Simple Type", yytext);
     column_idx += yyleng;
 
-    return TYPE;
+    return SIMPLE_TYPE;
 
 }
 
@@ -237,7 +238,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     // write_line("List Type", yytext);
     column_idx += yyleng;
 
-    return TYPE;
+    return LIST_TYPE;
 }
 
 {NIL} {

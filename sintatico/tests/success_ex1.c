@@ -1,4 +1,4 @@
-int global;
+int list lista;
 
 int to_float(int num) {
     return num*3.1415;
