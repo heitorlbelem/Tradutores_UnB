@@ -2216,8 +2216,8 @@ yyreduce:
                                                                              {
         char type[100];
         strcpy(type, (yyvsp[-6].token).content);
-        strcpy(type, " ");
-        strcpy(type, (yyvsp[-5].token).content);
+        strcat(type, " ");
+        strcat(type, (yyvsp[-5].token).content);
         T_Symbol sym = symbol(
             type, 
             (yyvsp[-4].token).content, 
@@ -2256,8 +2256,8 @@ yyreduce:
                                        {
         char type[100];
         strcpy(type, (yyvsp[-2].token).content);
-        strcpy(type, " ");
-        strcpy(type, (yyvsp[-1].token).content);
+        strcat(type, " ");
+        strcat(type, (yyvsp[-1].token).content);
         T_Symbol sym = symbol(
             type, 
             (yyvsp[0].token).content, 
@@ -2297,8 +2297,8 @@ yyreduce:
 
         char type[100];
         strcpy(type, (yyvsp[-3].token).content);
-        strcpy(type, " ");
-        strcpy(type, (yyvsp[-2].token).content);
+        strcat(type, " ");
+        strcat(type, (yyvsp[-2].token).content);
         T_Symbol sym = symbol(
             type, 
             (yyvsp[-1].token).content, 

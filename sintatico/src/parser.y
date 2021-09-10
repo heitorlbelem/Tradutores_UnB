@@ -133,8 +133,8 @@ function_declaration_statement
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER '(' parameters_optative ')' statement {
         char type[100];
         strcpy(type, $1.content);
-        strcpy(type, " ");
-        strcpy(type, $2.content);
+        strcat(type, " ");
+        strcat(type, $2.content);
         T_Symbol sym = symbol(
             type, 
             $3.content, 
@@ -176,8 +176,8 @@ parameter
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER {
         char type[100];
         strcpy(type, $1.content);
-        strcpy(type, " ");
-        strcpy(type, $2.content);
+        strcat(type, " ");
+        strcat(type, $2.content);
         T_Symbol sym = symbol(
             type, 
             $3.content, 
@@ -318,8 +318,8 @@ variable_declaration_statement
 
         char type[100];
         strcpy(type, $1.content);
-        strcpy(type, " ");
-        strcpy(type, $2.content);
+        strcat(type, " ");
+        strcat(type, $2.content);
         T_Symbol sym = symbol(
             type, 
             $3.content, 
