@@ -5,16 +5,16 @@
 #include "symbol_table.h"
 
 typedef struct T_Node T_Node;
+typedef struct T_Element T_Element;
+
 struct T_Node {
-    char rule_name[100];
-    char value[100];
+    char rule[100];
+    char text[100];
     int is_terminal;
-    T_Symbol* symbol;
-    T_Node* children[10];
+    T_Node* child[5];
 };
 
-T_Node* create_node(char* rule_name, char* value, int terminal);
-void print_syntatic_tree();
-void freeTree();
+T_Node* new_node(char* rule_name, char* value, int terminal);
+void free_tree(T_Node* node);
 
 #endif

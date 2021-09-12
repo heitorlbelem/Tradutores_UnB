@@ -78,41 +78,110 @@
 
 %right THEN RW_ELSE
 
+%type<node> program
+%type<node> declarations
+%type<node> declaration
+%type<node> function_declaration_statement
+%type<node> variable_declaration_statement
+%type<node> block
+%type<node> statements
+%type<node> statement
+%type<node> parameters_optative
+%type<node> parameters
+%type<node> parameter
+%type<node> for_statement
+%type<node> if_else_statement
+%type<node> expression_statement
+%type<node> io_statement
+%type<node> input_statement
+%type<node> output_statement
+%type<node> return_statement
+%type<node> expression
+%type<node> function_call_expression
+%type<node> function_arguments_optional
+%type<node> function_arguments
+%type<node> function_argument
+%type<node> expression_optative
+%type<node> or_expression_optative
+%type<node> or_expression
+%type<node> and_expression
+%type<node> equality_expression
+%type<node> relational_expression
+%type<node> list_expression
+%type<node> addition_expression
+%type<node> multiplication_expression
+%type<node> simple_value
+%type<node> constant
+
 %start program
 
 %%
 
 program
-    : declarations
+    : declarations {
+        root_node = $1;
+    }
 ;
 
 declarations
-    : declarations declaration 
-    | declaration
+    : declarations declaration {
+        $$ = new_node("declarations", "", 0);
+        $$->child[0] = $1;
+        $$->child[1] = $2;
+    }
+    | declaration {
+        $$ = $1;
+    }
 ;
 
 declaration
-    : function_declaration_statement
-    | variable_declaration_statement
+    : function_declaration_statement {
+        $$ = $1;
+    }
+    | variable_declaration_statement {
+        $$ = $1;
+    }
 ;
 
 block
-    : '{' statements '}'
+    : '{' statements '}' {
+        $$ = $2;
+    }
 ;
 
 statements
-    : statements statement
-    | statement
+    : statements statement {
+        $$ = new_node("statements", "", 0);
+        $$->child[0] = $1;
+        $$->child[1] = $2;
+    }
+    | statement {
+        $$ = $1;
+    }
 ;
 
 statement
-    : expression_statement
-    | io_statement
-    | return_statement
-    | variable_declaration_statement
-    | for_statement
-    | if_else_statement
-    | block
+    : expression_statement {
+        $$ = $1;
+    }
+    | io_statement {
+        $$ = $1;
+    }
+    | return_statement {
+        $$ = $1;
+    }
+    | variable_declaration_statement {
+        $$ = $1;
+    }
+    | for_statement {
+        $$ = $1;
+    }
+    | if_else_statement {
+        $$ = $1;
+    }
+    | block {
+        $$ = $1;
+    }
     | error {}
 ;
 
@@ -129,6 +198,12 @@ function_declaration_statement
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+
+        $$ = new_node("function_declaration_statement", "", 0);
+        $$->child[0] = new_node("type", $1.content, 1);
+        $$->child[1] = new_node("identifier", $2.content, 1);
+        $$->child[2] = $4;
+        $$->child[3] = $6;
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER '(' parameters_optative ')' statement {
         char type[100];
@@ -146,17 +221,33 @@ function_declaration_statement
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+
+        $$ = new_node("function_declaration_statement", "", 0);
+        $$->child[0] = new_node("type", type, 1);
+        $$->child[1] = new_node("identifier", $3.content, 1);
+        $$->child[2] = $5;
+        $$->child[3] = $7;
     }
 ;
 
 parameters_optative
-    : %empty
-    | parameters
+    : %empty {
+        $$ = NULL;
+    }
+    | parameters {
+        $$ = $1;
+    }
 ;
 
 parameters
-    : parameters ',' parameter
-    | parameter
+    : parameters ',' parameter {
+        $$ = new_node("parameters", "", 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | parameter {
+        $$ = $1;
+    }
 ;
 
 parameter
@@ -172,6 +263,10 @@ parameter
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+
+        $$ = new_node("function_parameter", "", 0);
+        $$->child[0] = new_node("type", $1.content, 1);
+        $$->child[1] = new_node("id", $2.content, 1);
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER {
         char type[100];
@@ -189,115 +284,252 @@ parameter
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+
+        $$ = new_node("function_parameter", "", 0);
+        $$->child[0] = new_node("type", type, 1);
+        $$->child[1] = new_node("id", $3.content, 1);
     }
 ;
 
 for_statement
-    : RW_FOR '(' expression_optative ';' or_expression_optative ';' expression_optative ')' statement
+    : RW_FOR '(' expression_optative ';' or_expression_optative ';' expression_optative ')' statement {
+        $$ = new_node("for_statement", "", 0);
+        $$->child[0] = new_node("for_rw", $1.content, 1);
+        $$->child[1] = $3;
+        $$->child[2] = $5;
+        $$->child[3] = $7;
+        $$->child[4] = $9;
+    }
 ;
 
 if_else_statement
-    : RW_IF '(' expression ')' statement %prec THEN
-    | RW_IF '(' expression ')' statement RW_ELSE statement
+    : RW_IF '(' expression ')' statement %prec THEN {
+        $$ = new_node("if_else_statement", "", 0);
+        $$->child[0] = new_node("if_rw", $1.content, 1);
+        $$->child[1] = $3;
+        $$->child[2] = $5;
+    }
+    | RW_IF '(' expression ')' statement RW_ELSE statement {
+        $$ = new_node("if_else_statement", "", 0);
+        $$->child[0] = new_node("if_rw", $1.content, 1);
+        $$->child[1] = $3;
+        $$->child[2] = $5;
+        $$->child[3] = new_node("else_rw", $6.content, 1);
+        $$->child[4] = $7;
+    }
 
 expression_statement
-    : expression ';'
+    : expression ';' {
+        $$ = $1;
+    }
 ;
 
 io_statement
-    : input_statement
-    | output_statement
+    : input_statement {
+        $$ = $1;
+    }
+    | output_statement {
+        $$ = $1;
+    }
 ;
 
 input_statement
-    : IO_READ '(' IDENTIFIER ')' ';'
+    : IO_READ '(' IDENTIFIER ')' ';' {
+        $$ = new_node("input_statement", "", 0);
+        $$->child[0] = new_node("input_rw", $1.content, 1);
+        $$->child[1] = new_node("input_rw", $3.content, 1);
+    }
 ;
 
 output_statement
-    : IO_WRITE '(' expression ')' ';'
-    | IO_WRITE '(' LIT_STRING ')' ';'
+    : IO_WRITE '(' expression ')' ';' {
+        $$ = new_node("output_statement", "", 0);
+        $$->child[0] = new_node("output_rw", $1.content, 1);
+        $$->child[1] = $3;
+    }
+    | IO_WRITE '(' LIT_STRING ')' ';' {
+        $$ = new_node("output_statement", "", 0);
+        $$->child[0] = new_node("output_rw", $1.content, 1);
+        $$->child[1] = new_node("string_literal", $3.content, 1);
+    }
 ;
 
 return_statement
-    : RW_RETURN expression ';'
+    : RW_RETURN expression ';' {
+        $$ = new_node("return_statement", "", 0);
+        $$->child[0] = new_node("return_rw", $1.content, 1);
+        $$->child[1] = $2;
+    }
 ;
 
 expression
-    : IDENTIFIER '=' expression
-    | or_expression
-    | function_call_expression
+    : IDENTIFIER '=' expression {
+        $$ = new_node("assignment_expression", "=", 0);
+        $$->child[0] = new_node("identifier", $1.content, 1);
+        $$->child[1] = $3;
+    }
+    | or_expression {
+        $$ = $1;
+    }
+    | function_call_expression {
+        $$ = $1;
+    }
 ;
 
 function_call_expression
-    : IDENTIFIER '(' function_arguments_optional ')'
+    : IDENTIFIER '(' function_arguments_optional ')' {
+        $$ = new_node("function_call_expression", "", 0);
+        $$->child[0] = new_node("identifier", $1.content, 1);
+        $$->child[1] = $3;
+    }
 ;
 
 function_arguments_optional
-    : %empty 
-    | function_arguments
+    : %empty {
+        $$ = NULL;
+    }
+    | function_arguments {
+        $$ = $1;
+    }
 ;
 
 function_arguments
-    : function_arguments ',' function_argument
-    | function_argument
+    : function_arguments ',' function_argument {
+        $$ = new_node("function_arguments", "", 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | function_argument {
+        $$ = $1;
+    }
 ;
 
 function_argument
-    : expression
+    : expression {
+        $$ = $1;
+    }
 ;
 
 expression_optative
-    : %empty 
-    | expression
+    : %empty {
+        $$ = NULL;
+    }
+    | expression {
+        $$ = $1;
+    }
 ;
 
 or_expression_optative
-    : %empty
-    | or_expression
+    : %empty {
+        $$ = NULL;
+    }
+    | or_expression {
+        $$ = $1;
+    }
 ;
 
 or_expression
-    : or_expression LOGICAL_OP_OR and_expression
-    | and_expression
+    : or_expression LOGICAL_OP_OR and_expression {
+        $$ = new_node("or_expression", $2.content, 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | and_expression {
+        $$ = $1;
+    }
 ;
 
 and_expression
-    : and_expression LOGICAL_OP_AND equality_expression
-    | equality_expression
+    : and_expression LOGICAL_OP_AND equality_expression {
+        $$ = new_node("and_expression", $2.content, 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | equality_expression {
+        $$ = $1;
+    }
 ;
 
 equality_expression
-    : equality_expression EQUALITY_OP relational_expression
-    | relational_expression 
+    : equality_expression EQUALITY_OP relational_expression {
+        $$ = new_node("equality_expression", $2.content, 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | relational_expression {
+        $$ = $1;
+    }
 ;
 
 relational_expression
-    : relational_expression RELATIONAL_OP list_expression
-    | list_expression
+    : relational_expression RELATIONAL_OP list_expression {
+        $$ = new_node("relational_expression", $2.content, 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | list_expression {
+        $$ = $1;
+    }
 ;
 
 list_expression
-    : list_expression BINARY_LIST_OP addition_expression
-    | addition_expression
+    : list_expression BINARY_LIST_OP addition_expression {
+        $$ = new_node("list_expression", $2.content, 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | addition_expression {
+        $$ = $1;
+    }
 ;
 
 addition_expression
-    : addition_expression ARITMETIC_OP_ADDITIVE multiplication_expression
-    | multiplication_expression
+    : addition_expression ARITMETIC_OP_ADDITIVE multiplication_expression {
+        $$ = new_node("addition_expression", $2.content, 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | multiplication_expression {
+        $$ = $1;
+    }
 ;
 
 multiplication_expression
-    : multiplication_expression ARITMETIC_OP_MULTIPLICATIVE simple_value
-    | simple_value
+    : multiplication_expression ARITMETIC_OP_MULTIPLICATIVE simple_value {
+        $$ = new_node("multiplication_expression", $2.content, 0);
+        $$->child[0] = $1;
+        $$->child[1] = $3;
+    }
+    | simple_value {
+        $$ = $1;
+    }
 ;
 
 simple_value
-    : constant
-    | IDENTIFIER
-    | ARITMETIC_OP_ADDITIVE simple_value
-    | '!' simple_value
-    | UNARY_LIST_OP simple_value
-    | '(' expression ')'
+    : constant {
+        $$ = $1;
+    }
+    | IDENTIFIER {
+        $$ = new_node("identifier", $1.content, 1);
+    }
+    | ARITMETIC_OP_ADDITIVE simple_value {
+        $$ = new_node("simple_value_signed", "", 0);
+        $$->child[0] = new_node("aritmetic_op", $1.content, 1);
+        $$->child[1] = $2;
+    }
+    | '!' simple_value {
+        $$ = new_node("simple_value_exclamation", "", 0);
+        $$->child[0] = new_node("exclamation_op", "!", 1);
+        $$->child[1] = $2;
+    }
+    | UNARY_LIST_OP simple_value {
+        $$ = new_node("simple_value_unary", "", 0);
+        $$->child[0] = new_node("unary_list_op", $1.content, 1);
+        $$->child[1] = $2;
+    }
+    | '(' expression ')' {
+        $$ = $2;
+    }
 ;
 
 variable_declaration_statement
@@ -313,9 +545,13 @@ variable_declaration_statement
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+
+        $$ = new_node("variable_declaration", "", 0);
+        $$->child[0] = new_node("type", $1.content, 1);
+        $$->child[1] = new_node("id", $2.content, 1);
+
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER ';' {
-
         char type[100];
         strcpy(type, $1.content);
         strcat(type, " ");
@@ -331,13 +567,23 @@ variable_declaration_statement
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+
+        $$ = new_node("variable_declaration", "", 0);
+        $$->child[0] = new_node("type", type, 1);
+        $$->child[1] = new_node("id", $3.content, 1);
     }
 ;
 
 constant
-    : C_INTEGER 
-    | C_FLOAT 
-    | C_NIL
+    : C_INTEGER {
+        $$ = new_node("constant", $1.content, 1);
+    }
+    | C_FLOAT {
+        $$ = new_node("constant", $1.content, 1);
+    }
+    | C_NIL {
+        $$ = new_node("constant", $1.content, 1);
+    }
 ;
 
 %%
@@ -373,6 +619,7 @@ int main(int argc, char ** argv) {
     }
 
     print_symbol_table(symbol_table_size);
+    free_tree(root_node);
 
     fclose(yyin);
     yylex_destroy();
