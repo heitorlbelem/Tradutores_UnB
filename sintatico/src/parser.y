@@ -125,7 +125,7 @@ program
 
 declarations
     : declarations declaration {
-        $$ = new_node("declarations", "", 0);
+        $$ = new_node("declarations", "declarations", 0);
         $$->child[0] = $1;
         $$->child[1] = $2;
     }
@@ -151,7 +151,7 @@ block
 
 statements
     : statements statement {
-        $$ = new_node("statements", "", 0);
+        $$ = new_node("statements", "statements", 0);
         $$->child[0] = $1;
         $$->child[1] = $2;
     }
@@ -199,7 +199,7 @@ function_declaration_statement
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("function_declaration_statement", "", 0);
+        $$ = new_node("function_declaration_statement", "func_declaration", 0);
         $$->child[0] = new_node("type", $1.content, 1);
         $$->child[1] = new_node("id", $2.content, 1);
         $$->child[2] = $4;
@@ -222,7 +222,7 @@ function_declaration_statement
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("function_declaration_statement", "", 0);
+        $$ = new_node("function_declaration_statement", "func_declaration", 0);
         $$->child[0] = new_node("type", type, 1);
         $$->child[1] = new_node("id", $3.content, 1);
         $$->child[2] = $5;
@@ -241,7 +241,7 @@ parameters_optative
 
 parameters
     : parameters ',' parameter {
-        $$ = new_node("parameters", "", 0);
+        $$ = new_node("parameters", "params", 0);
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -264,7 +264,7 @@ parameter
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("function_parameter", "", 0);
+        $$ = new_node("function_parameter", "function_param", 0);
         $$->child[0] = new_node("type", $1.content, 1);
         $$->child[1] = new_node("id", $2.content, 1);
     }
@@ -285,7 +285,7 @@ parameter
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("function_parameter", "", 0);
+        $$ = new_node("function_parameter", "function_param", 0);
         $$->child[0] = new_node("type", type, 1);
         $$->child[1] = new_node("id", $3.content, 1);
     }
@@ -293,29 +293,26 @@ parameter
 
 for_statement
     : RW_FOR '(' expression_optative ';' or_expression_optative ';' expression_optative ')' statement {
-        $$ = new_node("for_statement", "", 0);
-        $$->child[0] = new_node("for_rw", $1.content, 1);
-        $$->child[1] = $3;
-        $$->child[2] = $5;
-        $$->child[3] = $7;
-        $$->child[4] = $9;
+        $$ = new_node("for_statement", $1.content, 0);
+        $$->child[0] = $3;
+        $$->child[1] = $5;
+        $$->child[2] = $7;
+        $$->child[3] = $9;
     }
 ;
 
 if_else_statement
     : RW_IF '(' expression ')' statement %prec THEN {
-        $$ = new_node("if_else_statement", "", 0);
-        $$->child[0] = new_node("if_rw", $1.content, 1);
-        $$->child[1] = $3;
-        $$->child[2] = $5;
+        $$ = new_node("if_else_statement", $1.content, 0);
+        $$->child[0] = $3;
+        $$->child[1] = $5;
     }
     | RW_IF '(' expression ')' statement RW_ELSE statement {
-        $$ = new_node("if_else_statement", "", 0);
-        $$->child[0] = new_node("if_rw", $1.content, 1);
-        $$->child[1] = $3;
-        $$->child[2] = $5;
-        $$->child[3] = new_node("else_rw", $6.content, 1);
-        $$->child[4] = $7;
+        $$ = new_node("if_else_statement", $1.content, 0);
+        $$->child[0] = $3;
+        $$->child[1] = $5;
+        $$->child[2] = new_node("else_rw", $6.content, 1);
+        $$->child[2]->child[0] = $7;
     }
 
 expression_statement
@@ -335,30 +332,26 @@ io_statement
 
 input_statement
     : IO_READ '(' IDENTIFIER ')' ';' {
-        $$ = new_node("input_statement", "", 0);
-        $$->child[0] = new_node("input_rw", $1.content, 1);
-        $$->child[1] = new_node("input_rw", $3.content, 1);
+        $$ = new_node("input_statement", $1.content, 0);
+        $$->child[0] = new_node("identifier", $3.content, 1);
     }
 ;
 
 output_statement
     : IO_WRITE '(' expression ')' ';' {
-        $$ = new_node("output_statement", "", 0);
-        $$->child[0] = new_node("output_rw", $1.content, 1);
-        $$->child[1] = $3;
+        $$ = new_node("output_statement", $1.content, 0);
+        $$->child[0] = $3;
     }
     | IO_WRITE '(' LIT_STRING ')' ';' {
-        $$ = new_node("output_statement", "", 0);
-        $$->child[0] = new_node("output_rw", $1.content, 1);
-        $$->child[1] = new_node("string_literal", $3.content, 1);
+        $$ = new_node("output_statement", $1.content, 0);
+        $$->child[0] = new_node("string_literal", $3.content, 1);
     }
 ;
 
 return_statement
     : RW_RETURN expression ';' {
-        $$ = new_node("return_statement", "", 0);
-        $$->child[0] = new_node("return_rw", $1.content, 1);
-        $$->child[1] = $2;
+        $$ = new_node("return_statement", $1.content, 0);
+        $$->child[0] = $2;
     }
 ;
 
@@ -378,7 +371,7 @@ expression
 
 function_call_expression
     : IDENTIFIER '(' function_arguments_optional ')' {
-        $$ = new_node("function_call_expression", "", 0);
+        $$ = new_node("function_call_expression", "function_call", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
     }
@@ -395,7 +388,7 @@ function_arguments_optional
 
 function_arguments
     : function_arguments ',' function_argument {
-        $$ = new_node("function_arguments", "", 0);
+        $$ = new_node("function_arguments", "function_args", 0);
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -513,19 +506,16 @@ simple_value
         $$ = new_node("id", $1.content, 1);
     }
     | ARITMETIC_OP_ADDITIVE simple_value {
-        $$ = new_node("simple_value_signed", "", 0);
-        $$->child[0] = new_node("aritmetic_op", $1.content, 1);
-        $$->child[1] = $2;
+        $$ = new_node("simple_value_signed", $1.content, 0);
+        $$->child[0] = $2;
     }
     | '!' simple_value {
-        $$ = new_node("simple_value_exclamation", "", 0);
-        $$->child[0] = new_node("exclamation_op", "!", 1);
-        $$->child[1] = $2;
+        $$ = new_node("simple_value_exclamation", "!", 0);
+        $$->child[0] = $2;
     }
     | UNARY_LIST_OP simple_value {
-        $$ = new_node("simple_value_unary", "", 0);
-        $$->child[0] = new_node("unary_list_op", $1.content, 1);
-        $$->child[1] = $2;
+        $$ = new_node("simple_value_unary", $1.content, 0);
+        $$->child[0] = $2;
     }
     | '(' expression ')' {
         $$ = $2;
@@ -546,7 +536,7 @@ variable_declaration_statement
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("variable_declaration", "", 0);
+        $$ = new_node("variable_declaration", "var_declaration", 0);
         $$->child[0] = new_node("type", $1.content, 1);
         $$->child[1] = new_node("id", $2.content, 1);
 

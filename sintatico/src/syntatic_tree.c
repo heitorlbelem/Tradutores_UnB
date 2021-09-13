@@ -42,7 +42,7 @@ void show_tree(T_Node* node, int tabs) {
     for(int i = 0; i < tabs; i++) {
         printf(" ");
     }
-    printf("%s\n", node->rule);
+    printf("%s\n", node->text);
 
     for(int i = 0; i < 5; i++) {
         show_tree(node->child[i], tabs+2);
