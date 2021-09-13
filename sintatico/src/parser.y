@@ -201,7 +201,7 @@ function_declaration_statement
 
         $$ = new_node("function_declaration_statement", "", 0);
         $$->child[0] = new_node("type", $1.content, 1);
-        $$->child[1] = new_node("identifier", $2.content, 1);
+        $$->child[1] = new_node("id", $2.content, 1);
         $$->child[2] = $4;
         $$->child[3] = $6;
     }
@@ -224,7 +224,7 @@ function_declaration_statement
 
         $$ = new_node("function_declaration_statement", "", 0);
         $$->child[0] = new_node("type", type, 1);
-        $$->child[1] = new_node("identifier", $3.content, 1);
+        $$->child[1] = new_node("id", $3.content, 1);
         $$->child[2] = $5;
         $$->child[3] = $7;
     }
@@ -365,7 +365,7 @@ return_statement
 expression
     : IDENTIFIER '=' expression {
         $$ = new_node("assignment_expression", "=", 0);
-        $$->child[0] = new_node("identifier", $1.content, 1);
+        $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
     }
     | or_expression {
@@ -379,7 +379,7 @@ expression
 function_call_expression
     : IDENTIFIER '(' function_arguments_optional ')' {
         $$ = new_node("function_call_expression", "", 0);
-        $$->child[0] = new_node("identifier", $1.content, 1);
+        $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
     }
 ;
@@ -510,7 +510,7 @@ simple_value
         $$ = $1;
     }
     | IDENTIFIER {
-        $$ = new_node("identifier", $1.content, 1);
+        $$ = new_node("id", $1.content, 1);
     }
     | ARITMETIC_OP_ADDITIVE simple_value {
         $$ = new_node("simple_value_signed", "", 0);
@@ -576,13 +576,13 @@ variable_declaration_statement
 
 constant
     : C_INTEGER {
-        $$ = new_node("constant", $1.content, 1);
+        $$ = new_node("const", $1.content, 1);
     }
     | C_FLOAT {
-        $$ = new_node("constant", $1.content, 1);
+        $$ = new_node("const", $1.content, 1);
     }
     | C_NIL {
-        $$ = new_node("constant", $1.content, 1);
+        $$ = new_node("const", $1.content, 1);
     }
 ;
 
@@ -611,14 +611,16 @@ int main(int argc, char ** argv) {
     yyparse();
 
     if(errors_count == 0){
-        printf(BGRN "Finished. Lexical analysis found no errors");
+        printf(BGRN "Finished. Analysis found no errors");
         printf(reset "\n");
     } else {
-        printf(BRED "Finished. Lexical analysis found %d errors during execution", errors_count);
+        printf(BRED "Finished. Lexical Analysis found %d errors during execution", errors_count);
         printf(reset "\n");
     }
 
     print_symbol_table(symbol_table_size);
+
+    // printar árvore
     free_tree(root_node);
 
     fclose(yyin);
