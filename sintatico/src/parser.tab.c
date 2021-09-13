@@ -2334,7 +2334,7 @@ yyreduce:
 
         (yyval.node) = new_node("function_declaration_statement", "", 0);
         (yyval.node)->child[0] = new_node("type", (yyvsp[-5].token).content, 1);
-        (yyval.node)->child[1] = new_node("identifier", (yyvsp[-4].token).content, 1);
+        (yyval.node)->child[1] = new_node("id", (yyvsp[-4].token).content, 1);
         (yyval.node)->child[2] = (yyvsp[-2].node);
         (yyval.node)->child[3] = (yyvsp[0].node);
     }
@@ -2362,7 +2362,7 @@ yyreduce:
 
         (yyval.node) = new_node("function_declaration_statement", "", 0);
         (yyval.node)->child[0] = new_node("type", type, 1);
-        (yyval.node)->child[1] = new_node("identifier", (yyvsp[-4].token).content, 1);
+        (yyval.node)->child[1] = new_node("id", (yyvsp[-4].token).content, 1);
         (yyval.node)->child[2] = (yyvsp[-2].node);
         (yyval.node)->child[3] = (yyvsp[0].node);
     }
@@ -2556,7 +2556,7 @@ yyreduce:
 #line 366 "./src/parser.y"
                                 {
         (yyval.node) = new_node("assignment_expression", "=", 0);
-        (yyval.node)->child[0] = new_node("identifier", (yyvsp[-2].token).content, 1);
+        (yyval.node)->child[0] = new_node("id", (yyvsp[-2].token).content, 1);
         (yyval.node)->child[1] = (yyvsp[0].node);
     }
 #line 2563 "parser.tab.c"
@@ -2582,7 +2582,7 @@ yyreduce:
 #line 380 "./src/parser.y"
                                                      {
         (yyval.node) = new_node("function_call_expression", "", 0);
-        (yyval.node)->child[0] = new_node("identifier", (yyvsp[-3].token).content, 1);
+        (yyval.node)->child[0] = new_node("id", (yyvsp[-3].token).content, 1);
         (yyval.node)->child[1] = (yyvsp[-1].node);
     }
 #line 2589 "parser.tab.c"
@@ -2799,7 +2799,7 @@ yyreduce:
   case 64: /* simple_value: IDENTIFIER  */
 #line 512 "./src/parser.y"
                  {
-        (yyval.node) = new_node("identifier", (yyvsp[0].token).content, 1);
+        (yyval.node) = new_node("id", (yyvsp[0].token).content, 1);
     }
 #line 2805 "parser.tab.c"
     break;
@@ -2894,7 +2894,7 @@ yyreduce:
   case 71: /* constant: C_INTEGER  */
 #line 578 "./src/parser.y"
                 {
-        (yyval.node) = new_node("constant", (yyvsp[0].token).content, 1);
+        (yyval.node) = new_node("const", (yyvsp[0].token).content, 1);
     }
 #line 2900 "parser.tab.c"
     break;
@@ -2902,7 +2902,7 @@ yyreduce:
   case 72: /* constant: C_FLOAT  */
 #line 581 "./src/parser.y"
               {
-        (yyval.node) = new_node("constant", (yyvsp[0].token).content, 1);
+        (yyval.node) = new_node("const", (yyvsp[0].token).content, 1);
     }
 #line 2908 "parser.tab.c"
     break;
@@ -2910,7 +2910,7 @@ yyreduce:
   case 73: /* constant: C_NIL  */
 #line 584 "./src/parser.y"
             {
-        (yyval.node) = new_node("constant", (yyvsp[0].token).content, 1);
+        (yyval.node) = new_node("const", (yyvsp[0].token).content, 1);
     }
 #line 2916 "parser.tab.c"
     break;
@@ -3167,14 +3167,17 @@ int main(int argc, char ** argv) {
     yyparse();
 
     if(errors_count == 0){
-        printf(BGRN "Finished. Lexical analysis found no errors");
+        printf(BGRN "Finished. Analysis found no errors");
         printf(reset "\n");
     } else {
-        printf(BRED "Finished. Lexical analysis found %d errors during execution", errors_count);
+        printf(BRED "Finished. Lexical Analysis found %d errors during execution", errors_count);
         printf(reset "\n");
     }
 
     print_symbol_table(symbol_table_size);
+
+    // printar árvore
+    show_tree(root_node, 0);
     free_tree(root_node);
 
     fclose(yyin);

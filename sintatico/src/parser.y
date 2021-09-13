@@ -621,6 +621,7 @@ int main(int argc, char ** argv) {
     print_symbol_table(symbol_table_size);
 
     // printar árvore
+    show_tree(root_node, 0);
     free_tree(root_node);
 
     fclose(yyin);

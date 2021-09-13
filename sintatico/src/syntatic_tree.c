@@ -28,15 +28,25 @@ void free_tree(T_Node* node) {
         }   
     }
 
-    printf("FREE_NODE: %s\n", node->rule);
+    // printf("FREE_NODE: %s\n", node->rule);
     free(node);
 
     return;
 }
 
 // Mostra árvore
-void show_tree(T_Node* node) {
+void show_tree(T_Node* node, int tabs) {
     if(!node) {
         return;
     }
+    for(int i = 0; i < tabs; i++) {
+        printf(" ");
+    }
+    printf("%s\n", node->rule);
+
+    for(int i = 0; i < 5; i++) {
+        show_tree(node->child[i], tabs+2);
+    }
+
+    return;
 }
