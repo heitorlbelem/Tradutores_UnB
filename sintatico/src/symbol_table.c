@@ -29,7 +29,7 @@ void insert_symbol(int idx, T_Symbol symbol) {
 }
 
 void print_symbol_table(int table_size) {
-    if (table_size == 0) return;
+    if (!table_size) return;
     printf(BHRED"-------------------------------------------------------------------------------------"reset"\n");
     printf(BHRED"|                                  SYMBOL TABLE                                     |"reset"\n");
     printf(BHRED"-------------------------------------------------------------------------------------"reset"\n");
@@ -47,6 +47,5 @@ void print_symbol_table(int table_size) {
             symbol_table[i].column_idx
         );
         printf(BHRED"\n-------------------------------------------------------------------------------------" reset "\n");
-        
     }
 }

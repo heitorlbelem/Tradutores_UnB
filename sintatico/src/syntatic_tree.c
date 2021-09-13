@@ -16,12 +16,13 @@ T_Node* new_node(char* rule_name, char* value, int terminal) {
     return node;
 }
 
+// Libera memória alocada para os nós
 void free_tree(T_Node* node) {
-    if(node == NULL) {
+    if(!node) {
         return;
     }
 
-    if(node != NULL) {
+    if(node) {
         for(int i = 0; i < 5; i++) {
             free_tree(node->child[i]);   
         }   
@@ -31,4 +32,11 @@ void free_tree(T_Node* node) {
     free(node);
 
     return;
+}
+
+// Mostra árvore
+void show_tree(T_Node* node) {
+    if(!node) {
+        return;
+    }
 }
