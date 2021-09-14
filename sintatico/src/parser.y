@@ -559,7 +559,7 @@ variable_declaration_statement
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("variable_declaration", "", 0);
+        $$ = new_node("variable_declaration", "var_declaration", 0);
         $$->child[0] = new_node("type", type, 1);
         $$->child[1] = new_node("id", $3.content, 1);
     }

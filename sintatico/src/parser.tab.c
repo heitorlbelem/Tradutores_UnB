@@ -2872,7 +2872,7 @@ yyreduce:
         symbol_table_idx++;
         symbol_table_size++;
 
-        (yyval.node) = new_node("variable_declaration", "", 0);
+        (yyval.node) = new_node("variable_declaration", "var_declaration", 0);
         (yyval.node)->child[0] = new_node("type", type, 1);
         (yyval.node)->child[1] = new_node("id", (yyvsp[-1].token).content, 1);
     }
