@@ -1,6 +1,5 @@
-int list lista;
-
-int to_float(int num) {
+int list lista
+int to_float(int num) 
     return num*3.1415;
 }
 

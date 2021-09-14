@@ -132,6 +132,7 @@ declarations
     | declaration {
         $$ = $1;
     }
+    | error {}
 ;
 
 declaration

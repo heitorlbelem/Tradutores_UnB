@@ -1,6 +1,6 @@
 int list lista;
 
-int to_float(int num) {
+int to_float(num) {
     return num*3.1415;
 }
 
@@ -55,7 +55,7 @@ int main() {
 
     int c = 2;
     read(c);
-    if(c > 10 || (c * 3 - (5/2 + 4) + c*(2+a)/3 && 1)) {
+    if(c >  1|| (c * 3 - (5/2 + 4) + c*(2+a)/3 && 1)) {
         return -(-a) + a*c || (a && c || a>1 && !c); 
     } else if(a > 1 && c != -a) {
         return a*c+(10*a - !(c) || 0);
