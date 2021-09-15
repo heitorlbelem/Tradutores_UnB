@@ -24,6 +24,7 @@
     extern int scope_id;
     int symbol_table_idx = 0;
     int symbol_table_size = 0;
+    int parsing_errors = 0;
 
     T_Node* root_node;
 %}
@@ -132,7 +133,7 @@ declarations
     | declaration {
         $$ = $1;
     }
-    | error {}
+    | error { parsing_errors++; }
 ;
 
 declaration
@@ -183,7 +184,7 @@ statement
     | block {
         $$ = $1;
     }
-    | error {}
+    | error { parsing_errors++; }
 ;
 
 function_declaration_statement
@@ -312,7 +313,7 @@ if_else_statement
         $$ = new_node("if_else_statement", $1.content, 0);
         $$->child[0] = $3;
         $$->child[1] = $5;
-        $$->child[2] = new_node("else_rw", $6.content, 1);
+        $$->child[2] = new_node("else_rw", $6.content, 0);
         $$->child[2]->child[0] = $7;
     }
 
@@ -600,20 +601,26 @@ int main(int argc, char ** argv) {
     }
 
     yyparse();
-
-    if(errors_count == 0){
-        printf(BGRN "Finished. Analysis found no errors");
-        printf(reset "\n");
-    } else {
-        printf(BRED "Finished. Lexical Analysis found %d errors during execution", errors_count);
-        printf(reset "\n");
-    }
-
+    
     print_symbol_table(symbol_table_size);
 
     // printar árvore
-    show_tree(root_node, 0);
-    free_tree(root_node);
+    if(errors_count == 0 && parsing_errors == 0){
+        printf(BGRN "\n--------------- SYNTATIC TREE ---------------");
+        printf(reset"\n");
+        show_tree(root_node, 0);
+        free_tree(root_node);
+        printf(reset "\n");
+    } else {
+        if(errors_count > 0) {
+            printf(BRED "Finished. Lexical Analysis found %d errors during execution", errors_count);
+            printf(reset"\n");
+        }
+        if(parsing_errors > 0) {
+            printf(BRED "Finished. Syntatic Analysis found %d errors during execution", parsing_errors);
+            printf(reset "\n");
+        }
+    }
 
     fclose(yyin);
     yylex_destroy();
