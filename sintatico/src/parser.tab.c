@@ -176,7 +176,7 @@ enum yysymbol_kind_t
   YYSYMBOL_return_statement = 50,          /* return_statement  */
   YYSYMBOL_expression = 51,                /* expression  */
   YYSYMBOL_function_call_expression = 52,  /* function_call_expression  */
-  YYSYMBOL_function_arguments_optional = 53, /* function_arguments_optional  */
+  YYSYMBOL_function_arguments_optative = 53, /* function_arguments_optative  */
   YYSYMBOL_function_arguments = 54,        /* function_arguments  */
   YYSYMBOL_function_argument = 55,         /* function_argument  */
   YYSYMBOL_expression_optative = 56,       /* expression_optative  */
@@ -607,7 +607,7 @@ static const char *const yytname[] =
   "parameter", "for_statement", "if_else_statement",
   "expression_statement", "io_statement", "input_statement",
   "output_statement", "return_statement", "expression",
-  "function_call_expression", "function_arguments_optional",
+  "function_call_expression", "function_arguments_optative",
   "function_arguments", "function_argument", "expression_optative",
   "or_expression_optative", "or_expression", "and_expression",
   "equality_expression", "relational_expression", "list_expression",
@@ -2570,7 +2570,7 @@ yyreduce:
 #line 2571 "parser.tab.c"
     break;
 
-  case 40: /* function_call_expression: IDENTIFIER '(' function_arguments_optional ')'  */
+  case 40: /* function_call_expression: IDENTIFIER '(' function_arguments_optative ')'  */
 #line 375 "./src/parser.y"
                                                      {
         (yyval.node) = new_node("function_call_expression", "function_call", 0);
@@ -2580,7 +2580,7 @@ yyreduce:
 #line 2581 "parser.tab.c"
     break;
 
-  case 41: /* function_arguments_optional: %empty  */
+  case 41: /* function_arguments_optative: %empty  */
 #line 383 "./src/parser.y"
              {
         (yyval.node) = NULL;
@@ -2588,7 +2588,7 @@ yyreduce:
 #line 2589 "parser.tab.c"
     break;
 
-  case 42: /* function_arguments_optional: function_arguments  */
+  case 42: /* function_arguments_optative: function_arguments  */
 #line 386 "./src/parser.y"
                          {
         (yyval.node) = (yyvsp[0].node);

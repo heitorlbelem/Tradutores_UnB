@@ -58,9 +58,9 @@ Grammar
    37           | or_expression
    38           | function_call_expression
 
-   39 function_call_expression: IDENTIFIER '(' function_arguments_optional ')'
+   39 function_call_expression: IDENTIFIER '(' function_arguments_optative ')'
 
-   40 function_arguments_optional: %empty
+   40 function_arguments_optative: %empty
    41                            | function_arguments
 
    42 function_arguments: function_arguments ',' function_argument
@@ -207,7 +207,7 @@ Nonterminals, with rules where they appear
     function_call_expression <node> (52)
         on left: 39
         on right: 38
-    function_arguments_optional <node> (53)
+    function_arguments_optative <node> (53)
         on left: 40 41
         on right: 39
     function_arguments <node> (54)
@@ -638,7 +638,7 @@ State 32
 State 33
 
    36 expression: IDENTIFIER • '=' expression
-   39 function_call_expression: IDENTIFIER • '(' function_arguments_optional ')'
+   39 function_call_expression: IDENTIFIER • '(' function_arguments_optative ')'
    64 simple_value: IDENTIFIER •
 
     '('  shift, and go to state 69
@@ -1077,7 +1077,7 @@ State 68
 
 State 69
 
-   39 function_call_expression: IDENTIFIER '(' • function_arguments_optional ')'
+   39 function_call_expression: IDENTIFIER '(' • function_arguments_optative ')'
 
     C_INTEGER              shift, and go to state 170
     C_FLOAT                shift, and go to state 171
@@ -1088,11 +1088,11 @@ State 69
     '!'                    shift, and go to state 176
     ARITMETIC_OP_ADDITIVE  shift, and go to state 177
 
-    ')'  reduce using rule 40 (function_arguments_optional)
+    ')'  reduce using rule 40 (function_arguments_optative)
 
     expression                   go to state 92
     function_call_expression     go to state 178
-    function_arguments_optional  go to state 93
+    function_arguments_optative  go to state 93
     function_arguments           go to state 94
     function_argument            go to state 95
     or_expression                go to state 179
@@ -1527,19 +1527,19 @@ State 92
 
 State 93
 
-   39 function_call_expression: IDENTIFIER '(' function_arguments_optional • ')'
+   39 function_call_expression: IDENTIFIER '(' function_arguments_optative • ')'
 
     ')'  shift, and go to state 114
 
 
 State 94
 
-   41 function_arguments_optional: function_arguments •
+   41 function_arguments_optative: function_arguments •
    42 function_arguments: function_arguments • ',' function_argument
 
     ','  shift, and go to state 115
 
-    ')'  reduce using rule 41 (function_arguments_optional)
+    ')'  reduce using rule 41 (function_arguments_optative)
 
 
 State 95
@@ -1750,7 +1750,7 @@ State 113
 
 State 114
 
-   39 function_call_expression: IDENTIFIER '(' function_arguments_optional ')' •
+   39 function_call_expression: IDENTIFIER '(' function_arguments_optative ')' •
 
     ';'  reduce using rule 39 (function_call_expression)
 
@@ -2467,7 +2467,7 @@ State 154
 State 155
 
    36 expression: IDENTIFIER • '=' expression
-   39 function_call_expression: IDENTIFIER • '(' function_arguments_optional ')'
+   39 function_call_expression: IDENTIFIER • '(' function_arguments_optative ')'
    64 simple_value: IDENTIFIER •
 
     '('  shift, and go to state 216
@@ -2734,7 +2734,7 @@ State 172
 State 173
 
    36 expression: IDENTIFIER • '=' expression
-   39 function_call_expression: IDENTIFIER • '(' function_arguments_optional ')'
+   39 function_call_expression: IDENTIFIER • '(' function_arguments_optative ')'
    64 simple_value: IDENTIFIER •
 
     '('  shift, and go to state 230
@@ -3361,7 +3361,7 @@ State 215
 
 State 216
 
-   39 function_call_expression: IDENTIFIER '(' • function_arguments_optional ')'
+   39 function_call_expression: IDENTIFIER '(' • function_arguments_optative ')'
 
     C_INTEGER              shift, and go to state 170
     C_FLOAT                shift, and go to state 171
@@ -3372,11 +3372,11 @@ State 216
     '!'                    shift, and go to state 176
     ARITMETIC_OP_ADDITIVE  shift, and go to state 177
 
-    ')'  reduce using rule 40 (function_arguments_optional)
+    ')'  reduce using rule 40 (function_arguments_optative)
 
     expression                   go to state 92
     function_call_expression     go to state 178
-    function_arguments_optional  go to state 262
+    function_arguments_optative  go to state 262
     function_arguments           go to state 94
     function_argument            go to state 95
     or_expression                go to state 179
@@ -3621,7 +3621,7 @@ State 229
 
 State 230
 
-   39 function_call_expression: IDENTIFIER '(' • function_arguments_optional ')'
+   39 function_call_expression: IDENTIFIER '(' • function_arguments_optative ')'
 
     C_INTEGER              shift, and go to state 170
     C_FLOAT                shift, and go to state 171
@@ -3632,11 +3632,11 @@ State 230
     '!'                    shift, and go to state 176
     ARITMETIC_OP_ADDITIVE  shift, and go to state 177
 
-    ')'  reduce using rule 40 (function_arguments_optional)
+    ')'  reduce using rule 40 (function_arguments_optative)
 
     expression                   go to state 92
     function_call_expression     go to state 178
-    function_arguments_optional  go to state 272
+    function_arguments_optative  go to state 272
     function_arguments           go to state 94
     function_argument            go to state 95
     or_expression                go to state 179
@@ -4164,7 +4164,7 @@ State 261
 
 State 262
 
-   39 function_call_expression: IDENTIFIER '(' function_arguments_optional • ')'
+   39 function_call_expression: IDENTIFIER '(' function_arguments_optative • ')'
 
     ')'  shift, and go to state 297
 
@@ -4287,7 +4287,7 @@ State 271
 
 State 272
 
-   39 function_call_expression: IDENTIFIER '(' function_arguments_optional • ')'
+   39 function_call_expression: IDENTIFIER '(' function_arguments_optative • ')'
 
     ')'  shift, and go to state 298
 
@@ -4605,14 +4605,14 @@ State 296
 
 State 297
 
-   39 function_call_expression: IDENTIFIER '(' function_arguments_optional ')' •
+   39 function_call_expression: IDENTIFIER '(' function_arguments_optative ')' •
 
     ')'  reduce using rule 39 (function_call_expression)
 
 
 State 298
 
-   39 function_call_expression: IDENTIFIER '(' function_arguments_optional ')' •
+   39 function_call_expression: IDENTIFIER '(' function_arguments_optative ')' •
 
     ')'  reduce using rule 39 (function_call_expression)
     ','  reduce using rule 39 (function_call_expression)

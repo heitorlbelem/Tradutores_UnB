@@ -99,7 +99,7 @@
 %type<node> return_statement
 %type<node> expression
 %type<node> function_call_expression
-%type<node> function_arguments_optional
+%type<node> function_arguments_optative
 %type<node> function_arguments
 %type<node> function_argument
 %type<node> expression_optative
@@ -372,14 +372,14 @@ expression
 ;
 
 function_call_expression
-    : IDENTIFIER '(' function_arguments_optional ')' {
+    : IDENTIFIER '(' function_arguments_optative ')' {
         $$ = new_node("function_call_expression", "function_call", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
     }
 ;
 
-function_arguments_optional
+function_arguments_optative
     : %empty {
         $$ = NULL;
     }
