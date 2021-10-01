@@ -5,6 +5,7 @@
     #include <stdlib.h>
     #include <string.h>
     #include "parser.tab.h"
+    #include "scope_stack.h"
     
     #define BRED "\e[1;31m"
     #define BGRN "\e[1;32m"
@@ -17,6 +18,7 @@
     int column_idx = 1;
     int line_idx = 1;
     int scope_id = 0;
+    int top = 0;
 
     // void write_line(char*, char*);
 %}
@@ -63,9 +65,12 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
         return ')';
     } else if(strcmp(yytext, "{") == 0) {
         scope_id++;
+        top++;
+        push_scope(top, scope_id);
         return '{';
     } else if(strcmp(yytext, "}") == 0) {
-        scope_id--;
+        pop_scope(top);
+        if(top > 0) top--;
         return '}';
     } else if(strcmp(yytext, ",") == 0) {
         return ',';

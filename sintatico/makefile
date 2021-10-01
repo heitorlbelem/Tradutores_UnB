@@ -19,16 +19,16 @@ SDIR = ./src
 
 # Lista de dependências do projeto (arquivos .h).
 
-_DEPS = parser.tab.h symbol_table.h syntatic_tree.h
+_DEPS = parser.tab.h symbol_table.h syntatic_tree.h scope_stack.h
 
 # Lista de arquivos intermediários de compilação gerados pelo projeto
 # (arquivos .o).
 
-_OBJ = parser.tab.o symbol_table.o syntatic_tree.o lex.yy.o
+_OBJ = parser.tab.o symbol_table.o syntatic_tree.o scope_stack.o lex.yy.o
 
 # Lista de arquivos fontes utilizados para compilação.
 
-_SRC = parser.tab.c symbol_table.c syntatic_tree.c lex.yy.c
+_SRC = parser.tab.c symbol_table.c syntatic_tree.c scope_stack.c lex.yy.c
 
 # Junção dos nomes de arquivos com seus respectivos caminhos.
 

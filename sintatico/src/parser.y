@@ -7,6 +7,7 @@
     #include<string.h>
     #include "symbol_table.h"
     #include "syntatic_tree.h"
+    #include "scope_stack.h"
     
     #define BRED "\e[1;31m"
     #define BGRN "\e[1;32m"
@@ -22,6 +23,7 @@
 
     extern int errors_count;
     extern int scope_id;
+    extern int top;
     int symbol_table_idx = 0;
     int symbol_table_size = 0;
     int parsing_errors = 0;
@@ -587,7 +589,7 @@ void yyerror(const char* err_msg){
 }
 
 int main(int argc, char ** argv) {
-    
+
     if(argc != 2) {
         printf(BRED "You must pass exactly one file as an argument.");
         printf(reset "\n");
@@ -606,11 +608,13 @@ int main(int argc, char ** argv) {
 
     // printar árvore
     if(errors_count == 0 && parsing_errors == 0){
-        printf(BGRN "\n--------------- SYNTATIC TREE ---------------");
+        /* printf(BGRN "\n--------------- SYNTATIC TREE ---------------");
         printf(reset"\n");
         show_tree(root_node, 0);
         free_tree(root_node);
-        printf(reset "\n");
+        printf(reset "\n"); */
+        initialize_scope_stack();
+        print_scope_stack(top);
     } else {
         if(errors_count > 0) {
             printf(BRED "Finished. Lexical Analysis found %d errors during execution", errors_count);
