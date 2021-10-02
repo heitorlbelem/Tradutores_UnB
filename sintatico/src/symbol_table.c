@@ -49,3 +49,14 @@ void print_symbol_table(int table_size) {
         printf(BHRED"\n-------------------------------------------------------------------------------------" reset "\n");
     }
 }
+
+int check_redeclared(char* identifier, int last_pos, int current_scope) {
+    printf("\n\n %s \n\n", identifier);
+    for(int i = 0; i <= last_pos; i++) {
+        if( (strcmp(identifier, symbol_table[i].content) == 0) && (current_scope == symbol_table[i].scope) ) {
+            printf("Redeclaracao de variavel ou funcao\n");
+            return 1;
+        }
+    }
+    return 0;
+}

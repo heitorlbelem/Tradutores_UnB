@@ -199,6 +199,7 @@ function_declaration_statement
             $2.line_idx, 
             $2.column_idx
         );
+        check_redeclared($2.content, symbol_table_idx, scope_id);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -222,6 +223,7 @@ function_declaration_statement
             $3.line_idx, 
             $3.column_idx
         );
+        check_redeclared($3.content, symbol_table_idx, scope_id);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -536,6 +538,8 @@ variable_declaration_statement
             $2.line_idx, 
             $2.column_idx
         );
+        
+        check_redeclared($2.content, symbol_table_idx, scope_id);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -558,6 +562,8 @@ variable_declaration_statement
             $3.line_idx, 
             $3.column_idx
         );
+
+        check_redeclared($3.content, symbol_table_idx, scope_id);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;

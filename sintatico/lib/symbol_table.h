@@ -102,4 +102,6 @@ void insert_symbol(int idx, T_Symbol symbol);
 // Print symbol table
 void print_symbol_table(int table_size);
 
+int check_redeclared(char* identifier, int last_pos, int current_scope);
+
 #endif
