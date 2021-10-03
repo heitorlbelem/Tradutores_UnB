@@ -19,6 +19,7 @@
     int line_idx = 1;
     int scope_id = 0;
     int top = 0;
+    int scope_stack[100000];
 
     // void write_line(char*, char*);
 %}
@@ -66,10 +67,10 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     } else if(strcmp(yytext, "{") == 0) {
         scope_id++;
         top++;
-        push_scope(top, scope_id);
+        push_scope(top, scope_id, scope_stack);
         return '{';
     } else if(strcmp(yytext, "}") == 0) {
-        pop_scope(top);
+        pop_scope(top, scope_stack);
         if(top > 0) top--;
         return '}';
     } else if(strcmp(yytext, ",") == 0) {
@@ -261,6 +262,7 @@ MULTI_LINE_COMMENT \/\*(.|[\n])*\*\/
     
     yylval.token.line_idx = line_idx;
     yylval.token.column_idx = column_idx;
+    yylval.token.scope = scope_stack[top];
     strcpy(yylval.token.content, yytext);
    
     // write_line("Identifier", yytext);

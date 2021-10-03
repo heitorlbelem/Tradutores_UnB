@@ -27,6 +27,7 @@
     int symbol_table_idx = 0;
     int symbol_table_size = 0;
     int parsing_errors = 0;
+    extern int scope_stack[100000];
 
     T_Node* root_node;
 %}
@@ -189,28 +190,39 @@ statement
     | error { parsing_errors++; }
 ;
 
-function_declaration_statement
-    : SIMPLE_TYPE IDENTIFIER '(' parameters_optative ')' statement {
+function_declaration_statement:
+    SIMPLE_TYPE IDENTIFIER '(' {
+        scope_id++;
+        top++;
+        push_scope(top, scope_id, scope_stack);
+    }
+    parameters_optative ')' statement {
         T_Symbol sym = symbol(
             $1.content, 
             $2.content, 
             "function", 
-            scope_id, 
+            $2.scope, 
             $2.line_idx, 
             $2.column_idx
         );
-        check_redeclared($2.content, symbol_table_idx, scope_id);
+        check_redeclared($2.content, symbol_table_idx, $2.scope);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+        pop_scope(top, scope_stack);
+        if(top > 0) top--;
 
         $$ = new_node("function_declaration_statement", "func_declaration", 0);
         $$->child[0] = new_node("type", $1.content, 1);
         $$->child[1] = new_node("id", $2.content, 1);
-        $$->child[2] = $4;
-        $$->child[3] = $6;
+        $$->child[2] = $5;
+        $$->child[3] = $7;
     }
-    | SIMPLE_TYPE LIST_TYPE IDENTIFIER '(' parameters_optative ')' statement {
+    | SIMPLE_TYPE LIST_TYPE IDENTIFIER '(' {
+        scope_id++;
+        top++;
+        push_scope(top, scope_id, scope_stack);
+    } parameters_optative ')' statement {
         char type[100];
         strcpy(type, $1.content);
         strcat(type, " ");
@@ -219,20 +231,22 @@ function_declaration_statement
             type, 
             $3.content, 
             "function", 
-            scope_id, 
+            $3.scope, 
             $3.line_idx, 
             $3.column_idx
         );
-        check_redeclared($3.content, symbol_table_idx, scope_id);
+        check_redeclared($3.content, symbol_table_idx, $3.scope);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
+        pop_scope(top, scope_stack);
+        if(top > 0) top--;
 
         $$ = new_node("function_declaration_statement", "func_declaration", 0);
         $$->child[0] = new_node("type", type, 1);
         $$->child[1] = new_node("id", $3.content, 1);
-        $$->child[2] = $5;
-        $$->child[3] = $7;
+        $$->child[2] = $6;
+        $$->child[3] = $8;
     }
 ;
 
@@ -262,7 +276,7 @@ parameter
             $1.content, 
             $2.content, 
             "parameter", 
-            scope_id, 
+            scope_stack[top], 
             $2.line_idx, 
             $2.column_idx
         );
@@ -283,7 +297,7 @@ parameter
             type, 
             $3.content, 
             "parameter", 
-            scope_id, 
+            $3.scope, 
             $3.line_idx, 
             $3.column_idx
         );
@@ -340,6 +354,7 @@ input_statement
     : IO_READ '(' IDENTIFIER ')' ';' {
         $$ = new_node("input_statement", $1.content, 0);
         $$->child[0] = new_node("identifier", $3.content, 1);
+        variable_available($3.content, symbol_table_idx, top, scope_stack);
     }
 ;
 
@@ -366,6 +381,7 @@ expression
         $$ = new_node("assignment_expression", "=", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
+        variable_available($1.content, symbol_table_idx, top, scope_stack);
     }
     | or_expression {
         $$ = $1;
@@ -380,6 +396,7 @@ function_call_expression
         $$ = new_node("function_call_expression", "function_call", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
+        variable_available($1.content, symbol_table_idx, top, scope_stack);
     }
 ;
 
@@ -510,6 +527,7 @@ simple_value
     }
     | IDENTIFIER {
         $$ = new_node("id", $1.content, 1);
+        variable_available($1.content, symbol_table_idx, top, scope_stack);
     }
     | ARITMETIC_OP_ADDITIVE simple_value {
         $$ = new_node("simple_value_signed", $1.content, 0);
@@ -534,12 +552,12 @@ variable_declaration_statement
             $1.content, 
             $2.content, 
             "variable", 
-            scope_id, 
+            $2.scope, 
             $2.line_idx, 
             $2.column_idx
         );
         
-        check_redeclared($2.content, symbol_table_idx, scope_id);
+        check_redeclared($2.content, symbol_table_idx, $2.scope);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -558,12 +576,12 @@ variable_declaration_statement
             type, 
             $3.content, 
             "variable", 
-            scope_id, 
+            $3.scope, 
             $3.line_idx, 
             $3.column_idx
         );
 
-        check_redeclared($3.content, symbol_table_idx, scope_id);
+        check_redeclared($3.content, symbol_table_idx, $3.scope);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -608,19 +626,19 @@ int main(int argc, char ** argv) {
         return (-1);
     }
 
+    initialize_scope_stack(scope_stack);
     yyparse();
     
-    print_symbol_table(symbol_table_size);
 
     // printar árvore
     if(errors_count == 0 && parsing_errors == 0){
+        print_symbol_table(symbol_table_size);
         /* printf(BGRN "\n--------------- SYNTATIC TREE ---------------");
         printf(reset"\n");
         show_tree(root_node, 0);
-        free_tree(root_node);
-        printf(reset "\n"); */
-        initialize_scope_stack();
-        print_scope_stack(top);
+        free_tree(root_node); */
+        printf(reset "\n"); 
+        print_scope_stack(top, scope_stack);
     } else {
         if(errors_count > 0) {
             printf(BRED "Finished. Lexical Analysis found %d errors during execution", errors_count);
