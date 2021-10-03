@@ -6,13 +6,11 @@
 
 void push_scope(int top, int scope_id, int scope_stack[]) {
   scope_stack[top] = scope_id;
-  // print_scope_stack(top, scope_stack);
   return;
 }
 
 void pop_scope(int top, int scope_stack[]) {
   scope_stack[top] = -1;
-  // print_scope_stack(top, scope_stack);
   return;
 }
 

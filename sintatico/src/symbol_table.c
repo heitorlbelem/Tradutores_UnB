@@ -53,22 +53,21 @@ void print_symbol_table(int table_size) {
 int check_redeclared(char* identifier, int last_pos, int current_scope) {
     for(int i = 0; i <= last_pos; i++) {
         if( (strcmp(identifier, symbol_table[i].content) == 0) && (current_scope == symbol_table[i].scope) ) {
-            printf("Redeclaracao de variavel ou funcao\n");
             return 1;
         }
     }
     return 0;
 }
 
-int variable_available(char* identifier, int last_pos, int stack_top, int scope_stack[]) {
+int variable_unavailable(char* identifier, int last_pos, int stack_top, int scope_stack[]) {
     for(int i = stack_top; i >= 0; i--) {
         for(int j = 0; j <= last_pos; j++) {
             if(strcmp(identifier, symbol_table[j].content) == 0 && symbol_table[j].scope == scope_stack[i]) {
-                printf("Variavel disponivel =====> %s\n", identifier);
-                return 1;
+                // printf("Variavel disponivel =====> %s\n", identifier);
+                return 0;
             }
         }
     }
-    printf("Variavel indisponivel =====> %s\n", identifier);
-    return 0;
+    // printf("Variavel indisponivel =====> %s\n", identifier);
+    return 1;
 }

@@ -104,6 +104,6 @@ void print_symbol_table(int table_size);
 
 int check_redeclared(char* identifier, int last_pos, int current_scope);
 
-int variable_available(char* identifier, int last_pos, int stack_top, int scope_stack[]);
+int variable_unavailable(char* identifier, int last_pos, int stack_top, int scope_stack[]);
 
 #endif

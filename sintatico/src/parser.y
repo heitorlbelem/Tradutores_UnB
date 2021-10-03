@@ -18,6 +18,7 @@
     
     extern FILE *yyin;
     void yyerror (char const *);    
+    void print_semantic_error(char* text, int line, int column);
     extern int yylex();
     extern int yylex_destroy();
 
@@ -205,7 +206,11 @@ function_declaration_statement:
             $2.line_idx, 
             $2.column_idx
         );
-        check_redeclared($2.content, symbol_table_idx, $2.scope);
+        int error = check_redeclared($2.content, symbol_table_idx, $2.scope);
+        if(error) {
+            print_semantic_error("Function already declared", $2.line_idx, $2.column_idx);
+        }
+
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -235,7 +240,11 @@ function_declaration_statement:
             $3.line_idx, 
             $3.column_idx
         );
-        check_redeclared($3.content, symbol_table_idx, $3.scope);
+        int error = check_redeclared($3.content, symbol_table_idx, $3.scope);
+        if(error) {
+            print_semantic_error("Function already declared", $3.line_idx, $3.column_idx);
+        }
+
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -354,7 +363,10 @@ input_statement
     : IO_READ '(' IDENTIFIER ')' ';' {
         $$ = new_node("input_statement", $1.content, 0);
         $$->child[0] = new_node("identifier", $3.content, 1);
-        variable_available($3.content, symbol_table_idx, top, scope_stack);
+        int error = variable_unavailable($3.content, symbol_table_idx, top, scope_stack);
+        if(error) {
+            print_semantic_error("Variable unavailable", $3.line_idx, $3.column_idx);
+        }
     }
 ;
 
@@ -381,7 +393,10 @@ expression
         $$ = new_node("assignment_expression", "=", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
-        variable_available($1.content, symbol_table_idx, top, scope_stack);
+        int error = variable_unavailable($1.content, symbol_table_idx, top, scope_stack);
+        if(error) {
+            print_semantic_error("Variable unavailable", $1.line_idx, $1.column_idx);
+        }
     }
     | or_expression {
         $$ = $1;
@@ -396,7 +411,10 @@ function_call_expression
         $$ = new_node("function_call_expression", "function_call", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
-        variable_available($1.content, symbol_table_idx, top, scope_stack);
+        int error = variable_unavailable($1.content, symbol_table_idx, top, scope_stack);
+        if(error) {
+            print_semantic_error("Function unavailable", $1.line_idx, $1.column_idx);
+        }
     }
 ;
 
@@ -527,7 +545,10 @@ simple_value
     }
     | IDENTIFIER {
         $$ = new_node("id", $1.content, 1);
-        variable_available($1.content, symbol_table_idx, top, scope_stack);
+        int error = variable_unavailable($1.content, symbol_table_idx, top, scope_stack);
+        if(error) {
+            print_semantic_error("Variable unavailable", $1.line_idx, $1.column_idx);
+        }
     }
     | ARITMETIC_OP_ADDITIVE simple_value {
         $$ = new_node("simple_value_signed", $1.content, 0);
@@ -557,7 +578,11 @@ variable_declaration_statement
             $2.column_idx
         );
         
-        check_redeclared($2.content, symbol_table_idx, $2.scope);
+        int error = check_redeclared($2.content, symbol_table_idx, $2.scope);
+        if(error) {
+            print_semantic_error("Variable already declared", $2.line_idx, $2.column_idx);
+        }
+
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -581,7 +606,10 @@ variable_declaration_statement
             $3.column_idx
         );
 
-        check_redeclared($3.content, symbol_table_idx, $3.scope);
+        int error = check_redeclared($3.content, symbol_table_idx, $3.scope);
+        if(error) {
+            print_semantic_error("Variable already declared", $3.line_idx, $3.column_idx);
+        }
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -609,6 +637,12 @@ constant
 void yyerror(const char* err_msg){
     printf("\n[PARSER] Line: %d | Column: %d\t=> ERROR %s\n\n", yylval.token.line_idx, yylval.token.column_idx, err_msg);
     errors_count++;
+    return;
+}
+
+void print_semantic_error(char* text, int line, int column) {
+    printf("[SEMANTIC ERROR] Line: %d | Column: %d\t", line, column);
+    printf("%s\n", text);
     return;
 }
 
