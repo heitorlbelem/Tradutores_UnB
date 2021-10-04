@@ -12,6 +12,8 @@ int list_operations() {
     int list int_list;
     int_list = NIL;
     int i;
+    int n;
+    n = 100;
     for (i = 0; i < n ; i = i + 1) {
 		lista = i : int_list;
 	}

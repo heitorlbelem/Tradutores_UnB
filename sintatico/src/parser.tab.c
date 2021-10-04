@@ -3236,12 +3236,11 @@ int main(int argc, char ** argv) {
     // printar árvore
     if(errors_count == 0 && parsing_errors == 0){
         print_symbol_table(symbol_table_size);
-        /* printf(BGRN "\n--------------- SYNTATIC TREE ---------------");
+        printf(BGRN "\n--------------- SYNTATIC TREE ---------------");
         printf(reset"\n");
         show_tree(root_node, 0);
-        free_tree(root_node); */
+        free_tree(root_node);
         printf(reset "\n"); 
-        print_scope_stack(top, scope_stack);
     } else {
         if(errors_count > 0) {
             printf(BRED "Finished. Lexical Analysis found %d errors during execution", errors_count);
