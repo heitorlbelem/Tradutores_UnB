@@ -4,7 +4,7 @@ int to_float(int num) {
     return num*3.1415;
 }
 
-int beq_100(float num) {
+int beq_100(float num, int a, int b, int c) {
     return num >= 100.00;
 }
 
@@ -12,6 +12,10 @@ int list_operations() {
     int list int_list;
     int_list = NIL;
     int i;
+    int k;
+    k = beq_100(1);
+    int y;
+    y = beq_100(1,2,3,4,5,6);
     int n;
     n = 100;
     for (i = 0; i < n ; i = i + 1) {

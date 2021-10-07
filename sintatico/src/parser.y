@@ -420,10 +420,14 @@ function_call_expression
         $$ = new_node("function_call_expression", "function_call", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
+        
         int error = variable_unavailable($1.content, symbol_table_idx, top, scope_stack);
         if(error) {
             print_semantic_error("Function unavailable", $1.line_idx, $1.column_idx);
         }
+
+        int n = count_function_params($3);
+        printf("%d\n", n);
     }
 ;
 
@@ -449,7 +453,8 @@ function_arguments
 
 function_argument
     : expression {
-        $$ = $1;
+        $$ = new_node("function_arg", "function_arg", 0);
+        $$->child[0] = $1;
     }
 ;
 

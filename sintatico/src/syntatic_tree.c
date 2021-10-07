@@ -57,3 +57,11 @@ void show_tree(T_Node* node, int tabs) {
 
     return;
 }
+
+int count_function_params(T_Node* node) {
+    if(!node) return 0;
+    
+    if(node->child[0] == NULL) return 0;
+    
+    return 1 + count_function_params(node->child[0]);
+}

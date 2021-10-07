@@ -18,4 +18,6 @@ T_Node* new_node(char* rule_name, char* value, int terminal);
 void free_tree(T_Node* node);
 void show_tree(T_Node* node, int tabs);
 
+int count_function_params(T_Node* node);
+
 #endif
