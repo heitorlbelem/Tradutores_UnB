@@ -81,10 +81,11 @@ typedef struct {
     char var_func_param[100];
     char type[100];
     char content[100];
+    int num_params;
 } T_Symbol;
 
 // Constructor
-T_Symbol symbol(char* type, char* content, char* var_func_param, int scope, int line, int column);
+T_Symbol symbol(char* type, char* content, char* var_func_param, int scope, int line, int column, int num_params);
 
 // Update symbol props
 void update_symbol(
@@ -92,8 +93,9 @@ void update_symbol(
     int line, 
     int column, 
     int scope, 
-    int is_variable, 
-    char* content
+    int is_variable,
+    char* content,
+    int num_params
 );
 
 // Insert symbol into symbol_table
@@ -105,5 +107,9 @@ void print_symbol_table(int table_size);
 int check_redeclared(char* identifier, int last_pos, int current_scope);
 
 int variable_unavailable(char* identifier, int last_pos, int stack_top, int scope_stack[]);
+
+void increment_params_number(int symbol_table_idx);
+
+int main_exists(int table_size);
 
 #endif

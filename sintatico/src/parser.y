@@ -29,6 +29,7 @@
     int symbol_table_size = 0;
     int parsing_errors = 0;
     extern int scope_stack[100000];
+    int current_function_idx = 0;
 
     T_Node* root_node;
 %}
@@ -193,30 +194,32 @@ statement
 
 function_declaration_statement:
     SIMPLE_TYPE IDENTIFIER '(' {
+        
         scope_id++;
         top++;
         push_scope(top, scope_id, scope_stack);
-    }
-    parameters_optative ')' statement {
+        
         T_Symbol sym = symbol(
             $1.content, 
             $2.content, 
             "function", 
             $2.scope, 
             $2.line_idx, 
-            $2.column_idx
+            $2.column_idx,
+            0
         );
         int error = check_redeclared($2.content, symbol_table_idx, $2.scope);
         if(error) {
             print_semantic_error("Function already declared", $2.line_idx, $2.column_idx);
         }
-
+        current_function_idx = symbol_table_idx;
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
         pop_scope(top, scope_stack);
         if(top > 0) top--;
-
+    }
+    parameters_optative ')' statement {
         $$ = new_node("function_declaration_statement", "func_declaration", 0);
         $$->child[0] = new_node("type", $1.content, 1);
         $$->child[1] = new_node("id", $2.content, 1);
@@ -227,7 +230,6 @@ function_declaration_statement:
         scope_id++;
         top++;
         push_scope(top, scope_id, scope_stack);
-    } parameters_optative ')' statement {
         char type[100];
         strcpy(type, $1.content);
         strcat(type, " ");
@@ -238,7 +240,8 @@ function_declaration_statement:
             "function", 
             $3.scope, 
             $3.line_idx, 
-            $3.column_idx
+            $3.column_idx,
+            0
         );
         int error = check_redeclared($3.content, symbol_table_idx, $3.scope);
         if(error) {
@@ -250,7 +253,12 @@ function_declaration_statement:
         symbol_table_size++;
         pop_scope(top, scope_stack);
         if(top > 0) top--;
-
+    } parameters_optative ')' statement {
+        char type[100];
+        strcpy(type, $1.content);
+        strcat(type, " ");
+        strcat(type, $2.content);
+           
         $$ = new_node("function_declaration_statement", "func_declaration", 0);
         $$->child[0] = new_node("type", type, 1);
         $$->child[1] = new_node("id", $3.content, 1);
@@ -287,8 +295,10 @@ parameter
             "parameter", 
             scope_stack[top], 
             $2.line_idx, 
-            $2.column_idx
+            $2.column_idx,
+            0
         );
+        increment_params_number(current_function_idx);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -308,8 +318,10 @@ parameter
             "parameter", 
             $3.scope, 
             $3.line_idx, 
-            $3.column_idx
+            $3.column_idx,
+            0
         );
+        increment_params_number(current_function_idx);
         insert_symbol(symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
@@ -575,7 +587,8 @@ variable_declaration_statement
             "variable", 
             $2.scope, 
             $2.line_idx, 
-            $2.column_idx
+            $2.column_idx,
+            0
         );
         
         int error = check_redeclared($2.content, symbol_table_idx, $2.scope);
@@ -603,7 +616,8 @@ variable_declaration_statement
             "variable", 
             $3.scope, 
             $3.line_idx, 
-            $3.column_idx
+            $3.column_idx,
+            0
         );
 
         int error = check_redeclared($3.content, symbol_table_idx, $3.scope);
@@ -681,6 +695,10 @@ int main(int argc, char ** argv) {
             printf(BRED "Finished. Syntatic Analysis found %d errors during execution", parsing_errors);
             printf(reset "\n");
         }
+    }
+
+    if(!main_exists(symbol_table_size)) {
+        printf(BRED "[SEMANTIC ERROR] No 'main' function found\n"reset);
     }
 
     fclose(yyin);
