@@ -401,9 +401,6 @@ expression
     | or_expression {
         $$ = $1;
     }
-    | function_call_expression {
-        $$ = $1;
-    }
 ;
 
 function_call_expression
@@ -565,6 +562,9 @@ simple_value
     | '(' expression ')' {
         $$ = $2;
     }
+    | function_call_expression {
+        $$ = $1;
+    }
 ;
 
 variable_declaration_statement
@@ -663,10 +663,10 @@ int main(int argc, char ** argv) {
     initialize_scope_stack(scope_stack);
     yyparse();
     
+    print_symbol_table(symbol_table_size);
 
     // printar árvore
     if(errors_count == 0 && parsing_errors == 0){
-        print_symbol_table(symbol_table_size);
         printf(BGRN "\n--------------- SYNTATIC TREE ---------------");
         printf(reset"\n");
         show_tree(root_node, 0);
