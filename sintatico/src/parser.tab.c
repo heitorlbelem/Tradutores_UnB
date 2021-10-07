@@ -2655,7 +2655,7 @@ yyreduce:
             print_semantic_error("Function unavailable", (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx);
         }
 
-        int n = count_function_params((yyvsp[-1].node));
+        int n = check_number_of_params((yyvsp[-1].node), symbol_table, symbol_table_size, (yyvsp[-3].token).content);
         printf("%d\n", n);
     }
 #line 2662 "parser.tab.c"

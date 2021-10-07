@@ -426,7 +426,7 @@ function_call_expression
             print_semantic_error("Function unavailable", $1.line_idx, $1.column_idx);
         }
 
-        int n = count_function_params($3);
+        int n = check_number_of_params($3, symbol_table, symbol_table_size, $1.content);
         printf("%d\n", n);
     }
 ;
