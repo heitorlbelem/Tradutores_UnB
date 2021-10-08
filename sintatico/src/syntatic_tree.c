@@ -67,7 +67,7 @@ void show_tree(T_Node* node, int tabs) {
 int count_function_params(T_Node* node) {
     if(!node) return 0;
 
-    if(node->child[0] == NULL || strcmp(node->text, "function_arg") != 0) return 0;
+    if(node->child[0] == NULL || strcmp(node->text, "function_args") != 0) return 0;
     
     return 1 + count_function_params(node->child[0]);
 }
@@ -83,4 +83,22 @@ int check_number_of_params(T_Node* node, T_Symbol symbol_table[], int symbol_tab
     }
 
     return expected_params_qt == args_count;
+}
+
+int expression_is_unary_function(T_Node* node, T_Symbol symbol_table[], int symbol_table_size) {
+    if(!node)
+        return 0;
+
+    if(!node->is_terminal)
+        return expression_is_unary_function(node->child[0], symbol_table, symbol_table_size);
+
+    if(strcmp(node->rule, "identifier") == 0) {
+        for(int i = 0; i < symbol_table_size; i++) {
+            if(strcmp(symbol_table[i].content, node->text) == 0) {
+                return symbol_table[i].num_params == 1;
+            }
+        }
+    }
+
+    return 0;     
 }

@@ -585,8 +585,8 @@ static const yytype_int16 yyrline[] =
      346,   351,   360,   366,   369,   375,   385,   389,   396,   403,
      411,   417,   431,   434,   440,   445,   451,   458,   461,   467,
      470,   476,   481,   487,   492,   498,   503,   509,   514,   520,
-     525,   531,   536,   542,   547,   553,   556,   562,   566,   570,
-     574,   577,   583,   607,   637,   640,   643
+     534,   540,   545,   551,   556,   562,   565,   571,   575,   579,
+     583,   586,   592,   616,   646,   649,   652
 };
 #endif
 
@@ -2694,7 +2694,7 @@ yyreduce:
   case 46: /* function_argument: expression  */
 #line 451 "./src/parser.y"
                  {
-        (yyval.node) = new_node("function_arg", "function_arg", 0, "");
+        (yyval.node) = new_node("function_args", "function_args", 0, "");
         (yyval.node)->child[0] = (yyvsp[0].node);
     }
 #line 2701 "parser.tab.c"
@@ -2810,118 +2810,127 @@ yyreduce:
         (yyval.node) = new_node("list_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
+
+        if(strcmp((yyvsp[-1].token).content, "<<") == 0 || strcmp((yyvsp[-1].token).content, ">>") == 0) {
+            if(!expression_is_unary_function((yyvsp[-2].node), symbol_table, symbol_table_size)) {
+                printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - First argument of '%s' must be a unary function\n"reset, (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, (yyvsp[-1].token).content);
+            }
+        } else {
+            printf("oi\n");
+        }
+
     }
-#line 2815 "parser.tab.c"
+#line 2824 "parser.tab.c"
     break;
 
   case 60: /* list_expression: addition_expression  */
-#line 525 "./src/parser.y"
+#line 534 "./src/parser.y"
                           {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2823 "parser.tab.c"
+#line 2832 "parser.tab.c"
     break;
 
   case 61: /* addition_expression: addition_expression ARITMETIC_OP_ADDITIVE multiplication_expression  */
-#line 531 "./src/parser.y"
+#line 540 "./src/parser.y"
                                                                           {
         (yyval.node) = new_node("addition_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
     }
-#line 2833 "parser.tab.c"
+#line 2842 "parser.tab.c"
     break;
 
   case 62: /* addition_expression: multiplication_expression  */
-#line 536 "./src/parser.y"
+#line 545 "./src/parser.y"
                                 {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2841 "parser.tab.c"
+#line 2850 "parser.tab.c"
     break;
 
   case 63: /* multiplication_expression: multiplication_expression ARITMETIC_OP_MULTIPLICATIVE simple_value  */
-#line 542 "./src/parser.y"
+#line 551 "./src/parser.y"
                                                                          {
         (yyval.node) = new_node("multiplication_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
     }
-#line 2851 "parser.tab.c"
+#line 2860 "parser.tab.c"
     break;
 
   case 64: /* multiplication_expression: simple_value  */
-#line 547 "./src/parser.y"
+#line 556 "./src/parser.y"
                    {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2859 "parser.tab.c"
+#line 2868 "parser.tab.c"
     break;
 
   case 65: /* simple_value: constant  */
-#line 553 "./src/parser.y"
+#line 562 "./src/parser.y"
                {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2867 "parser.tab.c"
+#line 2876 "parser.tab.c"
     break;
 
   case 66: /* simple_value: IDENTIFIER  */
-#line 556 "./src/parser.y"
+#line 565 "./src/parser.y"
                  {
-        (yyval.node) = new_node("id", (yyvsp[0].token).content, 1, "");
+        (yyval.node) = new_node("identifier", (yyvsp[0].token).content, 1, "");
         if(variable_unavailable(symbol_table, (yyvsp[0].token).content, symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[0].token).line_idx, (yyvsp[0].token).column_idx, (yyvsp[0].token).content);
         }
     }
-#line 2878 "parser.tab.c"
-    break;
-
-  case 67: /* simple_value: ARITMETIC_OP_ADDITIVE simple_value  */
-#line 562 "./src/parser.y"
-                                         {
-        (yyval.node) = new_node("simple_value_signed", (yyvsp[-1].token).content, 0, "");
-        (yyval.node)->child[0] = (yyvsp[0].node);
-    }
 #line 2887 "parser.tab.c"
     break;
 
-  case 68: /* simple_value: '!' simple_value  */
-#line 566 "./src/parser.y"
-                       {
-        (yyval.node) = new_node("simple_value_exclamation", "!", 0, "");
+  case 67: /* simple_value: ARITMETIC_OP_ADDITIVE simple_value  */
+#line 571 "./src/parser.y"
+                                         {
+        (yyval.node) = new_node("simple_value_signed", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[0].node);
     }
 #line 2896 "parser.tab.c"
     break;
 
-  case 69: /* simple_value: UNARY_LIST_OP simple_value  */
-#line 570 "./src/parser.y"
-                                 {
-        (yyval.node) = new_node("simple_value_unary", (yyvsp[-1].token).content, 0, "");
+  case 68: /* simple_value: '!' simple_value  */
+#line 575 "./src/parser.y"
+                       {
+        (yyval.node) = new_node("simple_value_exclamation", "!", 0, "");
         (yyval.node)->child[0] = (yyvsp[0].node);
     }
 #line 2905 "parser.tab.c"
     break;
 
+  case 69: /* simple_value: UNARY_LIST_OP simple_value  */
+#line 579 "./src/parser.y"
+                                 {
+        (yyval.node) = new_node("simple_value_unary", (yyvsp[-1].token).content, 0, "");
+        (yyval.node)->child[0] = (yyvsp[0].node);
+    }
+#line 2914 "parser.tab.c"
+    break;
+
   case 70: /* simple_value: '(' expression ')'  */
-#line 574 "./src/parser.y"
+#line 583 "./src/parser.y"
                          {
         (yyval.node) = (yyvsp[-1].node);
     }
-#line 2913 "parser.tab.c"
+#line 2922 "parser.tab.c"
     break;
 
   case 71: /* simple_value: function_call_expression  */
-#line 577 "./src/parser.y"
+#line 586 "./src/parser.y"
                                {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2921 "parser.tab.c"
+#line 2930 "parser.tab.c"
     break;
 
   case 72: /* variable_declaration_statement: SIMPLE_TYPE IDENTIFIER ';'  */
-#line 583 "./src/parser.y"
+#line 592 "./src/parser.y"
                                  {
         T_Symbol sym = symbol(
             (yyvsp[-2].token).content, 
@@ -2946,11 +2955,11 @@ yyreduce:
         (yyval.node)->child[1] = new_node("id", (yyvsp[-1].token).content, 1, "");
 
     }
-#line 2950 "parser.tab.c"
+#line 2959 "parser.tab.c"
     break;
 
   case 73: /* variable_declaration_statement: SIMPLE_TYPE LIST_TYPE IDENTIFIER ';'  */
-#line 607 "./src/parser.y"
+#line 616 "./src/parser.y"
                                            {
         char type[100];
         strcpy(type, (yyvsp[-3].token).content);
@@ -2978,35 +2987,35 @@ yyreduce:
         (yyval.node)->child[0] = new_node("type", type, 1, "");
         (yyval.node)->child[1] = new_node("id", (yyvsp[-1].token).content, 1, "");
     }
-#line 2982 "parser.tab.c"
+#line 2991 "parser.tab.c"
     break;
 
   case 74: /* constant: C_INTEGER  */
-#line 637 "./src/parser.y"
+#line 646 "./src/parser.y"
                 {
         (yyval.node) = new_node("const", (yyvsp[0].token).content, 1, "int");
     }
-#line 2990 "parser.tab.c"
+#line 2999 "parser.tab.c"
     break;
 
   case 75: /* constant: C_FLOAT  */
-#line 640 "./src/parser.y"
+#line 649 "./src/parser.y"
               {
         (yyval.node) = new_node("const", (yyvsp[0].token).content, 1, "float");
     }
-#line 2998 "parser.tab.c"
+#line 3007 "parser.tab.c"
     break;
 
   case 76: /* constant: C_NIL  */
-#line 643 "./src/parser.y"
+#line 652 "./src/parser.y"
             {
         (yyval.node) = new_node("const", (yyvsp[0].token).content, 1, "NIL");
     }
-#line 3006 "parser.tab.c"
+#line 3015 "parser.tab.c"
     break;
 
 
-#line 3010 "parser.tab.c"
+#line 3019 "parser.tab.c"
 
       default: break;
     }
@@ -3231,7 +3240,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 648 "./src/parser.y"
+#line 657 "./src/parser.y"
 
 
 void yyerror(const char* err_msg){

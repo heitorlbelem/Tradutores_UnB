@@ -449,7 +449,7 @@ function_arguments
 
 function_argument
     : expression {
-        $$ = new_node("function_arg", "function_arg", 0, "");
+        $$ = new_node("function_args", "function_args", 0, "");
         $$->child[0] = $1;
     }
 ;
@@ -521,6 +521,15 @@ list_expression
         $$ = new_node("list_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
+
+        if(strcmp($2.content, "<<") == 0 || strcmp($2.content, ">>") == 0) {
+            if(!expression_is_unary_function($1, symbol_table, symbol_table_size)) {
+                printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - First argument of '%s' must be a unary function\n"reset, $2.line_idx, $2.column_idx, $2.content);
+            }
+        } else {
+            printf("not implemented yet\n");
+        }
+
     }
     | addition_expression {
         $$ = $1;
@@ -554,7 +563,7 @@ simple_value
         $$ = $1;
     }
     | IDENTIFIER {
-        $$ = new_node("id", $1.content, 1, "");
+        $$ = new_node("identifier", $1.content, 1, "");
         if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }

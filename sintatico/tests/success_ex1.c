@@ -1,10 +1,10 @@
 int list lista;
 
-int to_float(int num) {
+int to_float() {
     return num*3.1415;
 }
 
-int beq_100(float num, int a, int b, int c) {
+int beq_100(float num) {
     return num >= 100.00;
 }
 
@@ -21,7 +21,7 @@ int list_operations() {
     for (i = 0; i < n ; i = i + 1) {
 		lista = i : int_list;
 	}
-
+    
     float list float_list;
     float_list = to_float >> int_list;
     
