@@ -4,11 +4,12 @@
 #include <string.h>
 
 // Inicializa nó de árvore
-T_Node* new_node(char* rule_name, char* value, int terminal) {
+T_Node* new_node(char* rule_name, char* value, int terminal, char* const_type) {
     T_Node* node = (T_Node*) malloc(sizeof(T_Node));
 
     strcpy(node->rule, rule_name);
     strcpy(node->text, value);
+    strcpy(node->const_type, const_type);
     node->is_terminal = terminal;
     for(int i = 0; i < 5; i++) {
         node->child[i] = NULL;
@@ -44,8 +45,13 @@ void show_tree(T_Node* node, int tabs) {
     }
     printf("|_ ");
     if(node->is_terminal) {
-        printf(BGRN "%s", node->text);
-        printf(reset"\n");
+        if(strcmp(node->const_type, "") == 0) {
+            printf(BGRN "%s", node->text);
+            printf(reset"\n");
+        } else {
+            printf(BGRN"const <%s, %s>", node->const_type, node->text);
+            printf(reset"\n");
+        }
     } else {
         printf(BMAG "%s", node->text);
         printf(reset"\n");

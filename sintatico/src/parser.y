@@ -131,7 +131,7 @@ program
 
 declarations
     : declarations declaration {
-        $$ = new_node("declarations", "declarations", 0);
+        $$ = new_node("declarations", "declarations", 0, "");
         $$->child[0] = $1;
         $$->child[1] = $2;
     }
@@ -158,7 +158,7 @@ block
 
 statements
     : statements statement {
-        $$ = new_node("statements", "statements", 0);
+        $$ = new_node("statements", "statements", 0, "");
         $$->child[0] = $1;
         $$->child[1] = $2;
     }
@@ -218,9 +218,9 @@ function_declaration_statement:
         symbol_table_size++;
     }
     parameters_optative ')' statement {
-        $$ = new_node("function_declaration_statement", "func_declaration", 0);
-        $$->child[0] = new_node("type", $1.content, 1);
-        $$->child[1] = new_node("id", $2.content, 1);
+        $$ = new_node("function_declaration_statement", "func_declaration", 0, "");
+        $$->child[0] = new_node("type", $1.content, 1, "");
+        $$->child[1] = new_node("id", $2.content, 1, "");
         $$->child[2] = $5;
         $$->child[3] = $7;
         pop_scope(top, scope_stack);
@@ -257,9 +257,9 @@ function_declaration_statement:
         strcat(type, " ");
         strcat(type, $2.content);
            
-        $$ = new_node("function_declaration_statement", "func_declaration", 0);
-        $$->child[0] = new_node("type", type, 1);
-        $$->child[1] = new_node("id", $3.content, 1);
+        $$ = new_node("function_declaration_statement", "func_declaration", 0, "");
+        $$->child[0] = new_node("type", type, 1, "");
+        $$->child[1] = new_node("id", $3.content, 1, "");
         $$->child[2] = $6;
         $$->child[3] = $8;
         pop_scope(top, scope_stack);
@@ -278,7 +278,7 @@ parameters_optative
 
 parameters
     : parameters ',' parameter {
-        $$ = new_node("parameters", "params", 0);
+        $$ = new_node("parameters", "params", 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -303,9 +303,9 @@ parameter
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("function_parameter", "function_param", 0);
-        $$->child[0] = new_node("type", $1.content, 1);
-        $$->child[1] = new_node("id", $2.content, 1);
+        $$ = new_node("function_parameter", "function_param", 0, "");
+        $$->child[0] = new_node("type", $1.content, 1, "");
+        $$->child[1] = new_node("id", $2.content, 1, "");
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER {
         char type[100];
@@ -326,15 +326,15 @@ parameter
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("function_parameter", "function_param", 0);
-        $$->child[0] = new_node("type", type, 1);
-        $$->child[1] = new_node("id", $3.content, 1);
+        $$ = new_node("function_parameter", "function_param", 0, "");
+        $$->child[0] = new_node("type", type, 1, "");
+        $$->child[1] = new_node("id", $3.content, 1, "");
     }
 ;
 
 for_statement
     : RW_FOR '(' expression_optative ';' or_expression_optative ';' expression_optative ')' statement {
-        $$ = new_node("for_statement", $1.content, 0);
+        $$ = new_node("for_statement", $1.content, 0, "");
         $$->child[0] = $3;
         $$->child[1] = $5;
         $$->child[2] = $7;
@@ -344,15 +344,15 @@ for_statement
 
 if_else_statement
     : RW_IF '(' expression ')' statement %prec THEN {
-        $$ = new_node("if_else_statement", $1.content, 0);
+        $$ = new_node("if_else_statement", $1.content, 0, "");
         $$->child[0] = $3;
         $$->child[1] = $5;
     }
     | RW_IF '(' expression ')' statement RW_ELSE statement {
-        $$ = new_node("if_else_statement", $1.content, 0);
+        $$ = new_node("if_else_statement", $1.content, 0, "");
         $$->child[0] = $3;
         $$->child[1] = $5;
-        $$->child[2] = new_node("else_rw", $6.content, 0);
+        $$->child[2] = new_node("else_rw", $6.content, 0, "");
         $$->child[2]->child[0] = $7;
     }
 
@@ -373,8 +373,8 @@ io_statement
 
 input_statement
     : IO_READ '(' IDENTIFIER ')' ';' {
-        $$ = new_node("input_statement", $1.content, 0);
-        $$->child[0] = new_node("identifier", $3.content, 1);
+        $$ = new_node("input_statement", $1.content, 0, "");
+        $$->child[0] = new_node("identifier", $3.content, 1, "");
         if(variable_unavailable(symbol_table, $3.content, symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $3.line_idx, $3.column_idx, $3.content);
         }
@@ -383,26 +383,26 @@ input_statement
 
 output_statement
     : IO_WRITE '(' expression ')' ';' {
-        $$ = new_node("output_statement", $1.content, 0);
+        $$ = new_node("output_statement", $1.content, 0, "");
         $$->child[0] = $3;
     }
     | IO_WRITE '(' LIT_STRING ')' ';' {
-        $$ = new_node("output_statement", $1.content, 0);
-        $$->child[0] = new_node("string_literal", $3.content, 1);
+        $$ = new_node("output_statement", $1.content, 0, "");
+        $$->child[0] = new_node("string_literal", $3.content, 1, "");
     }
 ;
 
 return_statement
     : RW_RETURN expression ';' {
-        $$ = new_node("return_statement", $1.content, 0);
+        $$ = new_node("return_statement", $1.content, 0, "");
         $$->child[0] = $2;
     }
 ;
 
 expression
     : IDENTIFIER '=' expression {
-        $$ = new_node("assignment_expression", "=", 0);
-        $$->child[0] = new_node("id", $1.content, 1);
+        $$ = new_node("assignment_expression", "=", 0, "");
+        $$->child[0] = new_node("id", $1.content, 1, "");
         $$->child[1] = $3;
         if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
@@ -415,8 +415,8 @@ expression
 
 function_call_expression
     : IDENTIFIER '(' function_arguments_optative ')' {
-        $$ = new_node("function_call_expression", "function_call", 0);
-        $$->child[0] = new_node("id", $1.content, 1);
+        $$ = new_node("function_call_expression", "function_call", 0, "");
+        $$->child[0] = new_node("id", $1.content, 1, "");
         $$->child[1] = $3;
         
         if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)){
@@ -438,7 +438,7 @@ function_arguments_optative
 
 function_arguments
     : function_arguments ',' function_argument {
-        $$ = new_node("function_arguments", "function_args", 0);
+        $$ = new_node("function_arguments", "function_args", 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -449,7 +449,7 @@ function_arguments
 
 function_argument
     : expression {
-        $$ = new_node("function_arg", "function_arg", 0);
+        $$ = new_node("function_arg", "function_arg", 0, "");
         $$->child[0] = $1;
     }
 ;
@@ -474,7 +474,7 @@ or_expression_optative
 
 or_expression
     : or_expression LOGICAL_OP_OR and_expression {
-        $$ = new_node("or_expression", $2.content, 0);
+        $$ = new_node("or_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -485,7 +485,7 @@ or_expression
 
 and_expression
     : and_expression LOGICAL_OP_AND equality_expression {
-        $$ = new_node("and_expression", $2.content, 0);
+        $$ = new_node("and_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -496,7 +496,7 @@ and_expression
 
 equality_expression
     : equality_expression EQUALITY_OP relational_expression {
-        $$ = new_node("equality_expression", $2.content, 0);
+        $$ = new_node("equality_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -507,7 +507,7 @@ equality_expression
 
 relational_expression
     : relational_expression RELATIONAL_OP list_expression {
-        $$ = new_node("relational_expression", $2.content, 0);
+        $$ = new_node("relational_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -518,7 +518,7 @@ relational_expression
 
 list_expression
     : list_expression BINARY_LIST_OP addition_expression {
-        $$ = new_node("list_expression", $2.content, 0);
+        $$ = new_node("list_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -529,7 +529,7 @@ list_expression
 
 addition_expression
     : addition_expression ARITMETIC_OP_ADDITIVE multiplication_expression {
-        $$ = new_node("addition_expression", $2.content, 0);
+        $$ = new_node("addition_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -540,7 +540,7 @@ addition_expression
 
 multiplication_expression
     : multiplication_expression ARITMETIC_OP_MULTIPLICATIVE simple_value {
-        $$ = new_node("multiplication_expression", $2.content, 0);
+        $$ = new_node("multiplication_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
@@ -554,21 +554,21 @@ simple_value
         $$ = $1;
     }
     | IDENTIFIER {
-        $$ = new_node("id", $1.content, 1);
+        $$ = new_node("id", $1.content, 1, "");
         if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
     }
     | ARITMETIC_OP_ADDITIVE simple_value {
-        $$ = new_node("simple_value_signed", $1.content, 0);
+        $$ = new_node("simple_value_signed", $1.content, 0, "");
         $$->child[0] = $2;
     }
     | '!' simple_value {
-        $$ = new_node("simple_value_exclamation", "!", 0);
+        $$ = new_node("simple_value_exclamation", "!", 0, "");
         $$->child[0] = $2;
     }
     | UNARY_LIST_OP simple_value {
-        $$ = new_node("simple_value_unary", $1.content, 0);
+        $$ = new_node("simple_value_unary", $1.content, 0, "");
         $$->child[0] = $2;
     }
     | '(' expression ')' {
@@ -599,9 +599,9 @@ variable_declaration_statement
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("variable_declaration", "var_declaration", 0);
-        $$->child[0] = new_node("type", $1.content, 1);
-        $$->child[1] = new_node("id", $2.content, 1);
+        $$ = new_node("variable_declaration", "var_declaration", 0, "");
+        $$->child[0] = new_node("type", $1.content, 1, "");
+        $$->child[1] = new_node("id", $2.content, 1, "");
 
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER ';' {
@@ -627,21 +627,21 @@ variable_declaration_statement
         symbol_table_idx++;
         symbol_table_size++;
 
-        $$ = new_node("variable_declaration", "var_declaration", 0);
-        $$->child[0] = new_node("type", type, 1);
-        $$->child[1] = new_node("id", $3.content, 1);
+        $$ = new_node("variable_declaration", "var_declaration", 0, "");
+        $$->child[0] = new_node("type", type, 1, "");
+        $$->child[1] = new_node("id", $3.content, 1, "");
     }
 ;
 
 constant
     : C_INTEGER {
-        $$ = new_node("const", $1.content, 1);
+        $$ = new_node("const", $1.content, 1, "int");
     }
     | C_FLOAT {
-        $$ = new_node("const", $1.content, 1);
+        $$ = new_node("const", $1.content, 1, "float");
     }
     | C_NIL {
-        $$ = new_node("const", $1.content, 1);
+        $$ = new_node("const", $1.content, 1, "NIL");
     }
 ;
 
