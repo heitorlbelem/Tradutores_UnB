@@ -13,9 +13,9 @@ int list_operations() {
     int_list = NIL;
     int i;
     int k;
-    k = beq_100(1);
+    k = beq_100(1,2,3,4);
     int y;
-    y = beq_100(1,2,3,4,5,6);
+    y = beq_100(1,2,3,4);
     int n;
     n = 100;
     for (i = 0; i < n ; i = i + 1) {

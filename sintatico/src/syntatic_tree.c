@@ -77,5 +77,4 @@ int check_number_of_params(T_Node* node, T_Symbol symbol_table[], int symbol_tab
     }
 
     return expected_params_qt == args_count;
-
 }

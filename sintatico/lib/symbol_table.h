@@ -99,17 +99,17 @@ void update_symbol(
 );
 
 // Insert symbol into symbol_table
-void insert_symbol(int idx, T_Symbol symbol);
+void insert_symbol(T_Symbol symbol_table[], int idx, T_Symbol symbol);
 
 // Print symbol table
-void print_symbol_table(int table_size);
+void print_symbol_table(T_Symbol symbol_table[], int table_size);
 
-int check_redeclared(char* identifier, int last_pos, int current_scope);
+int check_redeclared(T_Symbol symbol_table[], char* identifier, int last_pos, int current_scope);
 
-int variable_unavailable(char* identifier, int last_pos, int stack_top, int scope_stack[]);
+int variable_unavailable(T_Symbol symbol_table[], char* identifier, int last_pos, int stack_top, int scope_stack[]);
 
-void increment_params_number(int symbol_table_idx);
+void increment_params_number(T_Symbol symbol_table[], int symbol_table_idx);
 
-int main_exists(int table_size);
+int main_exists(T_Symbol symbol_table[], int table_size);
 
 #endif

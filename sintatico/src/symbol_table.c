@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include "symbol_table.h"
 
-T_Symbol symbol_table[100000];
-
 T_Symbol symbol(
     char* type, 
     char* content, 
@@ -25,12 +23,12 @@ T_Symbol symbol(
     return sym;
 }
 
-void insert_symbol(int idx, T_Symbol symbol) {
+void insert_symbol(T_Symbol symbol_table[], int idx, T_Symbol symbol) {
     symbol_table[idx] = symbol;
     return;
 }
 
-void print_symbol_table(int table_size) {
+void print_symbol_table(T_Symbol symbol_table[], int table_size){
     if (!table_size) return;
     printf(BHRED"-------------------------------------------------------------------------------------------------"reset"\n");
     printf(BHRED"|                                  SYMBOL TABLE                                                 |"reset"\n");
@@ -53,7 +51,7 @@ void print_symbol_table(int table_size) {
     }
 }
 
-int check_redeclared(char* identifier, int last_pos, int current_scope) {
+int check_redeclared(T_Symbol symbol_table[], char* identifier, int last_pos, int current_scope) {
     for(int i = 0; i <= last_pos; i++) {
         if( (strcmp(identifier, symbol_table[i].content) == 0) && (current_scope == symbol_table[i].scope) ) {
             return 1;
@@ -62,7 +60,7 @@ int check_redeclared(char* identifier, int last_pos, int current_scope) {
     return 0;
 }
 
-int variable_unavailable(char* identifier, int last_pos, int stack_top, int scope_stack[]) {
+int variable_unavailable(T_Symbol symbol_table[], char* identifier, int last_pos, int stack_top, int scope_stack[]) {
     for(int i = stack_top; i >= 0; i--) {
         for(int j = 0; j <= last_pos; j++) {
             if(strcmp(identifier, symbol_table[j].content) == 0 && symbol_table[j].scope == scope_stack[i]) {
@@ -75,13 +73,13 @@ int variable_unavailable(char* identifier, int last_pos, int stack_top, int scop
     return 1;
 }
 
-void increment_params_number(int symbol_table_idx) {
+void increment_params_number(T_Symbol symbol_table[], int symbol_table_idx) {
     symbol_table[symbol_table_idx].num_params++;
 }
 
-int main_exists(int table_size) {
+int main_exists(T_Symbol symbol_table[], int table_size) {
     for(int i = 0; i < table_size; i++) {
-        if(strcmp(symbol_table[i].content, "main") == 0) {
+        if(strcmp(symbol_table[i].content, "main") == 0 && symbol_table[i].scope == 0) {
             return 1;
         }
     }

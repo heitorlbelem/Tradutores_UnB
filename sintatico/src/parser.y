@@ -18,7 +18,6 @@
     
     extern FILE *yyin;
     void yyerror (char const *);    
-    void print_semantic_error(char* text, int line, int column);
     extern int yylex();
     extern int yylex_destroy();
 
@@ -31,6 +30,7 @@
     extern int scope_stack[100000];
     int current_function_idx = 0;
 
+    T_Symbol symbol_table[100000];
     T_Node* root_node;
 %}
 
@@ -208,16 +208,14 @@ function_declaration_statement:
             $2.column_idx,
             0
         );
-        int error = check_redeclared($2.content, symbol_table_idx, $2.scope);
-        if(error) {
-            print_semantic_error("Function already declared", $2.line_idx, $2.column_idx);
+        if(check_redeclared(symbol_table, $2.content, symbol_table_idx, $2.scope)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Function or variable '%s' already declared\n"reset, $2.line_idx, $2.column_idx, $2.content);
         }
+
         current_function_idx = symbol_table_idx;
-        insert_symbol(symbol_table_idx, sym);
+        insert_symbol(symbol_table, symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
-        pop_scope(top, scope_stack);
-        if(top > 0) top--;
     }
     parameters_optative ')' statement {
         $$ = new_node("function_declaration_statement", "func_declaration", 0);
@@ -225,6 +223,8 @@ function_declaration_statement:
         $$->child[1] = new_node("id", $2.content, 1);
         $$->child[2] = $5;
         $$->child[3] = $7;
+        pop_scope(top, scope_stack);
+        if(top > 0) top--;
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER '(' {
         scope_id++;
@@ -243,16 +243,14 @@ function_declaration_statement:
             $3.column_idx,
             0
         );
-        int error = check_redeclared($3.content, symbol_table_idx, $3.scope);
-        if(error) {
-            print_semantic_error("Function already declared", $3.line_idx, $3.column_idx);
+        if(check_redeclared(symbol_table, $3.content, symbol_table_idx, $3.scope)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Function or variable '%s' already declared\n"reset, $3.line_idx, $3.column_idx, $3.content);
         }
-
-        insert_symbol(symbol_table_idx, sym);
+    
+        insert_symbol(symbol_table, symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
-        pop_scope(top, scope_stack);
-        if(top > 0) top--;
+        
     } parameters_optative ')' statement {
         char type[100];
         strcpy(type, $1.content);
@@ -264,6 +262,8 @@ function_declaration_statement:
         $$->child[1] = new_node("id", $3.content, 1);
         $$->child[2] = $6;
         $$->child[3] = $8;
+        pop_scope(top, scope_stack);
+        if(top > 0) top--;
     }
 ;
 
@@ -298,8 +298,8 @@ parameter
             $2.column_idx,
             0
         );
-        increment_params_number(current_function_idx);
-        insert_symbol(symbol_table_idx, sym);
+        increment_params_number(symbol_table, current_function_idx);
+        insert_symbol(symbol_table, symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
 
@@ -321,8 +321,8 @@ parameter
             $3.column_idx,
             0
         );
-        increment_params_number(current_function_idx);
-        insert_symbol(symbol_table_idx, sym);
+        increment_params_number(symbol_table, current_function_idx);
+        insert_symbol(symbol_table, symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
 
@@ -375,9 +375,8 @@ input_statement
     : IO_READ '(' IDENTIFIER ')' ';' {
         $$ = new_node("input_statement", $1.content, 0);
         $$->child[0] = new_node("identifier", $3.content, 1);
-        int error = variable_unavailable($3.content, symbol_table_idx, top, scope_stack);
-        if(error) {
-            print_semantic_error("Variable unavailable", $3.line_idx, $3.column_idx);
+        if(variable_unavailable(symbol_table, $3.content, symbol_table_idx, top, scope_stack)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $3.line_idx, $3.column_idx, $3.content);
         }
     }
 ;
@@ -405,9 +404,8 @@ expression
         $$ = new_node("assignment_expression", "=", 0);
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
-        int error = variable_unavailable($1.content, symbol_table_idx, top, scope_stack);
-        if(error) {
-            print_semantic_error("Variable unavailable", $1.line_idx, $1.column_idx);
+        if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
     }
     | or_expression {
@@ -421,13 +419,11 @@ function_call_expression
         $$->child[0] = new_node("id", $1.content, 1);
         $$->child[1] = $3;
         
-        int error = variable_unavailable($1.content, symbol_table_idx, top, scope_stack);
-        if(error) {
-            print_semantic_error("Function unavailable", $1.line_idx, $1.column_idx);
+        if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)){
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
+        } else if(!check_number_of_params($3, symbol_table, symbol_table_size, $1.content)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
-
-        int n = check_number_of_params($3, symbol_table, symbol_table_size, $1.content);
-        printf("%d\n", n);
     }
 ;
 
@@ -559,9 +555,8 @@ simple_value
     }
     | IDENTIFIER {
         $$ = new_node("id", $1.content, 1);
-        int error = variable_unavailable($1.content, symbol_table_idx, top, scope_stack);
-        if(error) {
-            print_semantic_error("Variable unavailable", $1.line_idx, $1.column_idx);
+        if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)){
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
     }
     | ARITMETIC_OP_ADDITIVE simple_value {
@@ -596,12 +591,11 @@ variable_declaration_statement
             0
         );
         
-        int error = check_redeclared($2.content, symbol_table_idx, $2.scope);
-        if(error) {
-            print_semantic_error("Variable already declared", $2.line_idx, $2.column_idx);
+        if(check_redeclared(symbol_table, $2.content, symbol_table_idx, $2.scope)){
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Function or variable '%s' already declared\n"reset, $2.line_idx, $2.column_idx, $2.content);
         }
 
-        insert_symbol(symbol_table_idx, sym);
+        insert_symbol(symbol_table, symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
 
@@ -625,11 +619,11 @@ variable_declaration_statement
             0
         );
 
-        int error = check_redeclared($3.content, symbol_table_idx, $3.scope);
-        if(error) {
-            print_semantic_error("Variable already declared", $3.line_idx, $3.column_idx);
+        if(check_redeclared(symbol_table, $3.content, symbol_table_idx, $3.scope)){
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Function or variable '%s' already declared\n"reset, $3.line_idx, $3.column_idx, $3.content);
         }
-        insert_symbol(symbol_table_idx, sym);
+
+        insert_symbol(symbol_table, symbol_table_idx, sym);
         symbol_table_idx++;
         symbol_table_size++;
 
@@ -659,12 +653,6 @@ void yyerror(const char* err_msg){
     return;
 }
 
-void print_semantic_error(char* text, int line, int column) {
-    printf("[SEMANTIC ERROR] Line: %d | Column: %d\t", line, column);
-    printf("%s\n", text);
-    return;
-}
-
 int main(int argc, char ** argv) {
 
     if(argc != 2) {
@@ -682,7 +670,7 @@ int main(int argc, char ** argv) {
     initialize_scope_stack(scope_stack);
     yyparse();
     
-    print_symbol_table(symbol_table_size);
+    print_symbol_table(symbol_table, symbol_table_size);
 
     // printar árvore
     if(errors_count == 0 && parsing_errors == 0){
@@ -702,7 +690,7 @@ int main(int argc, char ** argv) {
         }
     }
 
-    if(!main_exists(symbol_table_size)) {
+    if(!main_exists(symbol_table, symbol_table_size)) {
         printf(BRED "[SEMANTIC ERROR] No 'main' function found\n"reset);
     }
 
