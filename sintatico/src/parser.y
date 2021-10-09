@@ -8,6 +8,7 @@
     #include "symbol_table.h"
     #include "syntatic_tree.h"
     #include "scope_stack.h"
+    #include "semantic_analysis.h"
     
     #define BRED "\e[1;31m"
     #define BGRN "\e[1;32m"

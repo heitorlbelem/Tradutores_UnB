@@ -50,38 +50,3 @@ void print_symbol_table(T_Symbol symbol_table[], int table_size){
         printf(BHRED"\n-------------------------------------------------------------------------------------------------" reset "\n");
     }
 }
-
-int check_redeclared(T_Symbol symbol_table[], char* identifier, int last_pos, int current_scope) {
-    for(int i = 0; i <= last_pos; i++) {
-        if( (strcmp(identifier, symbol_table[i].content) == 0) && (current_scope == symbol_table[i].scope) ) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-int variable_unavailable(T_Symbol symbol_table[], char* identifier, int last_pos, int stack_top, int scope_stack[]) {
-    for(int i = stack_top; i >= 0; i--) {
-        for(int j = 0; j <= last_pos; j++) {
-            if(strcmp(identifier, symbol_table[j].content) == 0 && symbol_table[j].scope == scope_stack[i]) {
-                // printf("Variavel disponivel =====> %s\n", identifier);
-                return 0;
-            }
-        }
-    }
-    // printf("Variavel indisponivel =====> %s\n", identifier);
-    return 1;
-}
-
-void increment_params_number(T_Symbol symbol_table[], int symbol_table_idx) {
-    symbol_table[symbol_table_idx].num_params++;
-}
-
-int main_exists(T_Symbol symbol_table[], int table_size) {
-    for(int i = 0; i < table_size; i++) {
-        if(strcmp(symbol_table[i].content, "main") == 0 && symbol_table[i].scope == 0) {
-            return 1;
-        }
-    }
-    return 0;
-}

@@ -1,6 +1,6 @@
 int list lista;
 
-int to_float() {
+int to_float(int num) {
     return num*3.1415;
 }
 
@@ -13,9 +13,9 @@ int list_operations() {
     int_list = NIL;
     int i;
     int k;
-    k = beq_100(1,2,3,4);
+    k = beq_100(1);
     int y;
-    y = beq_100(1,2,3,4);
+    y = beq_100(1);
     int n;
     n = 100;
     for (i = 0; i < n ; i = i + 1) {
@@ -23,7 +23,7 @@ int list_operations() {
 	}
     
     float list float_list;
-    float_list = to_float >> int_list;
+    float_list = to_float >> beq_100 << int_list;
     
     float list aux;
 
