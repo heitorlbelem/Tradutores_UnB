@@ -2587,7 +2587,7 @@ yyreduce:
                                      {
         (yyval.node) = new_node("input_statement", (yyvsp[-4].token).content, 0, "");
         (yyval.node)->child[0] = new_node("identifier", (yyvsp[-2].token).content, 1, "");
-        if(variable_unavailable(symbol_table, (yyvsp[-2].token).content, symbol_table_idx, top, scope_stack)) {
+        if(variable_unavailable(symbol_table, (yyval.node)->child[0], symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[-2].token).line_idx, (yyvsp[-2].token).column_idx, (yyvsp[-2].token).content);
         }
     }
@@ -2627,7 +2627,7 @@ yyreduce:
         (yyval.node) = new_node("assignment_expression", "=", 0, "");
         (yyval.node)->child[0] = new_node("id", (yyvsp[-2].token).content, 1, "");
         (yyval.node)->child[1] = (yyvsp[0].node);
-        if(variable_unavailable(symbol_table, (yyvsp[-2].token).content, symbol_table_idx, top, scope_stack)) {
+        if(variable_unavailable(symbol_table, (yyval.node)->child[0], symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[-2].token).line_idx, (yyvsp[-2].token).column_idx, (yyvsp[-2].token).content);
         }
     }
@@ -2649,7 +2649,7 @@ yyreduce:
         (yyval.node)->child[0] = new_node("id", (yyvsp[-3].token).content, 1, "");
         (yyval.node)->child[1] = (yyvsp[-1].node);
         
-        if(variable_unavailable(symbol_table, (yyvsp[-3].token).content, symbol_table_idx, top, scope_stack)){
+        if(variable_unavailable(symbol_table, (yyval.node)->child[0], symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx, (yyvsp[-3].token).content);
         } else if(!check_number_of_params((yyvsp[-1].node), symbol_table, symbol_table_size, (yyvsp[-3].token).content)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx, (yyvsp[-3].token).content);
@@ -2880,7 +2880,7 @@ yyreduce:
 #line 566 "./src/parser.y"
                  {
         (yyval.node) = new_node("identifier", (yyvsp[0].token).content, 1, "");
-        if(variable_unavailable(symbol_table, (yyvsp[0].token).content, symbol_table_idx, top, scope_stack)){
+        if(variable_unavailable(symbol_table, (yyval.node), symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[0].token).line_idx, (yyvsp[0].token).column_idx, (yyvsp[0].token).content);
         }
     }

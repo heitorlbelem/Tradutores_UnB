@@ -376,7 +376,7 @@ input_statement
     : IO_READ '(' IDENTIFIER ')' ';' {
         $$ = new_node("input_statement", $1.content, 0, "");
         $$->child[0] = new_node("identifier", $3.content, 1, "");
-        if(variable_unavailable(symbol_table, $3.content, symbol_table_idx, top, scope_stack)) {
+        if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $3.line_idx, $3.column_idx, $3.content);
         }
     }
@@ -405,7 +405,7 @@ expression
         $$ = new_node("assignment_expression", "=", 0, "");
         $$->child[0] = new_node("id", $1.content, 1, "");
         $$->child[1] = $3;
-        if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)) {
+        if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
     }
@@ -420,7 +420,7 @@ function_call_expression
         $$->child[0] = new_node("id", $1.content, 1, "");
         $$->child[1] = $3;
         
-        if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)){
+        if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         } else if(!check_number_of_params($3, symbol_table, symbol_table_size, $1.content)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
@@ -565,7 +565,7 @@ simple_value
     }
     | IDENTIFIER {
         $$ = new_node("identifier", $1.content, 1, "");
-        if(variable_unavailable(symbol_table, $1.content, symbol_table_idx, top, scope_stack)){
+        if(variable_unavailable(symbol_table, $$, symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
     }

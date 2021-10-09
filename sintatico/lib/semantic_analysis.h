@@ -5,7 +5,7 @@
 #include "syntatic_tree.h"
 
 int check_redeclared(T_Symbol symbol_table[], char* identifier, int last_pos, int current_scope);
-int variable_unavailable(T_Symbol symbol_table[], char* identifier, int last_pos, int stack_top, int scope_stack[]);
+int variable_unavailable(T_Symbol symbol_table[], T_Node* node, int last_pos, int stack_top, int scope_stack[]);
 void increment_params_number(T_Symbol symbol_table[], int symbol_table_idx);
 int main_exists(T_Symbol symbol_table[], int table_size);
 

@@ -12,16 +12,15 @@ int check_redeclared(T_Symbol symbol_table[], char* identifier, int last_pos, in
     return 0;
 }
 
-int variable_unavailable(T_Symbol symbol_table[], char* identifier, int last_pos, int stack_top, int scope_stack[]) {
+int variable_unavailable(T_Symbol symbol_table[], T_Node* node, int last_pos, int stack_top, int scope_stack[]) {
     for(int i = stack_top; i >= 0; i--) {
         for(int j = 0; j <= last_pos; j++) {
-            if(strcmp(identifier, symbol_table[j].content) == 0 && symbol_table[j].scope == scope_stack[i]) {
-                // printf("Variavel disponivel =====> %s\n", identifier);
+            if(strcmp(node->text, symbol_table[j].content) == 0 && symbol_table[j].scope == scope_stack[i]) {
+                node->symbol_table_pointer = &symbol_table[j];
                 return 0;
             }
         }
     }
-    // printf("Variavel indisponivel =====> %s\n", identifier);
     return 1;
 }
 

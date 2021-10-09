@@ -13,6 +13,7 @@ T_Node* new_node(char* rule_name, char* value, int terminal, char* const_type) {
     node->is_terminal = terminal;
     for(int i = 0; i < 5; i++) {
         node->child[i] = NULL;
+        node->symbol_table_pointer = NULL;
     }
     return node;
 }
@@ -25,11 +26,12 @@ void free_tree(T_Node* node) {
 
     if(node) {
         for(int i = 0; i < 5; i++) {
-            free_tree(node->child[i]);   
+            free_tree(node->child[i]); 
         }   
     }
 
-    // printf("FREE_NODE: %s\n", node->rule);
+    node->symbol_table_pointer = NULL;
+    free(node->symbol_table_pointer);
     free(node);
 
     return;
@@ -46,10 +48,15 @@ void show_tree(T_Node* node, int tabs) {
     printf("|_ ");
     if(node->is_terminal) {
         if(strcmp(node->const_type, "") == 0) {
-            printf(BGRN "%s", node->text);
+            if(node->symbol_table_pointer != NULL){
+                printf(BGRN "%s: <%s, %s>",node->symbol_table_pointer->var_func_param, node->symbol_table_pointer->type, node->text);
+            }
+            else {
+                printf(BGRN "%s", node->text);
+            }
             printf(reset"\n");
         } else {
-            printf(BGRN"const <%s, %s>", node->const_type, node->text);
+            printf(BGRN"constant: <%s, %s>", node->const_type, node->text);
             printf(reset"\n");
         }
     } else {

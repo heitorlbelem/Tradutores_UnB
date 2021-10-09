@@ -13,6 +13,7 @@ struct T_Node {
     int is_terminal;
     char const_type[10];
     T_Node* child[5];
+    T_Symbol* symbol_table_pointer;
 };
 
 T_Node* new_node(char* rule_name, char* value, int terminal, char* const_type);
