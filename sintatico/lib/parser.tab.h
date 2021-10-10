@@ -84,7 +84,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 38 "./src/parser.y"
+#line 40 "./src/parser.y"
 
     struct Token {
         char content[100];

@@ -13,4 +13,6 @@ int count_function_params(T_Node* node);
 int check_number_of_params(T_Node* node, T_Symbol symbol_table[], int symbol_table_size, char* identifier);
 int expression_is_unary_function(T_Node* node, T_Symbol symbol_table[], int symbol_table_size);
 
+int valid_unary_operation(char* operator, T_Node* node);
+
 #endif

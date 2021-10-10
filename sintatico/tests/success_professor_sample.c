@@ -1,7 +1,7 @@
 int list IL;
 float list FL;
 
-int list read_list(int n, int a, int b, int c, int d) {
+int list read_list(int n) {
 	int i;
 	i =  -435.7;
 	int list new;

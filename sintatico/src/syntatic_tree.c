@@ -56,11 +56,15 @@ void show_tree(T_Node* node, int tabs) {
             }
             printf(reset"\n");
         } else {
-            printf(BGRN"constant: <%s, %s>", node->const_type, node->text);
+            printf(BGRN"%s: <%s, %s>", node->rule, node->const_type, node->text);
             printf(reset"\n");
         }
     } else {
-        printf(BMAG "%s", node->text);
+        if(strcmp(node->const_type, "") == 0){
+            printf(BMAG "%s", node->text);
+        } else {
+            printf(BMAG"%s [type: %s]", node->text, node->const_type);
+        }
         printf(reset"\n");
     }
 

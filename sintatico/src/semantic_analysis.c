@@ -17,6 +17,7 @@ int variable_unavailable(T_Symbol symbol_table[], T_Node* node, int last_pos, in
         for(int j = 0; j <= last_pos; j++) {
             if(strcmp(node->text, symbol_table[j].content) == 0 && symbol_table[j].scope == scope_stack[i]) {
                 node->symbol_table_pointer = &symbol_table[j];
+                strcpy(node->const_type, symbol_table[j].type);
                 return 0;
             }
         }
@@ -74,4 +75,38 @@ int expression_is_unary_function(T_Node* node, T_Symbol symbol_table[], int symb
     }
 
     return 0;     
+}
+
+int valid_unary_operation(char* operator, T_Node* node) {
+    T_Node* firstChild = node->child[0];
+    
+    if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0 ) {
+        if(strcmp(firstChild->const_type, "int") == 0 || strcmp(firstChild->const_type, "float") == 0) {
+            strcpy(node->const_type, firstChild->const_type);
+            return 1;
+        } 
+    } else if(strcmp(operator, "%") == 0) {
+        if(strcmp(firstChild->const_type, "int list") == 0 || strcmp(firstChild->const_type, "float list") == 0) {
+            strcpy(node->const_type, firstChild->const_type);
+            return 1;
+        } 
+    } else if(strcmp(operator, "?") == 0) {
+        if(strcmp(firstChild->const_type, "int list") == 0) {
+            strcpy(node->const_type, "int");
+            return 1;
+        } else if(strcmp(firstChild->const_type, "float list") == 0) {
+            strcpy(node->const_type, "float");
+            return 1;
+        }
+    } else if(strcmp(operator, "!") == 0) {
+        if(strcmp(firstChild->const_type, "int") == 0 || strcmp(firstChild->const_type, "float") == 0) {
+            strcpy(node->const_type, "int");
+            return 1;
+        } else if(strcmp(firstChild->const_type, "int list") == 0 || strcmp(firstChild->const_type, "float list") == 0) {
+            strcpy(node->const_type, firstChild->const_type);
+            return 1;
+        }
+    }
+
+    return 0;
 }

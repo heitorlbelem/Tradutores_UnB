@@ -25,6 +25,8 @@
     extern int errors_count;
     extern int scope_id;
     extern int top;
+    extern int line_idx;
+    extern int column_idx;
     int symbol_table_idx = 0;
     int symbol_table_size = 0;
     int parsing_errors = 0;
@@ -213,8 +215,8 @@ function_declaration_statement:
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Function or variable '%s' already declared\n"reset, $2.line_idx, $2.column_idx, $2.content);
         }
 
-        current_function_idx = symbol_table_idx;
         insert_symbol(symbol_table, symbol_table_idx, sym);
+        current_function_idx = symbol_table_idx;
         symbol_table_idx++;
         symbol_table_size++;
     }
@@ -249,6 +251,7 @@ function_declaration_statement:
         }
     
         insert_symbol(symbol_table, symbol_table_idx, sym);
+        current_function_idx = symbol_table_idx;
         symbol_table_idx++;
         symbol_table_size++;
         
@@ -527,8 +530,6 @@ list_expression
             if(!expression_is_unary_function($1, symbol_table, symbol_table_size)) {
                 printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - First argument of '%s' must be a unary function\n"reset, $2.line_idx, $2.column_idx, $2.content);
             }
-        } else {
-            printf("not implemented yet\n");
         }
 
     }
@@ -572,14 +573,23 @@ simple_value
     | ARITMETIC_OP_ADDITIVE simple_value {
         $$ = new_node("simple_value_signed", $1.content, 0, "");
         $$->child[0] = $2;
+        if(!valid_unary_operation($1.content, $$)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid unary operation '%s' for operand type '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content, $2->const_type);
+        }
     }
     | '!' simple_value {
         $$ = new_node("simple_value_exclamation", "!", 0, "");
         $$->child[0] = $2;
+        if(!valid_unary_operation("!", $$)){
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid unary operation '!' for operand type '%s'\n"reset, line_idx, column_idx, $2->const_type);
+        }
     }
     | UNARY_LIST_OP simple_value {
         $$ = new_node("simple_value_unary", $1.content, 0, "");
         $$->child[0] = $2;
+        if(!valid_unary_operation($1.content, $$)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid unary operation '%s' for operand type '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content, $2->const_type);
+        }
     }
     | '(' expression ')' {
         $$ = $2;
