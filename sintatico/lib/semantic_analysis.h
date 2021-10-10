@@ -14,5 +14,7 @@ int check_number_of_params(T_Node* node, T_Symbol symbol_table[], int symbol_tab
 int expression_is_unary_function(T_Node* node, T_Symbol symbol_table[], int symbol_table_size);
 
 int valid_unary_operation(char* operator, T_Node* node);
+int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_operand, T_Node* right_operand);
+void create_casting_node(T_Node* root, T_Node* child, char* cast_type, char* final_type, int left);
 
 #endif

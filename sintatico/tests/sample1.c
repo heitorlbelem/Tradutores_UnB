@@ -1,9 +1,11 @@
 int main() {
 
-  int a;
+	int t1;
+	t1 = 1.5;
+	float t2;
+	t2 = 2;
 
-  a = -(+(-(+1)));
-
-  return a;
+	float t3;
+	t3 = t1 || t2;
 
 }

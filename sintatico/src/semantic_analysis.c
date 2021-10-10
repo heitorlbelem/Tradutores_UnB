@@ -1,4 +1,5 @@
 #include "semantic_analysis.h"
+#include "syntatic_tree.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -109,4 +110,194 @@ int valid_unary_operation(char* operator, T_Node* node) {
     }
 
     return 0;
+}
+
+int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_operand, T_Node* right_operand) {
+    // ----------------------------------- OPERAÇÕES ARITMÉTICAS: +, -, *, / -------------------------------------------------
+    if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0 || strcmp(operator, "*") == 0 || strcmp(operator, "/") == 0) {
+    
+        if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "float");
+            create_casting_node(operation, left_operand, "int->float", "float", 1);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "float");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "float");
+            create_casting_node(operation, right_operand, "int->float", "float", 0);
+            return 1;
+        }
+
+        return 0;
+    }
+    // --------------------------------------- FIM OPERAÇÕES ARITMÉTICAS -----------------------------------------------------
+
+    // ---------------------------------------------- ATRIBUIÇÃO --------------------------------------------------------------
+    if(strcmp(operator, "=") == 0) {
+        if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, right_operand, "float->int", "int", 0);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "float");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "float");
+            create_casting_node(operation, right_operand, "int->float", "float", 0);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int list") == 0 && strcmp(right_operand->const_type, "int list") == 0) {
+            strcpy(operation->const_type, "int list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int list") == 0 && strcmp(right_operand->const_type, "NIL") == 0) {
+            strcpy(operation->const_type,"int list");
+            strcpy(right_operand->const_type,"int list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float list") == 0 && strcmp(right_operand->const_type, "float list") == 0) {
+            strcpy(operation->const_type, "float list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float list") == 0 && strcmp(right_operand->const_type, "NIL") == 0) {
+            strcpy(operation->const_type,"float list");
+            strcpy(right_operand->const_type,"float list");
+            return 1;
+        }
+        return 0;
+    }
+    // --------------------------------------------- FIM ATRIBUIÇÃO -----------------------------------------------------------
+
+    // --------------------------------------------- EXPRESSÕES RELACIONAIS (>, <, >=, <=) ---------------------------------------------------
+    if(strcmp(operator, ">") == 0 || strcmp(operator, "<") == 0 || strcmp(operator, ">=") == 0 || strcmp(operator, "<=") == 0) {
+        if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, left_operand, "int->float", "float", 1);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, right_operand, "int->float", "float", 0);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int list") == 0 && strcmp(right_operand->const_type, "int list") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int list") == 0 && strcmp(right_operand->const_type, "NIL") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(right_operand->const_type, "int list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float list") == 0 && strcmp(right_operand->const_type, "float list") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float list") == 0 && strcmp(right_operand->const_type, "NIL") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(right_operand->const_type, "float list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "NIL") == 0 && strcmp(right_operand->const_type, "int list") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(left_operand->const_type, "int list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "NIL") == 0 && strcmp(right_operand->const_type, "float list") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(left_operand->const_type, "float list");
+            return 1;
+        }
+        return 0;
+    }
+    // ---------------------------------------------- FIM EXPRESSÕES RELACIONAIS -----------------------------------------------
+
+    // --------------------------------------------- EXPRESSÕES DE COMPARAÇÃO (==, !=) --------------------------------------------------
+    if(strcmp(operator, "==") == 0 || strcmp(operator, "!=") == 0) {
+        if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, left_operand, "int->float", "float", 1);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, right_operand, "int->float", "float", 0);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int list") == 0 && strcmp(right_operand->const_type, "int list") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int list") == 0 && strcmp(right_operand->const_type, "NIL") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(right_operand->const_type, "int list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float list") == 0 && strcmp(right_operand->const_type, "float list") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float list") == 0 && strcmp(right_operand->const_type, "NIL") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(right_operand->const_type, "float list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "NIL") == 0 && strcmp(right_operand->const_type, "int list") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(left_operand->const_type, "int list");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "NIL") == 0 && strcmp(right_operand->const_type, "float list") == 0) {
+            strcpy(operation->const_type, "int");
+            strcpy(left_operand->const_type, "float list");
+            return 1;
+        }
+    }
+    // ---------------------------------------------- FIM EXPRESSÕES DE COMPARAÇÃO ---------------------------------------------
+    
+    // ---------------------------------------------- EXPRESSÕES BINÁRIAS && e || -------------------------------------------------------
+    if(strcmp(operator, "&&") == 0 || strcmp(operator, "||") == 0) {
+        if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, right_operand, "float->int", "int", 0);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "float") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, left_operand, "float->int", "int", 1);
+            create_casting_node(operation, right_operand, "float->int", "int", 0);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "int") == 0) {
+            strcpy(operation->const_type, "int");
+            create_casting_node(operation, left_operand, "float->int", "int", 1);
+            return 1; 
+        }
+
+        return 0;
+    }
+    // ---------------------------------------------- FIM EXPRESSÕES BINÁRIAS && e || ----------------------------------------------------
+
+    return 0;
+}
+
+void create_casting_node(T_Node* root, T_Node* child, char* cast_type, char* final_type, int left) {
+
+    char type[100];
+    char txt[5] = "cast";
+    strcpy(type, txt);
+    strcat(type, " [");
+    strcat(type, cast_type);
+    strcat(type, "]");
+
+    T_Node* casting_node = new_node("casting_node", type, 0, final_type);
+
+    casting_node->child[0] = child;
+    if(left) {
+        root->child[0] = casting_node;
+    } else {
+        root->child[1] = casting_node;
+    }
 }

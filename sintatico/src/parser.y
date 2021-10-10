@@ -411,6 +411,8 @@ expression
         if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
+        
+        valid_binary_operation("=", $$, $$->child[0], $$->child[1]);
     }
     | or_expression {
         $$ = $1;
@@ -481,6 +483,8 @@ or_expression
         $$ = new_node("or_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
+
+        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
     }
     | and_expression {
         $$ = $1;
@@ -492,6 +496,8 @@ and_expression
         $$ = new_node("and_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
+
+        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
     }
     | equality_expression {
         $$ = $1;
@@ -503,6 +509,8 @@ equality_expression
         $$ = new_node("equality_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
+
+        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
     }
     | relational_expression {
         $$ = $1;
@@ -514,6 +522,8 @@ relational_expression
         $$ = new_node("relational_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
+
+        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
     }
     | list_expression {
         $$ = $1;
@@ -521,7 +531,7 @@ relational_expression
 ;
 
 list_expression
-    : list_expression BINARY_LIST_OP addition_expression {
+    : addition_expression BINARY_LIST_OP list_expression {
         $$ = new_node("list_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
@@ -543,6 +553,8 @@ addition_expression
         $$ = new_node("addition_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
+
+        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
     }
     | multiplication_expression {
         $$ = $1;
@@ -554,6 +566,8 @@ multiplication_expression
         $$ = new_node("multiplication_expression", $2.content, 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
+
+        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
     }
     | simple_value {
         $$ = $1;

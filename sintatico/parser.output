@@ -90,7 +90,7 @@ Grammar
    56 relational_expression: relational_expression RELATIONAL_OP list_expression
    57                      | list_expression
 
-   58 list_expression: list_expression BINARY_LIST_OP addition_expression
+   58 list_expression: addition_expression BINARY_LIST_OP list_expression
    59                | addition_expression
 
    60 addition_expression: addition_expression ARITMETIC_OP_ADDITIVE multiplication_expression
@@ -1008,9 +1008,6 @@ State 60
 State 61
 
    57 relational_expression: list_expression •
-   58 list_expression: list_expression • BINARY_LIST_OP addition_expression
-
-    BINARY_LIST_OP  shift, and go to state 90
 
     ';'             reduce using rule 57 (relational_expression)
     RELATIONAL_OP   reduce using rule 57 (relational_expression)
@@ -1021,12 +1018,13 @@ State 61
 
 State 62
 
-   59 list_expression: addition_expression •
+   58 list_expression: addition_expression • BINARY_LIST_OP list_expression
+   59                | addition_expression •
    60 addition_expression: addition_expression • ARITMETIC_OP_ADDITIVE multiplication_expression
 
+    BINARY_LIST_OP         shift, and go to state 90
     ARITMETIC_OP_ADDITIVE  shift, and go to state 91
 
-    BINARY_LIST_OP  reduce using rule 59 (list_expression)
     ';'             reduce using rule 59 (list_expression)
     RELATIONAL_OP   reduce using rule 59 (list_expression)
     EQUALITY_OP     reduce using rule 59 (list_expression)
@@ -1506,7 +1504,7 @@ State 89
 
 State 90
 
-   58 list_expression: list_expression BINARY_LIST_OP • addition_expression
+   58 list_expression: addition_expression BINARY_LIST_OP • list_expression
 
     C_INTEGER              shift, and go to state 31
     C_FLOAT                shift, and go to state 32
@@ -1518,7 +1516,8 @@ State 90
     ARITMETIC_OP_ADDITIVE  shift, and go to state 45
 
     function_call_expression   go to state 56
-    addition_expression        go to state 113
+    list_expression            go to state 113
+    addition_expression        go to state 62
     multiplication_expression  go to state 63
     simple_value               go to state 64
     constant                   go to state 66
@@ -1743,9 +1742,6 @@ State 111
 State 112
 
    56 relational_expression: relational_expression RELATIONAL_OP list_expression •
-   58 list_expression: list_expression • BINARY_LIST_OP addition_expression
-
-    BINARY_LIST_OP  shift, and go to state 90
 
     ';'             reduce using rule 56 (relational_expression)
     RELATIONAL_OP   reduce using rule 56 (relational_expression)
@@ -1756,12 +1752,8 @@ State 112
 
 State 113
 
-   58 list_expression: list_expression BINARY_LIST_OP addition_expression •
-   60 addition_expression: addition_expression • ARITMETIC_OP_ADDITIVE multiplication_expression
+   58 list_expression: addition_expression BINARY_LIST_OP list_expression •
 
-    ARITMETIC_OP_ADDITIVE  shift, and go to state 91
-
-    BINARY_LIST_OP  reduce using rule 58 (list_expression)
     ';'             reduce using rule 58 (list_expression)
     RELATIONAL_OP   reduce using rule 58 (list_expression)
     EQUALITY_OP     reduce using rule 58 (list_expression)
@@ -2685,9 +2677,6 @@ State 166
 State 167
 
    57 relational_expression: list_expression •
-   58 list_expression: list_expression • BINARY_LIST_OP addition_expression
-
-    BINARY_LIST_OP  shift, and go to state 229
 
     ')'             reduce using rule 57 (relational_expression)
     RELATIONAL_OP   reduce using rule 57 (relational_expression)
@@ -2698,12 +2687,13 @@ State 167
 
 State 168
 
-   59 list_expression: addition_expression •
+   58 list_expression: addition_expression • BINARY_LIST_OP list_expression
+   59                | addition_expression •
    60 addition_expression: addition_expression • ARITMETIC_OP_ADDITIVE multiplication_expression
 
+    BINARY_LIST_OP         shift, and go to state 229
     ARITMETIC_OP_ADDITIVE  shift, and go to state 230
 
-    BINARY_LIST_OP  reduce using rule 59 (list_expression)
     ')'             reduce using rule 59 (list_expression)
     RELATIONAL_OP   reduce using rule 59 (list_expression)
     EQUALITY_OP     reduce using rule 59 (list_expression)
@@ -2968,9 +2958,6 @@ State 184
 State 185
 
    57 relational_expression: list_expression •
-   58 list_expression: list_expression • BINARY_LIST_OP addition_expression
-
-    BINARY_LIST_OP  shift, and go to state 243
 
     ')'             reduce using rule 57 (relational_expression)
     ','             reduce using rule 57 (relational_expression)
@@ -2982,12 +2969,13 @@ State 185
 
 State 186
 
-   59 list_expression: addition_expression •
+   58 list_expression: addition_expression • BINARY_LIST_OP list_expression
+   59                | addition_expression •
    60 addition_expression: addition_expression • ARITMETIC_OP_ADDITIVE multiplication_expression
 
+    BINARY_LIST_OP         shift, and go to state 243
     ARITMETIC_OP_ADDITIVE  shift, and go to state 244
 
-    BINARY_LIST_OP  reduce using rule 59 (list_expression)
     ')'             reduce using rule 59 (list_expression)
     ','             reduce using rule 59 (list_expression)
     RELATIONAL_OP   reduce using rule 59 (list_expression)
@@ -3653,7 +3641,7 @@ State 228
 
 State 229
 
-   58 list_expression: list_expression BINARY_LIST_OP • addition_expression
+   58 list_expression: addition_expression BINARY_LIST_OP • list_expression
 
     C_INTEGER              shift, and go to state 154
     C_FLOAT                shift, and go to state 155
@@ -3665,7 +3653,8 @@ State 229
     ARITMETIC_OP_ADDITIVE  shift, and go to state 161
 
     function_call_expression   go to state 162
-    addition_expression        go to state 271
+    list_expression            go to state 271
+    addition_expression        go to state 168
     multiplication_expression  go to state 169
     simple_value               go to state 170
     constant                   go to state 171
@@ -3927,7 +3916,7 @@ State 242
 
 State 243
 
-   58 list_expression: list_expression BINARY_LIST_OP • addition_expression
+   58 list_expression: addition_expression BINARY_LIST_OP • list_expression
 
     C_INTEGER              shift, and go to state 172
     C_FLOAT                shift, and go to state 173
@@ -3939,7 +3928,8 @@ State 243
     ARITMETIC_OP_ADDITIVE  shift, and go to state 179
 
     function_call_expression   go to state 180
-    addition_expression        go to state 281
+    list_expression            go to state 281
+    addition_expression        go to state 186
     multiplication_expression  go to state 187
     simple_value               go to state 188
     constant                   go to state 189
@@ -4328,9 +4318,6 @@ State 269
 State 270
 
    56 relational_expression: relational_expression RELATIONAL_OP list_expression •
-   58 list_expression: list_expression • BINARY_LIST_OP addition_expression
-
-    BINARY_LIST_OP  shift, and go to state 229
 
     ')'             reduce using rule 56 (relational_expression)
     RELATIONAL_OP   reduce using rule 56 (relational_expression)
@@ -4341,12 +4328,8 @@ State 270
 
 State 271
 
-   58 list_expression: list_expression BINARY_LIST_OP addition_expression •
-   60 addition_expression: addition_expression • ARITMETIC_OP_ADDITIVE multiplication_expression
+   58 list_expression: addition_expression BINARY_LIST_OP list_expression •
 
-    ARITMETIC_OP_ADDITIVE  shift, and go to state 230
-
-    BINARY_LIST_OP  reduce using rule 58 (list_expression)
     ')'             reduce using rule 58 (list_expression)
     RELATIONAL_OP   reduce using rule 58 (list_expression)
     EQUALITY_OP     reduce using rule 58 (list_expression)
@@ -4456,9 +4439,6 @@ State 279
 State 280
 
    56 relational_expression: relational_expression RELATIONAL_OP list_expression •
-   58 list_expression: list_expression • BINARY_LIST_OP addition_expression
-
-    BINARY_LIST_OP  shift, and go to state 243
 
     ')'             reduce using rule 56 (relational_expression)
     ','             reduce using rule 56 (relational_expression)
@@ -4470,12 +4450,8 @@ State 280
 
 State 281
 
-   58 list_expression: list_expression BINARY_LIST_OP addition_expression •
-   60 addition_expression: addition_expression • ARITMETIC_OP_ADDITIVE multiplication_expression
+   58 list_expression: addition_expression BINARY_LIST_OP list_expression •
 
-    ARITMETIC_OP_ADDITIVE  shift, and go to state 244
-
-    BINARY_LIST_OP  reduce using rule 58 (list_expression)
     ')'             reduce using rule 58 (list_expression)
     ','             reduce using rule 58 (list_expression)
     RELATIONAL_OP   reduce using rule 58 (list_expression)
