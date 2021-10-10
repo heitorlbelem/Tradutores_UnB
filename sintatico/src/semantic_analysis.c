@@ -280,6 +280,49 @@ int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_opera
     }
     // ---------------------------------------------- FIM EXPRESSÕES BINÁRIAS && e || ----------------------------------------------------
 
+    // --------------------------------------------- OPERAÇÕES FILTER(<<) E MAP(>>) ---------------------------------------------------------------
+    if(strcmp(operator, ">>") == 0) {
+        // se o operando da esquerda não for uma função (não tem ponteiro para a tabela de símbolos), lança erro
+        if(left_operand->symbol_table_pointer == NULL) return 0;
+
+        // se o operando da esquerda for função que recebe mais de um parâmetro, lança erro
+        int num_of_params = left_operand->symbol_table_pointer->num_params;
+        if(num_of_params != 1) return 0;
+
+        // se o operando da esquerda for função que não retorna um tipo simples (int ou float), lança erro
+        char* function_return_type = left_operand->symbol_table_pointer->type;
+        if(strcmp(function_return_type, "int") != 0 && strcmp(function_return_type, "float") != 0)
+            return 0;
+
+        // se o operando da direita não for alguma expressão que retorne um tipo lista, lança erro
+        if(strcmp(right_operand->const_type, "int list") != 0 && strcmp(right_operand->const_type, "float list") != 0)
+            return 0;
+        
+        char type[100];
+        strcpy(type, function_return_type);
+        strcat(type, " list");
+        strcpy(operation->const_type, type);
+
+        return 1;
+    } else if(strcmp(operator, "<<") == 0) {
+        // se o operando da esquerda não for uma função (não tem ponteiro para a tabela de símbolos), lança erro
+        if(left_operand->symbol_table_pointer == NULL) return 0;
+
+        // se o operando da esquerda for função que recebe mais de um parâmetro, lança erro
+        int num_of_params = left_operand->symbol_table_pointer->num_params;
+        if(num_of_params != 1) return 0;
+
+        // se o operando da esquerda for função que não retorna um tipo simples (int ou float), lança erro
+        char* function_return_type = left_operand->symbol_table_pointer->type;
+        if(strcmp(function_return_type, "int") != 0 && strcmp(function_return_type, "float") != 0)
+            return 0;
+
+        return 1;
+    } else if(strcmp(operator, ":") == 0) {
+        return 1;
+    }
+    // ----------------------------------------------- FIM OPERAÇÕES MAP E FILTER ---------------------------------------------------------
+
     return 0;
 }
 
