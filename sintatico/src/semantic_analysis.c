@@ -280,7 +280,7 @@ int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_opera
     }
     // ---------------------------------------------- FIM EXPRESSÕES BINÁRIAS && e || ----------------------------------------------------
 
-    // --------------------------------------------- OPERAÇÕES FILTER(<<) E MAP(>>) ---------------------------------------------------------------
+    // -------------------------------- OPERAÇÕES FILTER(<<) E MAP(>>) E ATRIBUIÇÃO (:) ----------------------------------------------
     if(strcmp(operator, ">>") == 0) {
         // se o operando da esquerda não for uma função (não tem ponteiro para a tabela de símbolos), lança erro
         if(left_operand->symbol_table_pointer == NULL) return 0;
@@ -317,11 +317,40 @@ int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_opera
         if(strcmp(function_return_type, "int") != 0 && strcmp(function_return_type, "float") != 0)
             return 0;
 
+        // se o operando da direita não for alguma expressão que retorne um tipo lista, lança erro
+        if(strcmp(right_operand->const_type, "int list") != 0 && strcmp(right_operand->const_type, "float list") != 0)
+            return 0;
+        
+        strcpy(operation->const_type, right_operand->const_type);
         return 1;
     } else if(strcmp(operator, ":") == 0) {
-        return 1;
+        
+        // se o operando da esquerda for uma expressão que não retorna um tipo simples (int ou float), lança um erro
+        if(strcmp(left_operand->const_type, "int") != 0 && strcmp(left_operand->const_type, "float") != 0) return 0;
+
+        // se o operando da direita não for alguma expressão que retorne um tipo lista, lança erro
+        if(strcmp(right_operand->const_type, "int list") != 0 && strcmp(right_operand->const_type, "float list") != 0)
+            return 0;
+        
+        if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "int list") == 0) {
+            strcpy(operation->const_type, right_operand->const_type);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "int") == 0 && strcmp(right_operand->const_type, "float list") == 0) {
+            create_casting_node(operation, left_operand, "int->float", "float", 1);
+            strcpy(operation->const_type, right_operand->const_type);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "float list") == 0) {
+            strcpy(operation->const_type, right_operand->const_type);
+            return 1;
+        } else if(strcmp(left_operand->const_type, "float") == 0 && strcmp(right_operand->const_type, "int list") == 0) {
+            create_casting_node(operation, left_operand, "int->float", "float", 1);
+            strcpy(operation->const_type, right_operand->const_type);
+            return 1;
+        }
+
+        return 0;
     }
-    // ----------------------------------------------- FIM OPERAÇÕES MAP E FILTER ---------------------------------------------------------
+    // --------------------- FIM OPERAÇÕES MAP, FILTER e ATRIBUIÇÃO DE LISTA ----------------------------------------------
 
     return 0;
 }

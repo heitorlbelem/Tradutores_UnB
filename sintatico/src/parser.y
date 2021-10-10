@@ -412,7 +412,13 @@ expression
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
 
-        valid_binary_operation("=", $$, $$->child[0], $$->child[1]);
+        if(!valid_binary_operation("=", $$, $$->child[0], $$->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $1.line_idx, $1.column_idx, 
+                $$->child[0]->const_type, 
+                $$->child[1]->const_type
+            );
+        }
     }
     | or_expression {
         $$ = $1;
@@ -430,6 +436,8 @@ function_call_expression
         } else if(!check_number_of_params($3, symbol_table, symbol_table_size, $1.content)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
+        
+        strcpy($$->const_type, $$->child[0]->const_type);
     }
 ;
 
@@ -484,7 +492,13 @@ or_expression
         $$->child[0] = $1;
         $$->child[1] = $3;
 
-        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
+        if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])){
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $2.line_idx, $2.column_idx, 
+                $$->child[0]->const_type, 
+                $$->child[1]->const_type
+            );
+        }
     }
     | and_expression {
         $$ = $1;
@@ -497,7 +511,13 @@ and_expression
         $$->child[0] = $1;
         $$->child[1] = $3;
 
-        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
+        if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $2.line_idx, $2.column_idx, 
+                $$->child[0]->const_type, 
+                $$->child[1]->const_type
+            );
+        }
     }
     | equality_expression {
         $$ = $1;
@@ -510,7 +530,13 @@ equality_expression
         $$->child[0] = $1;
         $$->child[1] = $3;
 
-        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
+        if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $2.line_idx, $2.column_idx, 
+                $$->child[0]->const_type, 
+                $$->child[1]->const_type
+            );
+        }
     }
     | relational_expression {
         $$ = $1;
@@ -523,7 +549,13 @@ relational_expression
         $$->child[0] = $1;
         $$->child[1] = $3;
 
-        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
+        if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $2.line_idx, $2.column_idx, 
+                $$->child[0]->const_type, 
+                $$->child[1]->const_type
+            );
+        }
     }
     | list_expression {
         $$ = $1;
@@ -553,7 +585,13 @@ addition_expression
         $$->child[0] = $1;
         $$->child[1] = $3;
 
-        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
+        if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $2.line_idx, $2.column_idx, 
+                $$->child[0]->const_type, 
+                $$->child[1]->const_type
+            );
+        }
     }
     | multiplication_expression {
         $$ = $1;
@@ -566,7 +604,13 @@ multiplication_expression
         $$->child[0] = $1;
         $$->child[1] = $3;
 
-        valid_binary_operation($2.content, $$, $$->child[0], $$->child[1]);
+        if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $2.line_idx, $2.column_idx, 
+                $$->child[0]->const_type, 
+                $$->child[1]->const_type
+            );
+        }
     }
     | simple_value {
         $$ = $1;

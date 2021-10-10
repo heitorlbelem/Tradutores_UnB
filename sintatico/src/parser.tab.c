@@ -586,10 +586,10 @@ static const yytype_int16 yyrline[] =
      168,   174,   177,   180,   183,   186,   189,   192,   195,   199,
      199,   232,   232,   275,   278,   284,   289,   295,   314,   340,
      350,   355,   364,   370,   373,   379,   389,   393,   400,   407,
-     417,   423,   437,   440,   446,   451,   457,   464,   467,   473,
-     476,   482,   489,   495,   502,   508,   515,   521,   528,   534,
-     545,   551,   558,   564,   571,   577,   580,   586,   593,   600,
-     607,   610,   616,   640,   670,   673,   676
+     423,   429,   445,   448,   454,   459,   465,   472,   475,   481,
+     484,   490,   503,   509,   522,   528,   541,   547,   560,   566,
+     577,   583,   596,   602,   615,   621,   624,   630,   637,   644,
+     651,   654,   660,   684,   714,   717,   720
 };
 #endif
 
@@ -2630,21 +2630,27 @@ yyreduce:
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[-2].token).line_idx, (yyvsp[-2].token).column_idx, (yyvsp[-2].token).content);
         }
 
-        valid_binary_operation("=", (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1]);
+        if(!valid_binary_operation("=", (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                (yyvsp[-2].token).line_idx, (yyvsp[-2].token).column_idx, 
+                (yyval.node)->child[0]->const_type, 
+                (yyval.node)->child[1]->const_type
+            );
+        }
     }
-#line 2636 "parser.tab.c"
+#line 2642 "parser.tab.c"
     break;
 
   case 40: /* expression: or_expression  */
-#line 417 "./src/parser.y"
+#line 423 "./src/parser.y"
                     {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2644 "parser.tab.c"
+#line 2650 "parser.tab.c"
     break;
 
   case 41: /* function_call_expression: IDENTIFIER '(' function_arguments_optative ')'  */
-#line 423 "./src/parser.y"
+#line 429 "./src/parser.y"
                                                      {
         (yyval.node) = new_node("function_call_expression", "function_call", 0, "");
         (yyval.node)->child[0] = new_node("id", (yyvsp[-3].token).content, 1, "");
@@ -2655,167 +2661,193 @@ yyreduce:
         } else if(!check_number_of_params((yyvsp[-1].node), symbol_table, symbol_table_size, (yyvsp[-3].token).content)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx, (yyvsp[-3].token).content);
         }
-    }
-#line 2660 "parser.tab.c"
-    break;
-
-  case 42: /* function_arguments_optative: %empty  */
-#line 437 "./src/parser.y"
-             {
-        (yyval.node) = NULL;
+        
+        strcpy((yyval.node)->const_type, (yyval.node)->child[0]->const_type);
     }
 #line 2668 "parser.tab.c"
     break;
 
-  case 43: /* function_arguments_optative: function_arguments  */
-#line 440 "./src/parser.y"
-                         {
-        (yyval.node) = (yyvsp[0].node);
+  case 42: /* function_arguments_optative: %empty  */
+#line 445 "./src/parser.y"
+             {
+        (yyval.node) = NULL;
     }
 #line 2676 "parser.tab.c"
     break;
 
+  case 43: /* function_arguments_optative: function_arguments  */
+#line 448 "./src/parser.y"
+                         {
+        (yyval.node) = (yyvsp[0].node);
+    }
+#line 2684 "parser.tab.c"
+    break;
+
   case 44: /* function_arguments: function_arguments ',' function_argument  */
-#line 446 "./src/parser.y"
+#line 454 "./src/parser.y"
                                                {
         (yyval.node) = new_node("function_arguments", "function_args", 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
     }
-#line 2686 "parser.tab.c"
-    break;
-
-  case 45: /* function_arguments: function_argument  */
-#line 451 "./src/parser.y"
-                        {
-        (yyval.node) = (yyvsp[0].node);
-    }
 #line 2694 "parser.tab.c"
     break;
 
+  case 45: /* function_arguments: function_argument  */
+#line 459 "./src/parser.y"
+                        {
+        (yyval.node) = (yyvsp[0].node);
+    }
+#line 2702 "parser.tab.c"
+    break;
+
   case 46: /* function_argument: expression  */
-#line 457 "./src/parser.y"
+#line 465 "./src/parser.y"
                  {
         (yyval.node) = new_node("function_args", "function_args", 0, "");
         (yyval.node)->child[0] = (yyvsp[0].node);
     }
-#line 2703 "parser.tab.c"
-    break;
-
-  case 47: /* expression_optative: %empty  */
-#line 464 "./src/parser.y"
-             {
-        (yyval.node) = NULL;
-    }
 #line 2711 "parser.tab.c"
     break;
 
-  case 48: /* expression_optative: expression  */
-#line 467 "./src/parser.y"
-                 {
-        (yyval.node) = (yyvsp[0].node);
+  case 47: /* expression_optative: %empty  */
+#line 472 "./src/parser.y"
+             {
+        (yyval.node) = NULL;
     }
 #line 2719 "parser.tab.c"
     break;
 
-  case 49: /* or_expression_optative: %empty  */
-#line 473 "./src/parser.y"
-             {
-        (yyval.node) = NULL;
+  case 48: /* expression_optative: expression  */
+#line 475 "./src/parser.y"
+                 {
+        (yyval.node) = (yyvsp[0].node);
     }
 #line 2727 "parser.tab.c"
     break;
 
-  case 50: /* or_expression_optative: or_expression  */
-#line 476 "./src/parser.y"
-                    {
-        (yyval.node) = (yyvsp[0].node);
+  case 49: /* or_expression_optative: %empty  */
+#line 481 "./src/parser.y"
+             {
+        (yyval.node) = NULL;
     }
 #line 2735 "parser.tab.c"
     break;
 
+  case 50: /* or_expression_optative: or_expression  */
+#line 484 "./src/parser.y"
+                    {
+        (yyval.node) = (yyvsp[0].node);
+    }
+#line 2743 "parser.tab.c"
+    break;
+
   case 51: /* or_expression: or_expression LOGICAL_OP_OR and_expression  */
-#line 482 "./src/parser.y"
+#line 490 "./src/parser.y"
                                                  {
         (yyval.node) = new_node("or_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
 
-        valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1]);
+        if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])){
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
+                (yyval.node)->child[0]->const_type, 
+                (yyval.node)->child[1]->const_type
+            );
+        }
     }
-#line 2747 "parser.tab.c"
+#line 2761 "parser.tab.c"
     break;
 
   case 52: /* or_expression: and_expression  */
-#line 489 "./src/parser.y"
+#line 503 "./src/parser.y"
                      {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2755 "parser.tab.c"
+#line 2769 "parser.tab.c"
     break;
 
   case 53: /* and_expression: and_expression LOGICAL_OP_AND equality_expression  */
-#line 495 "./src/parser.y"
+#line 509 "./src/parser.y"
                                                         {
         (yyval.node) = new_node("and_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
 
-        valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1]);
-    }
-#line 2767 "parser.tab.c"
-    break;
-
-  case 54: /* and_expression: equality_expression  */
-#line 502 "./src/parser.y"
-                          {
-        (yyval.node) = (yyvsp[0].node);
-    }
-#line 2775 "parser.tab.c"
-    break;
-
-  case 55: /* equality_expression: equality_expression EQUALITY_OP relational_expression  */
-#line 508 "./src/parser.y"
-                                                            {
-        (yyval.node) = new_node("equality_expression", (yyvsp[-1].token).content, 0, "");
-        (yyval.node)->child[0] = (yyvsp[-2].node);
-        (yyval.node)->child[1] = (yyvsp[0].node);
-
-        valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1]);
+        if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
+                (yyval.node)->child[0]->const_type, 
+                (yyval.node)->child[1]->const_type
+            );
+        }
     }
 #line 2787 "parser.tab.c"
     break;
 
-  case 56: /* equality_expression: relational_expression  */
-#line 515 "./src/parser.y"
-                            {
+  case 54: /* and_expression: equality_expression  */
+#line 522 "./src/parser.y"
+                          {
         (yyval.node) = (yyvsp[0].node);
     }
 #line 2795 "parser.tab.c"
     break;
 
+  case 55: /* equality_expression: equality_expression EQUALITY_OP relational_expression  */
+#line 528 "./src/parser.y"
+                                                            {
+        (yyval.node) = new_node("equality_expression", (yyvsp[-1].token).content, 0, "");
+        (yyval.node)->child[0] = (yyvsp[-2].node);
+        (yyval.node)->child[1] = (yyvsp[0].node);
+
+        if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
+                (yyval.node)->child[0]->const_type, 
+                (yyval.node)->child[1]->const_type
+            );
+        }
+    }
+#line 2813 "parser.tab.c"
+    break;
+
+  case 56: /* equality_expression: relational_expression  */
+#line 541 "./src/parser.y"
+                            {
+        (yyval.node) = (yyvsp[0].node);
+    }
+#line 2821 "parser.tab.c"
+    break;
+
   case 57: /* relational_expression: relational_expression RELATIONAL_OP list_expression  */
-#line 521 "./src/parser.y"
+#line 547 "./src/parser.y"
                                                           {
         (yyval.node) = new_node("relational_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
 
-        valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1]);
+        if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
+                (yyval.node)->child[0]->const_type, 
+                (yyval.node)->child[1]->const_type
+            );
+        }
     }
-#line 2807 "parser.tab.c"
+#line 2839 "parser.tab.c"
     break;
 
   case 58: /* relational_expression: list_expression  */
-#line 528 "./src/parser.y"
+#line 560 "./src/parser.y"
                       {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2815 "parser.tab.c"
+#line 2847 "parser.tab.c"
     break;
 
   case 59: /* list_expression: addition_expression BINARY_LIST_OP list_expression  */
-#line 534 "./src/parser.y"
+#line 566 "./src/parser.y"
                                                          {
         (yyval.node) = new_node("list_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
@@ -2827,78 +2859,90 @@ yyreduce:
         
 
     }
-#line 2831 "parser.tab.c"
+#line 2863 "parser.tab.c"
     break;
 
   case 60: /* list_expression: addition_expression  */
-#line 545 "./src/parser.y"
+#line 577 "./src/parser.y"
                           {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2839 "parser.tab.c"
+#line 2871 "parser.tab.c"
     break;
 
   case 61: /* addition_expression: addition_expression ARITMETIC_OP_ADDITIVE multiplication_expression  */
-#line 551 "./src/parser.y"
+#line 583 "./src/parser.y"
                                                                           {
         (yyval.node) = new_node("addition_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
 
-        valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1]);
+        if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
+                (yyval.node)->child[0]->const_type, 
+                (yyval.node)->child[1]->const_type
+            );
+        }
     }
-#line 2851 "parser.tab.c"
+#line 2889 "parser.tab.c"
     break;
 
   case 62: /* addition_expression: multiplication_expression  */
-#line 558 "./src/parser.y"
+#line 596 "./src/parser.y"
                                 {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2859 "parser.tab.c"
+#line 2897 "parser.tab.c"
     break;
 
   case 63: /* multiplication_expression: multiplication_expression ARITMETIC_OP_MULTIPLICATIVE simple_value  */
-#line 564 "./src/parser.y"
+#line 602 "./src/parser.y"
                                                                          {
         (yyval.node) = new_node("multiplication_expression", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[-2].node);
         (yyval.node)->child[1] = (yyvsp[0].node);
 
-        valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1]);
+        if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
+                (yyval.node)->child[0]->const_type, 
+                (yyval.node)->child[1]->const_type
+            );
+        }
     }
-#line 2871 "parser.tab.c"
+#line 2915 "parser.tab.c"
     break;
 
   case 64: /* multiplication_expression: simple_value  */
-#line 571 "./src/parser.y"
+#line 615 "./src/parser.y"
                    {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2879 "parser.tab.c"
+#line 2923 "parser.tab.c"
     break;
 
   case 65: /* simple_value: constant  */
-#line 577 "./src/parser.y"
+#line 621 "./src/parser.y"
                {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2887 "parser.tab.c"
+#line 2931 "parser.tab.c"
     break;
 
   case 66: /* simple_value: IDENTIFIER  */
-#line 580 "./src/parser.y"
+#line 624 "./src/parser.y"
                  {
         (yyval.node) = new_node("identifier", (yyvsp[0].token).content, 1, "");
         if(variable_unavailable(symbol_table, (yyval.node), symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[0].token).line_idx, (yyvsp[0].token).column_idx, (yyvsp[0].token).content);
         }
     }
-#line 2898 "parser.tab.c"
+#line 2942 "parser.tab.c"
     break;
 
   case 67: /* simple_value: ARITMETIC_OP_ADDITIVE simple_value  */
-#line 586 "./src/parser.y"
+#line 630 "./src/parser.y"
                                          {
         (yyval.node) = new_node("simple_value_signed", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[0].node);
@@ -2906,11 +2950,11 @@ yyreduce:
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid unary operation '%s' for operand type '%s'\n"reset, (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, (yyvsp[-1].token).content, (yyvsp[0].node)->const_type);
         }
     }
-#line 2910 "parser.tab.c"
+#line 2954 "parser.tab.c"
     break;
 
   case 68: /* simple_value: '!' simple_value  */
-#line 593 "./src/parser.y"
+#line 637 "./src/parser.y"
                        {
         (yyval.node) = new_node("simple_value_exclamation", "!", 0, "");
         (yyval.node)->child[0] = (yyvsp[0].node);
@@ -2918,11 +2962,11 @@ yyreduce:
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid unary operation '!' for operand type '%s'\n"reset, line_idx, column_idx, (yyvsp[0].node)->const_type);
         }
     }
-#line 2922 "parser.tab.c"
+#line 2966 "parser.tab.c"
     break;
 
   case 69: /* simple_value: UNARY_LIST_OP simple_value  */
-#line 600 "./src/parser.y"
+#line 644 "./src/parser.y"
                                  {
         (yyval.node) = new_node("simple_value_unary", (yyvsp[-1].token).content, 0, "");
         (yyval.node)->child[0] = (yyvsp[0].node);
@@ -2930,27 +2974,27 @@ yyreduce:
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid unary operation '%s' for operand type '%s'\n"reset, (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, (yyvsp[-1].token).content, (yyvsp[0].node)->const_type);
         }
     }
-#line 2934 "parser.tab.c"
+#line 2978 "parser.tab.c"
     break;
 
   case 70: /* simple_value: '(' expression ')'  */
-#line 607 "./src/parser.y"
+#line 651 "./src/parser.y"
                          {
         (yyval.node) = (yyvsp[-1].node);
     }
-#line 2942 "parser.tab.c"
+#line 2986 "parser.tab.c"
     break;
 
   case 71: /* simple_value: function_call_expression  */
-#line 610 "./src/parser.y"
+#line 654 "./src/parser.y"
                                {
         (yyval.node) = (yyvsp[0].node);
     }
-#line 2950 "parser.tab.c"
+#line 2994 "parser.tab.c"
     break;
 
   case 72: /* variable_declaration_statement: SIMPLE_TYPE IDENTIFIER ';'  */
-#line 616 "./src/parser.y"
+#line 660 "./src/parser.y"
                                  {
         T_Symbol sym = symbol(
             (yyvsp[-2].token).content, 
@@ -2975,11 +3019,11 @@ yyreduce:
         (yyval.node)->child[1] = new_node("id", (yyvsp[-1].token).content, 1, "");
 
     }
-#line 2979 "parser.tab.c"
+#line 3023 "parser.tab.c"
     break;
 
   case 73: /* variable_declaration_statement: SIMPLE_TYPE LIST_TYPE IDENTIFIER ';'  */
-#line 640 "./src/parser.y"
+#line 684 "./src/parser.y"
                                            {
         char type[100];
         strcpy(type, (yyvsp[-3].token).content);
@@ -3007,35 +3051,35 @@ yyreduce:
         (yyval.node)->child[0] = new_node("type", type, 1, "");
         (yyval.node)->child[1] = new_node("id", (yyvsp[-1].token).content, 1, "");
     }
-#line 3011 "parser.tab.c"
+#line 3055 "parser.tab.c"
     break;
 
   case 74: /* constant: C_INTEGER  */
-#line 670 "./src/parser.y"
+#line 714 "./src/parser.y"
                 {
         (yyval.node) = new_node("const", (yyvsp[0].token).content, 1, "int");
     }
-#line 3019 "parser.tab.c"
+#line 3063 "parser.tab.c"
     break;
 
   case 75: /* constant: C_FLOAT  */
-#line 673 "./src/parser.y"
+#line 717 "./src/parser.y"
               {
         (yyval.node) = new_node("const", (yyvsp[0].token).content, 1, "float");
     }
-#line 3027 "parser.tab.c"
+#line 3071 "parser.tab.c"
     break;
 
   case 76: /* constant: C_NIL  */
-#line 676 "./src/parser.y"
+#line 720 "./src/parser.y"
             {
         (yyval.node) = new_node("const", (yyvsp[0].token).content, 1, "NIL");
     }
-#line 3035 "parser.tab.c"
+#line 3079 "parser.tab.c"
     break;
 
 
-#line 3039 "parser.tab.c"
+#line 3083 "parser.tab.c"
 
       default: break;
     }
@@ -3260,7 +3304,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 681 "./src/parser.y"
+#line 725 "./src/parser.y"
 
 
 void yyerror(const char* err_msg){

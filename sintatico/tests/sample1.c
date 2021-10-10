@@ -9,7 +9,7 @@ int main() {
 	float t2;
 	t2 = 2;
 
-	float t3;
+	float list t3;
 	t3 = t1 || t2;
 
 	int list lista_inteiros;
