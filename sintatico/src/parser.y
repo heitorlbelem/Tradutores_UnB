@@ -223,7 +223,7 @@ function_declaration_statement:
     parameters_optative ')' statement {
         $$ = new_node("function_declaration_statement", "func_declaration", 0, "");
         $$->child[0] = new_node("type", $1.content, 1, "");
-        $$->child[1] = new_node("id", $2.content, 1, "");
+        $$->child[1] = new_node("identifier", $2.content, 1, "");
         $$->child[2] = $5;
         $$->child[3] = $7;
         pop_scope(top, scope_stack);
@@ -263,7 +263,7 @@ function_declaration_statement:
            
         $$ = new_node("function_declaration_statement", "func_declaration", 0, "");
         $$->child[0] = new_node("type", type, 1, "");
-        $$->child[1] = new_node("id", $3.content, 1, "");
+        $$->child[1] = new_node("identifier", $3.content, 1, "");
         $$->child[2] = $6;
         $$->child[3] = $8;
         pop_scope(top, scope_stack);
@@ -309,7 +309,7 @@ parameter
 
         $$ = new_node("function_parameter", "function_param", 0, "");
         $$->child[0] = new_node("type", $1.content, 1, "");
-        $$->child[1] = new_node("id", $2.content, 1, "");
+        $$->child[1] = new_node("identifier", $2.content, 1, "");
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER {
         char type[100];
@@ -332,7 +332,7 @@ parameter
 
         $$ = new_node("function_parameter", "function_param", 0, "");
         $$->child[0] = new_node("type", type, 1, "");
-        $$->child[1] = new_node("id", $3.content, 1, "");
+        $$->child[1] = new_node("identifier", $3.content, 1, "");
     }
 ;
 
@@ -382,6 +382,10 @@ input_statement
         if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $3.line_idx, $3.column_idx, $3.content);
         }
+
+        if(!valid_read_write_params($1.content, $$->child[0])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid params passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
+        }
     }
 ;
 
@@ -389,24 +393,41 @@ output_statement
     : IO_WRITE '(' expression ')' ';' {
         $$ = new_node("output_statement", $1.content, 0, "");
         $$->child[0] = $3;
+        if(!valid_read_write_params($1.content, $$->child[0])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid params passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
+        }
     }
     | IO_WRITE '(' LIT_STRING ')' ';' {
         $$ = new_node("output_statement", $1.content, 0, "");
-        $$->child[0] = new_node("string_literal", $3.content, 1, "");
+        $$->child[0] = new_node("string_literal", $3.content, 1, "literal_string");
+        if(!valid_read_write_params($1.content, $$->child[0])) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid params passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
+        }
     }
 ;
 
 return_statement
     : RW_RETURN expression ';' {
-        $$ = new_node("return_statement", $1.content, 0, "");
+        char function_return_type[10];
+        strcpy(function_return_type, symbol_table[current_function_idx].type);
+
+        $$ = new_node("return_statement", $1.content, 0, function_return_type);
         $$->child[0] = $2;
+
+        if(!valid_return_type($$)) {
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
+                $1.line_idx, $1.column_idx, 
+                $$->child[0]->const_type,
+                $$->const_type
+            );
+        }
     }
 ;
 
 expression
     : IDENTIFIER '=' expression {
         $$ = new_node("assignment_expression", "=", 0, "");
-        $$->child[0] = new_node("id", $1.content, 1, "");
+        $$->child[0] = new_node("identifier", $1.content, 1, "");
         $$->child[1] = $3;
         if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
@@ -428,7 +449,7 @@ expression
 function_call_expression
     : IDENTIFIER '(' function_arguments_optative ')' {
         $$ = new_node("function_call_expression", "function_call", 0, "");
-        $$->child[0] = new_node("id", $1.content, 1, "");
+        $$->child[0] = new_node("identifier", $1.content, 1, "");
         $$->child[1] = $3;
         
         if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)){
@@ -436,7 +457,7 @@ function_call_expression
         } else if(!check_number_of_params($3, symbol_table, symbol_table_size, $1.content)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
-        
+
         strcpy($$->const_type, $$->child[0]->const_type);
     }
 ;
@@ -678,7 +699,7 @@ variable_declaration_statement
 
         $$ = new_node("variable_declaration", "var_declaration", 0, "");
         $$->child[0] = new_node("type", $1.content, 1, "");
-        $$->child[1] = new_node("id", $2.content, 1, "");
+        $$->child[1] = new_node("identifier", $2.content, 1, "");
 
     }
     | SIMPLE_TYPE LIST_TYPE IDENTIFIER ';' {
@@ -706,7 +727,7 @@ variable_declaration_statement
 
         $$ = new_node("variable_declaration", "var_declaration", 0, "");
         $$->child[0] = new_node("type", type, 1, "");
-        $$->child[1] = new_node("id", $3.content, 1, "");
+        $$->child[1] = new_node("identifier", $3.content, 1, "");
     }
 ;
 

@@ -351,7 +351,54 @@ int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_opera
         return 0;
     }
     // --------------------- FIM OPERAÇÕES MAP, FILTER e ATRIBUIÇÃO DE LISTA ----------------------------------------------
+    return 0;
+}
 
+int valid_read_write_params(char* func, T_Node* expression) {
+    if(strcmp(func, "write") == 0 || strcmp(func, "writeln") == 0) {
+        return (strcmp(expression->const_type, "literal_string") == 0 
+            || strcmp(expression->const_type, "int") == 0
+            || strcmp(expression->const_type, "float") == 0
+        );
+    } else if(strcmp(func, "read") == 0) {
+        return (strcmp(expression->const_type, "int") == 0
+            || strcmp(expression->const_type, "float") == 0
+        );
+    }
+    return 0;
+}
+
+int valid_return_type(T_Node* expression) {
+    
+    if(strcmp(expression->const_type, "int") == 0) {
+        if(strcmp(expression->child[0]->const_type, "int") == 0) {
+            return 1;
+        } else if(strcmp(expression->child[0]->const_type, "float") == 0) {
+            create_casting_node(expression, expression->child[0], "float->int", "int", 1);
+            return 1;
+        }
+    } else if(strcmp(expression->const_type, "float") == 0) {
+        if(strcmp(expression->child[0]->const_type, "float") == 0) {
+            return 1;
+        } else if(strcmp(expression->child[0]->const_type, "int") == 0) {
+            create_casting_node(expression, expression->child[0], "int->float", "float", 1);
+            return 1;
+        }
+    } else if(strcmp(expression->const_type, "int list") == 0) {
+        if(strcmp(expression->child[0]->const_type, "int list") == 0) {
+            return 1;
+        } else if(strcmp(expression->child[0]->const_type, "NIL") == 0) {
+            strcpy(expression->child[0]->const_type, expression->const_type);
+            return 1;
+        }
+    } else if(strcmp(expression->const_type, "float list") == 0) {
+        if(strcmp(expression->child[0]->const_type, "float list") == 0) {
+            return 1;
+        } else if(strcmp(expression->child[0]->const_type, "NIL") == 0) {
+            strcpy(expression->child[0]->const_type, expression->const_type);
+            return 1;
+        }
+    }
     return 0;
 }
 

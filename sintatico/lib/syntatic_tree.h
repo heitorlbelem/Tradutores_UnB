@@ -11,7 +11,7 @@ struct T_Node {
     char rule[100];
     char text[100];
     int is_terminal;
-    char const_type[10];
+    char const_type[30];
     T_Node* child[5];
     T_Symbol* symbol_table_pointer;
 };
