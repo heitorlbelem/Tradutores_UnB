@@ -458,6 +458,11 @@ function_call_expression
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         }
 
+        int first_argument_idx = find_function_first_argument($1.content, symbol_table, symbol_table_size);
+        printf("%d\n", first_argument_idx);
+        valid_argument_type($$->child[1], symbol_table, first_argument_idx, 0);
+        
+
         strcpy($$->const_type, $$->child[0]->const_type);
     }
 ;

@@ -104,4 +104,6 @@ void insert_symbol(T_Symbol symbol_table[], int idx, T_Symbol symbol);
 // Print symbol table
 void print_symbol_table(T_Symbol symbol_table[], int table_size);
 
+int find_function_first_argument(char* identifier, T_Symbol symbol_table[], int symbol_table_size);
+
 #endif

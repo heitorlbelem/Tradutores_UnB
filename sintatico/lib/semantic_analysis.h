@@ -17,6 +17,7 @@ int valid_unary_operation(char* operator, T_Node* node);
 int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_operand, T_Node* right_operand);
 int valid_read_write_params(char* func, T_Node* expression);
 int valid_return_type(T_Node* expression);
+void valid_argument_type(T_Node* arg, T_Symbol symbol_table[], int first_arg_idx, int iteration);
 void create_casting_node(T_Node* root, T_Node* child, char* cast_type, char* final_type, int left);
 
 #endif

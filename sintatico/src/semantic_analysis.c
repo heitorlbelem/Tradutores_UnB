@@ -402,6 +402,51 @@ int valid_return_type(T_Node* expression) {
     return 0;
 }
 
+void valid_argument_type(T_Node* arg, T_Symbol symbol_table[], int first_arg_idx, int iteration) {
+    if(!arg || arg->child[0] == NULL || strcmp(arg->text, "function_args") != 0) return;
+    printf("%s\t%s\n", arg->text, symbol_table[first_arg_idx + iteration].content);
+    printf("1\n");
+    
+    char function_param_type[100];
+    strcpy(function_param_type, symbol_table[first_arg_idx + iteration].content);
+    
+    if(strcmp(function_param_type, "int") == 0) {
+        printf("2\n");
+        if(strcmp(arg->const_type, "int") == 0){ printf("oi 1\n"); return;}
+        else if(strcmp(arg->const_type, "float") == 0) {
+            create_casting_node(arg, arg->child[0], "float->int", "int", 1);
+            printf("oi 2\n");
+            return;
+        }
+        return;
+    } else if(strcmp(function_param_type, "float") == 0) {
+        printf("3\n");
+        if(strcmp(arg->const_type, "float") == 0) return ;
+        else if(strcmp(arg->const_type, "int") == 0) {
+            create_casting_node(arg, arg->child[0], "int->float", "float", 1);
+            return ;
+        }
+        return ;
+    } else if(strcmp(function_param_type, "int list") == 0) {
+        printf("4\n");
+        if(strcmp(arg->const_type, "int list") == 0 || strcmp(arg->const_type, "NIL") == 0) {
+            strcpy(arg->const_type, "int list");
+            return ;
+        }
+        return ;
+    } else if(strcmp(function_param_type, "float list") == 0) {
+        printf("5\n");
+        if(strcmp(arg->const_type, "float list") == 0 || strcmp(arg->const_type, "NIL") == 0) {
+            strcpy(arg->const_type, "float list");
+            return ;
+        }
+        return ;
+    } 
+
+    printf("6\n");
+    return valid_argument_type(arg->child[0], symbol_table, first_arg_idx, iteration + 1);
+}
+
 void create_casting_node(T_Node* root, T_Node* child, char* cast_type, char* final_type, int left) {
 
     char type[100];
