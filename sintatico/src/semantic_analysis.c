@@ -402,49 +402,42 @@ int valid_return_type(T_Node* expression) {
     return 0;
 }
 
-void valid_argument_type(T_Node* arg, T_Symbol symbol_table[], int first_arg_idx, int iteration) {
-    if(!arg || arg->child[0] == NULL || strcmp(arg->text, "function_args") != 0) return;
-    printf("%s\t%s\n", arg->text, symbol_table[first_arg_idx + iteration].content);
-    printf("1\n");
+int invalid_argument_type(T_Node* arg, T_Symbol symbol_table[], int first_arg_idx, int iteration, int error) {
+    if(!arg->child[0]) 
+        return error;
+    T_Symbol current_symbol = symbol_table[first_arg_idx + iteration];
+    // printf("PARAM: [%s, %s]\tARG:<%s, %s>\n", current_symbol.content, current_symbol.type, arg->child[1]->text, arg->child[1]->const_type);
     
-    char function_param_type[100];
-    strcpy(function_param_type, symbol_table[first_arg_idx + iteration].content);
-    
-    if(strcmp(function_param_type, "int") == 0) {
-        printf("2\n");
-        if(strcmp(arg->const_type, "int") == 0){ printf("oi 1\n"); return;}
-        else if(strcmp(arg->const_type, "float") == 0) {
-            create_casting_node(arg, arg->child[0], "float->int", "int", 1);
-            printf("oi 2\n");
-            return;
+    if(strcmp(current_symbol.type, "int") == 0) {
+        if(strcmp(arg->child[1]->const_type, "float") == 0) {
+            create_casting_node(arg, arg->child[1], "float->int", "int", 0);
+        } else if(strcmp(arg->child[1]->const_type, "int") == 0) {
+            // do nothing
+        } else {
+            error = 1;
         }
-        return;
-    } else if(strcmp(function_param_type, "float") == 0) {
-        printf("3\n");
-        if(strcmp(arg->const_type, "float") == 0) return ;
-        else if(strcmp(arg->const_type, "int") == 0) {
-            create_casting_node(arg, arg->child[0], "int->float", "float", 1);
-            return ;
+    } else if(strcmp(current_symbol.type, "float") == 0) {
+        if(strcmp(arg->child[1]->const_type, "int") == 0) {
+            create_casting_node(arg, arg->child[1], "int->float", "float", 0);
+        } else if(strcmp(arg->child[1]->const_type, "float") == 0) {
+            // do nothing
+        } else {
+            error = 1;
         }
-        return ;
-    } else if(strcmp(function_param_type, "int list") == 0) {
-        printf("4\n");
-        if(strcmp(arg->const_type, "int list") == 0 || strcmp(arg->const_type, "NIL") == 0) {
-            strcpy(arg->const_type, "int list");
-            return ;
+    } else if(strcmp(current_symbol.type, "int list") == 0) {
+        if(strcmp(arg->child[1]->const_type, "int list") == 0 || strcmp(arg->child[1]->const_type, "NIL") == 0) {
+            strcpy(arg->child[1]->const_type, "int list");
+        } else {
+            error = 1;
         }
-        return ;
-    } else if(strcmp(function_param_type, "float list") == 0) {
-        printf("5\n");
-        if(strcmp(arg->const_type, "float list") == 0 || strcmp(arg->const_type, "NIL") == 0) {
-            strcpy(arg->const_type, "float list");
-            return ;
+    } else if(strcmp(current_symbol.type, "float list") == 0) {
+        if(strcmp(arg->child[1]->const_type, "float list") == 0 || strcmp(arg->child[1]->const_type, "NIL") == 0) {
+            strcpy(arg->child[1]->const_type, "float list");
+        } else {
+            error = 1;
         }
-        return ;
-    } 
-
-    printf("6\n");
-    return valid_argument_type(arg->child[0], symbol_table, first_arg_idx, iteration + 1);
+    }
+    return invalid_argument_type(arg->child[0], symbol_table, first_arg_idx, iteration - 1, error);
 }
 
 void create_casting_node(T_Node* root, T_Node* child, char* cast_type, char* final_type, int left) {
@@ -457,7 +450,6 @@ void create_casting_node(T_Node* root, T_Node* child, char* cast_type, char* fin
     strcat(type, "]");
 
     T_Node* casting_node = new_node("casting_node", type, 0, final_type);
-
     casting_node->child[0] = child;
     if(left) {
         root->child[0] = casting_node;

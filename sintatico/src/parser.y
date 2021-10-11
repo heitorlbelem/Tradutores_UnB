@@ -109,7 +109,6 @@
 %type<node> function_call_expression
 %type<node> function_arguments_optative
 %type<node> function_arguments
-%type<node> function_argument
 %type<node> expression_optative
 %type<node> or_expression_optative
 %type<node> or_expression
@@ -452,16 +451,18 @@ function_call_expression
         $$->child[0] = new_node("identifier", $1.content, 1, "");
         $$->child[1] = $3;
         
+        int valid_params = check_number_of_params($3, symbol_table, symbol_table_size, $1.content);
+
         if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
-        } else if(!check_number_of_params($3, symbol_table, symbol_table_size, $1.content)) {
+        } else if(!valid_params) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
+        } else if(valid_params) {
+            int first_argument_idx = find_function_first_argument($1.content, symbol_table, symbol_table_size);
+            if(invalid_argument_type($$->child[1], symbol_table, first_argument_idx, 0, 0)) {
+                printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid param type\n"reset, $1.line_idx, $1.column_idx);
+            }
         }
-
-        int first_argument_idx = find_function_first_argument($1.content, symbol_table, symbol_table_size);
-        printf("%d\n", first_argument_idx);
-        valid_argument_type($$->child[1], symbol_table, first_argument_idx, 0);
-        
 
         strcpy($$->const_type, $$->child[0]->const_type);
     }
@@ -477,20 +478,15 @@ function_arguments_optative
 ;
 
 function_arguments
-    : function_arguments ',' function_argument {
+    : function_arguments ',' expression {
         $$ = new_node("function_arguments", "function_args", 0, "");
         $$->child[0] = $1;
         $$->child[1] = $3;
     }
-    | function_argument {
-        $$ = $1;
-    }
-;
-
-function_argument
-    : expression {
-        $$ = new_node("function_args", "function_args", 0, "");
-        $$->child[0] = $1;
+    | expression {
+        $$ = new_node("function_arguments", "function_args", 0, "");
+        $$->child[0] = new_node("function_Arguments", "function_args", 0, "");
+        $$->child[1] = $1;
     }
 ;
 
@@ -597,8 +593,6 @@ list_expression
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - First argument of '%s' must be a unary function\n"reset, $2.line_idx, $2.column_idx, $2.content);
         }
-        
-
     }
     | addition_expression {
         $$ = $1;

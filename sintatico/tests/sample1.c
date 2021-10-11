@@ -1,4 +1,4 @@
-float func(int n, int b) {
+float func(int n, int b, int list c) {
 	return n * 3.1415;
 }
 
@@ -13,6 +13,7 @@ int main() {
 	t3 = t1 || t2;
 
 	int i;
-	i = func(t3);
+	float t4;
+	i = func(t2, t3, t4);
 
 }

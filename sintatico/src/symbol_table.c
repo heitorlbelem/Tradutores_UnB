@@ -54,7 +54,7 @@ void print_symbol_table(T_Symbol symbol_table[], int table_size){
 int find_function_first_argument(char* identifier, T_Symbol symbol_table[], int symbol_table_size) {
     for(int i = 0; i < symbol_table_size; i++) {
         if(strcmp(symbol_table[i].content, identifier) == 0 && symbol_table[i].scope == 0) {
-            return i + 1;
+            return i + symbol_table[i].num_params;
         }
     }
     return -1;
