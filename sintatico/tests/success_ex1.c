@@ -4,7 +4,7 @@ int to_float(int num) {
     return num*3.1415;
 }
 
-int beq_100(float num) {
+int beq_100(int num) {
     return num >= 100.00;
 }
 
@@ -12,30 +12,21 @@ int list_operations() {
     int list int_list;
     int_list = NIL;
     int i;
-    int k;
-    k = beq_100(1);
-    int y;
-    y = beq_100(1);
     int n;
     n = 100;
     for (i = 0; i < n ; i = i + 1) {
 		lista = i : int_list;
 	}
-    
-    float list float_list;
-    float_list = to_float >> beq_100 << int_list;
-    
-    float list aux;
 
-    for (aux=float_list; aux != NIL; aux = !aux) {
-        int x;
-        writeln(x * -?aux);
+    for(n = i; n > 0; n = n - 1) {
+        float head;
+        head = ?int_list;
+        int_list = %int_list;
+        writeln("Cabeca eh: ");
+        write(head);
     }
 
-    float list beq_list;
-    beq_list = beq_100 << float_list;
-
-    return -(?beq_list);
+    return -(?int_list);
 }
 
 int main() {
@@ -64,7 +55,7 @@ int main() {
     if(c >= 10 || (c * 3 - (5/2 + 4) + c*(2+a)/3 && 1)) {
         return -(-a) + a*c || (a && c || a>1 && !c); 
     } else if(a > 1 && c != -a) {
-        return a*c+(10*a - !(c) || 0);
+        return a*c+(10*a - (c) || 0);
     } else {
         return -100;
     }

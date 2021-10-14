@@ -416,8 +416,8 @@ return_statement
         if(!valid_return_type($$)) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $1.line_idx, $1.column_idx, 
-                $$->child[0]->const_type,
-                $$->const_type
+                $$->const_type,
+                $$->child[0]->const_type
             );
         }
     }
@@ -435,8 +435,8 @@ expression
         if(!valid_binary_operation("=", $$, $$->child[0], $$->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $1.line_idx, $1.column_idx, 
-                $$->child[0]->const_type, 
-                $$->child[1]->const_type
+                $$->child[1]->const_type,
+                $$->child[0]->const_type 
             );
         }
     }
@@ -456,11 +456,11 @@ function_call_expression
         if(variable_unavailable(symbol_table, $$->child[0], symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         } else if(!valid_params) {
-            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Wrong number of arguments passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
         } else if(valid_params) {
             int first_argument_idx = find_function_first_argument($1.content, symbol_table, symbol_table_size);
             if(invalid_argument_type($$->child[1], symbol_table, first_argument_idx, 0, 0)) {
-                printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid param type\n"reset, $1.line_idx, $1.column_idx);
+                printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid param type passed to '%s'\n"reset, $1.line_idx, $1.column_idx, $1.content);
             }
         }
 
@@ -517,8 +517,8 @@ or_expression
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $2.line_idx, $2.column_idx, 
-                $$->child[0]->const_type, 
-                $$->child[1]->const_type
+                $$->child[1]->const_type,
+                $$->child[0]->const_type 
             );
         }
     }
@@ -536,8 +536,8 @@ and_expression
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $2.line_idx, $2.column_idx, 
-                $$->child[0]->const_type, 
-                $$->child[1]->const_type
+                $$->child[1]->const_type,
+                $$->child[0]->const_type 
             );
         }
     }
@@ -555,8 +555,8 @@ equality_expression
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $2.line_idx, $2.column_idx, 
-                $$->child[0]->const_type, 
-                $$->child[1]->const_type
+                $$->child[1]->const_type,
+                $$->child[0]->const_type 
             );
         }
     }
@@ -574,8 +574,8 @@ relational_expression
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $2.line_idx, $2.column_idx, 
-                $$->child[0]->const_type, 
-                $$->child[1]->const_type
+                $$->child[1]->const_type,
+                $$->child[0]->const_type 
             );
         }
     }
@@ -591,7 +591,7 @@ list_expression
         $$->child[1] = $3;
 
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
-            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - First argument of '%s' must be a unary function\n"reset, $2.line_idx, $2.column_idx, $2.content);
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid '%s' binary operation\n"reset, $2.line_idx, $2.column_idx, $2.content);
         }
     }
     | addition_expression {
@@ -608,8 +608,8 @@ addition_expression
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $2.line_idx, $2.column_idx, 
-                $$->child[0]->const_type, 
-                $$->child[1]->const_type
+                $$->child[1]->const_type,
+                $$->child[0]->const_type 
             );
         }
     }
@@ -627,8 +627,8 @@ multiplication_expression
         if(!valid_binary_operation($2.content, $$, $$->child[0], $$->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 $2.line_idx, $2.column_idx, 
-                $$->child[0]->const_type, 
-                $$->child[1]->const_type
+                $$->child[1]->const_type,
+                $$->child[0]->const_type 
             );
         }
     }

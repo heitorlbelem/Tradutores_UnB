@@ -10,8 +10,8 @@ int list funcC(int a) {
     }
 }
 
-int mul(int a, int b) {
-    return a*b;
+int mul(int a) {
+    return a*a;
 }
 
 int main() {
@@ -28,7 +28,7 @@ int main() {
     int a;
     a = ?d + 20;
     int aux;
-    aux = mul(a, f);
+    aux = mul(a);
     
     return aux;
 }

@@ -2642,8 +2642,8 @@ yyreduce:
         if(!valid_return_type((yyval.node))) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-2].token).line_idx, (yyvsp[-2].token).column_idx, 
-                (yyval.node)->child[0]->const_type,
-                (yyval.node)->const_type
+                (yyval.node)->const_type,
+                (yyval.node)->child[0]->const_type
             );
         }
     }
@@ -2663,8 +2663,8 @@ yyreduce:
         if(!valid_binary_operation("=", (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-2].token).line_idx, (yyvsp[-2].token).column_idx, 
-                (yyval.node)->child[0]->const_type, 
-                (yyval.node)->child[1]->const_type
+                (yyval.node)->child[1]->const_type,
+                (yyval.node)->child[0]->const_type 
             );
         }
     }
@@ -2691,11 +2691,11 @@ yyreduce:
         if(variable_unavailable(symbol_table, (yyval.node)->child[0], symbol_table_idx, top, scope_stack)){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Undefined reference to '%s'\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx, (yyvsp[-3].token).content);
         } else if(!valid_params) {
-            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid number of arguments passed to '%s'\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx, (yyvsp[-3].token).content);
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Wrong number of arguments passed to '%s'\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx, (yyvsp[-3].token).content);
         } else if(valid_params) {
             int first_argument_idx = find_function_first_argument((yyvsp[-3].token).content, symbol_table, symbol_table_size);
             if(invalid_argument_type((yyval.node)->child[1], symbol_table, first_argument_idx, 0, 0)) {
-                printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid param type\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx);
+                printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid param type passed to '%s'\n"reset, (yyvsp[-3].token).line_idx, (yyvsp[-3].token).column_idx, (yyvsp[-3].token).content);
             }
         }
 
@@ -2782,8 +2782,8 @@ yyreduce:
         if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])){
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
-                (yyval.node)->child[0]->const_type, 
-                (yyval.node)->child[1]->const_type
+                (yyval.node)->child[1]->const_type,
+                (yyval.node)->child[0]->const_type 
             );
         }
     }
@@ -2808,8 +2808,8 @@ yyreduce:
         if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
-                (yyval.node)->child[0]->const_type, 
-                (yyval.node)->child[1]->const_type
+                (yyval.node)->child[1]->const_type,
+                (yyval.node)->child[0]->const_type 
             );
         }
     }
@@ -2834,8 +2834,8 @@ yyreduce:
         if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
-                (yyval.node)->child[0]->const_type, 
-                (yyval.node)->child[1]->const_type
+                (yyval.node)->child[1]->const_type,
+                (yyval.node)->child[0]->const_type 
             );
         }
     }
@@ -2860,8 +2860,8 @@ yyreduce:
         if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
-                (yyval.node)->child[0]->const_type, 
-                (yyval.node)->child[1]->const_type
+                (yyval.node)->child[1]->const_type,
+                (yyval.node)->child[0]->const_type 
             );
         }
     }
@@ -2884,7 +2884,7 @@ yyreduce:
         (yyval.node)->child[1] = (yyvsp[0].node);
 
         if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
-            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - First argument of '%s' must be a unary function\n"reset, (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, (yyvsp[-1].token).content);
+            printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Invalid '%s' binary operation\n"reset, (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, (yyvsp[-1].token).content);
         }
     }
 #line 2891 "parser.tab.c"
@@ -2908,8 +2908,8 @@ yyreduce:
         if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
-                (yyval.node)->child[0]->const_type, 
-                (yyval.node)->child[1]->const_type
+                (yyval.node)->child[1]->const_type,
+                (yyval.node)->child[0]->const_type 
             );
         }
     }
@@ -2934,8 +2934,8 @@ yyreduce:
         if(!valid_binary_operation((yyvsp[-1].token).content, (yyval.node), (yyval.node)->child[0], (yyval.node)->child[1])) {
             printf(BHRED"[SEMANTIC ERROR] Line: %d | Column: %d - Cannot cast from '%s' to '%s'\n"reset,
                 (yyvsp[-1].token).line_idx, (yyvsp[-1].token).column_idx, 
-                (yyval.node)->child[0]->const_type, 
-                (yyval.node)->child[1]->const_type
+                (yyval.node)->child[1]->const_type,
+                (yyval.node)->child[0]->const_type 
             );
         }
     }

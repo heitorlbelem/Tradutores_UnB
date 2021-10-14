@@ -81,6 +81,8 @@ int expression_is_unary_function(T_Node* node, T_Symbol symbol_table[], int symb
 int valid_unary_operation(char* operator, T_Node* node) {
     T_Node* firstChild = node->child[0];
     
+    if(strcmp(firstChild->const_type, "") == 0) return 1;
+
     if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0 ) {
         if(strcmp(firstChild->const_type, "int") == 0 || strcmp(firstChild->const_type, "float") == 0) {
             strcpy(node->const_type, firstChild->const_type);
@@ -113,6 +115,9 @@ int valid_unary_operation(char* operator, T_Node* node) {
 }
 
 int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_operand, T_Node* right_operand) {
+    
+    if( (strcmp(left_operand->const_type, "") == 0) || (strcmp(right_operand->const_type, "") == 0)) return 1;
+    
     // ----------------------------------- OPERAÇÕES ARITMÉTICAS: +, -, *, / -------------------------------------------------
     if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0 || strcmp(operator, "*") == 0 || strcmp(operator, "/") == 0) {
     
@@ -355,6 +360,8 @@ int valid_binary_operation(char* operator, T_Node* operation, T_Node* left_opera
 }
 
 int valid_read_write_params(char* func, T_Node* expression) {
+    if(strcmp(expression->const_type, "") == 0) return 1;
+
     if(strcmp(func, "write") == 0 || strcmp(func, "writeln") == 0) {
         return (strcmp(expression->const_type, "literal_string") == 0 
             || strcmp(expression->const_type, "int") == 0
@@ -369,6 +376,7 @@ int valid_read_write_params(char* func, T_Node* expression) {
 }
 
 int valid_return_type(T_Node* expression) {
+    if(strcmp(expression->const_type, "") == 0) return 1;
     
     if(strcmp(expression->const_type, "int") == 0) {
         if(strcmp(expression->child[0]->const_type, "int") == 0) {
