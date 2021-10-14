@@ -14,7 +14,7 @@ int mul(int a, int b) {
     return a*a;
 }
 
-int mein() {
+int master() {
     int b;
     int list d;
     int list c;
